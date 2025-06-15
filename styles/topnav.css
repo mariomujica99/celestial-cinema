@@ -1,0 +1,47 @@
+.topnav {
+  overflow: hidden;
+  background-color: #131720;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topnav a {
+  display: block;
+  color: white;
+  text-align: center;
+  width: 312px;
+  min-width: 312px;
+  padding: 14px 16px;
+  margin-left: 7px;
+  text-decoration: none;
+  font-size: 1.38rem;
+  text-transform: uppercase;
+}
+
+.search-container {
+  margin-right: 24px;
+  width: 100%;
+  max-width: 283px;
+}
+
+form {
+  background-color: #151f30;
+  width: 100%;
+  height: 43px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+}
+
+input {
+  all: unset;
+  font: 1.001rem system-ui;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  padding: 6px 9px;
+  font-family: "Rollbox", sans-serif, arial;
+}

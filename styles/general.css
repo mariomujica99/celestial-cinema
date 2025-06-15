@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Rollbox";
+  src: url("../fonts/RollboxThin-ywad5.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #131720;
+  font-family: "Rollbox", sans-serif, arial;
+}
