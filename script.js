@@ -7,7 +7,7 @@ const form = document.getElementById("form");
 const search = document.getElementById("query");
 
 
-returnMovies(APILINK)
+returnMovies(APILINK);
   function returnMovies(url) {
     fetch(url).then(res => res.json()).then(function(data) {
       console.log(data.results);
@@ -28,7 +28,7 @@ returnMovies(APILINK)
         const title = document.createElement('p');
         title.setAttribute('id', 'title');
 
-        title.innerHTML = `${element.title}`;
+        title.innerHTML = `${element.title}<br><a href="movie reviews/movieReviews.html?id=${element.id}&title=${element.title}">reviews</a>`;
         image.src = IMG_PATH + element.poster_path;
 
         div_card.appendChild(image);
