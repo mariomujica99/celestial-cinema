@@ -4,17 +4,27 @@
     <title>Celestial Cinema</title>
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/topnav.css">
-    <link rel="stylesheet" href="styles/movie.css">
+    <link rel="stylesheet" href="styles/movies.css">
+    <link rel="stylesheet" href="styles/filters.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="index.html">Celestial Cinema</a>
 
       <div class="search-container">
-        <form role="search" id="form">
-          <input type="search" id="query" name="q" placeholder="Search" autocomplete="off">
+        <form class="search-form" role="search" id="form">
+          <input class="search-input" type="search" id="query" name="q" placeholder="Search" autocomplete="off">
         </form>
       </div>
+    </nav>
+
+    <nav class="filters">
+      <button class="trending-button">Trending</button>
+      <button class="popular-button">Popular</button>
+      <button class="now-playing-button">Now Playing</button>
+      <button class="movies-button">Movies</button>
+      <button class="shows-button">TV Shows</button>
+      <button class="people-button">People</button>
     </nav>
 
     <section id="section">

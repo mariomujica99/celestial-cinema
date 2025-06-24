@@ -1,0 +1,22 @@
+.reviews-header {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.reviews-text,
+.title {
+  font-size: 1.2rem;
+}
+
+.current-movie {
+  display: block;
+  margin: 20px auto;
+  height: 500px;
+  border-radius: 19px;
+  object-fit: cover;
+}

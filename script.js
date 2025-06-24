@@ -6,8 +6,16 @@ const main = document.getElementById("section");
 const form = document.getElementById("form");
 const search = document.getElementById("query");
 
+const urlParams = new URLSearchParams(window.location.search);
+const searchParam = urlParams.get("search");
 
-returnMovies(APILINK);
+if (searchParam) {
+  search.value = searchParam;
+  returnMovies(SEARCHAPI + searchParam);
+} else {
+  returnMovies(APILINK);
+}
+
   function returnMovies(url) {
     fetch(url).then(res => res.json()).then(function(data) {
       console.log(data.results);
@@ -24,16 +32,22 @@ returnMovies(APILINK);
         const image = document.createElement('img');
         image.setAttribute('class', 'thumbnail');
         image.setAttribute('id', 'image');
+        image.src = IMG_PATH + element.poster_path;
 
         const title = document.createElement('p');
         title.setAttribute('id', 'title');
-
-        title.innerHTML = `${element.title}<br><a href="movie reviews/movieReviews.html?id=${element.id}&title=${element.title}">reviews</a>`;
-        image.src = IMG_PATH + element.poster_path;
+        title.innerHTML = `${element.title}`;
 
         div_card.appendChild(image);
         div_card.appendChild(title);
-        div_column.appendChild(div_card);
+        
+        const reviews = document.createElement('a');
+        reviews.href = `movie reviews/movieReviews.html?id=${element.id}&title=${encodeURIComponent(element.title)}`;
+        reviews.style.textDecoration = "none";
+        reviews.style.color = "inherit";
+        
+        reviews.appendChild(div_card);
+        div_column.appendChild(reviews);
         div_row.appendChild(div_column);
         main.appendChild(div_row);
       });

@@ -3,11 +3,29 @@ const movieId = url.searchParams.get("id")
 const movieTitle = url.searchParams.get("title")
 
 const REVIEWS_APILINK = 'http://localhost:8000/api/v1/reviews/';
+const MOVIE_DETAILS_API = `https://api.themoviedb.org/3/movie/${movieId}?api_key=22dd0fdacd20bf222b19ecd6396b194c`;
+const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
+const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=22dd0fdacd20bf222b19ecd6396b194c&query=";
+
+const review = document.getElementById("review");
 
 const main = document.getElementById("section");
 
 const title = document.getElementById("title");
 title.innerText = movieTitle;
+
+const image = document.getElementById("image")
+
+returnMovieDetails(MOVIE_DETAILS_API);
+
+  function returnMovieDetails(url) {
+    fetch(url).then(res => res.json()).then(function(data) {
+      console.log(data);
+      image.src = IMG_PATH + data.poster_path;
+      }).catch(error => {
+        console.error('Error fetching movie image', error);
+    });
+  }
 
 const div_new = document.createElement('div');
 div_new.innerHTML = `
@@ -31,6 +49,16 @@ main.appendChild(div_new);
 
 const form = document.getElementById("form");
 const search = document.getElementById("query");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const searchItem = search.value;
+
+  if (searchItem) {
+    window.location.href = `../index.html?search=${(searchItem)}`;
+  }
+})
 
 returnReviews(REVIEWS_APILINK);
 

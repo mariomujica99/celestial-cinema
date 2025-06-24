@@ -4,21 +4,26 @@
     <title>Celestial Cinema</title>
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
-    <link rel="stylesheet" href="../styles/movie.css">
+    <link rel="stylesheet" href="../styles/movies.css">
+    <link rel="stylesheet" href="../styles/reviews.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
 
       <div class="search-container">
-        <form role="search" id="form">
-          <input type="search" id="query" name="q" placeholder="Search" autocomplete="off">
+        <form class="search-form" role="search" id="form">
+          <input class="search-input" type="search" id="query" name="q" placeholder="Search" autocomplete="off">
         </form>
       </div>
     </nav>
 
-    <p>Reviews for:</p>
-    <p id="title">Movie Title</p>
+    <div class="reviews-header">
+      <p class="title" id="title">Movie Title</p>
+    </div>
+    <div class="current-movie-container">
+      <img class="current-movie" id="image" src="#">
+    </div>
 
     <section id="section">
 

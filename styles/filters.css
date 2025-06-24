@@ -1,0 +1,27 @@
+.filters {
+  margin: 0px 25px 10px 25px;
+}
+
+.trending-button,
+.popular-button,
+.now-playing-button,
+.movies-button,
+.shows-button,
+.people-button {
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(45deg, #6A5ACD, #5B4FC7, #4C44C1);
+  padding: 7px 15px 7px 15px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.trending-button:hover,
+.popular-button:hover,
+.now-playing-button:hover,
+.movies-button:hover,
+.shows-button:hover,
+.people-button:hover {
+  background: linear-gradient(45deg, #8A7AED, #7B70E7, #6C65E1);
+  cursor: pointer;
+}

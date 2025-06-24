@@ -17,3 +17,10 @@ p {
   font-size: 1.001rem;
   color: white;
 }
+
+button {
+  font-family: "Rollbox", sans-serif, arial;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: white;
+}
