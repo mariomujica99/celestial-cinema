@@ -1,0 +1,204 @@
+.current-media-container {
+  margin-top: 10px;
+  display: flex;
+  padding: 25px;
+  gap: 30px;
+  align-items: center;
+  position: relative;
+  min-height: 400px;
+}
+
+.current-media-image {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.current-image {
+  height: 500px;
+  width: 333px;
+  min-height: 500px;
+  min-width: 333px;
+  border-radius: 19px;
+  object-fit: cover;
+}
+
+.current-media-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+}
+
+.title {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  color: white;
+  margin-top: 0;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.movie-info-line {
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  text-transform: uppercase;
+}
+
+.content-rating {
+  background-color: #666;
+  color: white;
+  padding: 4px 5px 1px 6px;
+  border-radius: 3px;
+  font-size: 1.001rem;
+}
+
+.release-date,
+.genres,
+.runtime {
+  font-size: 1.001rem;
+  color: #CBD5E0;
+}
+
+.user-score-container {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-score-label {
+  margin-top: 5px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: white;
+}
+
+.user-score {
+  font-size: 1.345rem;
+  color: white;
+  background: linear-gradient(90deg, #6A5ACD, #4C44C1, #442daa);
+  padding: 8px 20px 6px 20px;
+  border-radius: 40px;
+}
+
+.overview-section {
+  margin-bottom: 25px;
+}
+
+.overview-title {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: white;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.overview-text {
+  font-size: 1.001rem;
+  font-family: "Montserrat";
+  line-height: 1.5;
+  color: #e7e6e6;
+  text-transform: none;
+}
+
+.credits-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.credits-row {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.credits-person {
+  min-width: 200px;
+}
+
+.person-name {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.person-job {
+  font-size: 0.7rem;
+  color: #CBD5E0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.credits-loading {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.imdb-link-container {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(106, 90, 205, 0.2);
+}
+
+.imdb-link {
+  display: inline-block;
+  background: linear-gradient(90deg, #6A5ACD, #4C44C1, #442daa);
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px 8px 20px;
+  border-radius: 25px;
+  font-size: 1.001rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.imdb-link:hover {
+  background: linear-gradient(90deg, #8A7AED, #7B70E7, #6C65E1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
+@media (max-width: 1111px) {
+  .current-media-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .current-media-info {
+    width: 100%;
+  }
+  
+  .movie-info-line {
+    justify-content: center;
+  }
+  .user-score-container {
+    justify-content: center;
+  }
+  
+  .credits-row {
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .credits-person {
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+}

@@ -2,10 +2,17 @@
 <html>
   <head>
     <title>Celestial Cinema</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
     <link rel="stylesheet" href="../styles/movies.css">
     <link rel="stylesheet" href="../styles/reviews.css">
+    <link rel="stylesheet" href="../styles/media-details.css">
   </head>
   <body>
     <nav class="topnav">
@@ -18,16 +25,16 @@
       </div>
     </nav>
 
-    <div class="reviews-header">
-      <p class="title" id="title">Movie Title</p>
-    </div>
-    <div class="current-movie-container">
-      <img class="current-movie" id="image" src="#">
+    <div class="current-media-container">
+      <div class="current-media-image">
+        <img class="current-image" id="image" src="#">
+      </div>
+      <div class="current-media-details">
+        <p class="title" id="title">Movie Title</p>
+      </div>
     </div>
 
-    <section id="section">
-
-    </section>
+    <section id="section"></section>
 
     <script src="movieReviews.js"></script>
   </body>

@@ -32,7 +32,19 @@ if (searchParam) {
         const image = document.createElement('img');
         image.setAttribute('class', 'thumbnail');
         image.setAttribute('id', 'image');
+        //image.src = IMG_PATH + element.poster_path;
+
+
+
+        if (element.poster_path) {
         image.src = IMG_PATH + element.poster_path;
+        image.onerror = function() {
+          this.src = '../no-image.jpg';
+          };
+        } else {
+          image.src = '../no-image.jpg';
+        }
+      
 
         const title = document.createElement('p');
         title.setAttribute('id', 'title');

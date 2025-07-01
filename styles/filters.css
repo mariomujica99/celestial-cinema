@@ -10,7 +10,7 @@
 .people-button {
   border: none;
   border-radius: 30px;
-  background: linear-gradient(45deg, #6A5ACD, #5B4FC7, #4C44C1);
+  background: linear-gradient(90deg, #6A5ACD, #5B4FC7, #4C44C1);
   padding: 7px 15px 7px 15px;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -22,6 +22,6 @@
 .movies-button:hover,
 .shows-button:hover,
 .people-button:hover {
-  background: linear-gradient(45deg, #8A7AED, #7B70E7, #6C65E1);
+  background: linear-gradient(90deg, #8A7AED, #7B70E7, #6C65E1);
   cursor: pointer;
 }

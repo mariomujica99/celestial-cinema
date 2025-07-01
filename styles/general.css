@@ -9,7 +9,8 @@
 
 body {
   background-color: #131720;
-  font-family: "Rollbox", sans-serif, arial;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  margin: 0px;
 }
 
 p {
@@ -19,7 +20,7 @@ p {
 }
 
 button {
-  font-family: "Rollbox", sans-serif, arial;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
   text-transform: uppercase;
   font-size: 14px;
   color: white;
