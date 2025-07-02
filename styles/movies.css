@@ -1,4 +1,4 @@
-#section {
+#movies-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 10px;
@@ -49,37 +49,37 @@
 }
 
 @media (max-width: 600px) {
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (min-width: 600px) and (max-width: 900px) {
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (min-width: 900px) and (max-width: 1200px) {
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1500px) {
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
 
 @media (min-width: 1500px) and (max-width: 1800px){
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   }
 }
 
 @media (min-width: 1800px) {
-  #section {
+  #movies-grid {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 }

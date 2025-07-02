@@ -1,19 +1,19 @@
-#section {
+#reviews-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 10px;
   margin: 30px 25px;
 }
 
-.row-review {
+.review-item {
   width: 100%;
 }
 
-.column-review {
+.review-column {
   width: 100%;
 }
 
-.card-review {
+.review-card {
   background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
   border-radius: 20px;
   padding: 25px 20px 11px 20px;
@@ -108,7 +108,7 @@
   background: rgba(25, 38, 59, 1);
 }
 
-.card-review button {
+.review-card button {
   border: none;
   color: #6A5ACD;
   font-size: 0.85rem;
@@ -120,18 +120,18 @@
   transition: all 0.3s ease;
 }
 
-.card-review button:hover {
+.review-card button:hover {
   cursor: pointer;
   background: rgba(106, 90, 205, 0.2);
   color: #8A7AED;
   transform: translateY(-1px);
 }
 
-.card-review:has(.new-review) {
+.review-card:has(.new-review) {
   background: linear-gradient(135deg, #2d1b3d 0%, #3d2a4f 50%, #2d1b3d 100%);
 }
 
-.card-review:has(.new-review):hover {
+.review-card:has(.new-review):hover {
   border-color: rgba(106, 90, 205, 0.6);
   box-shadow: 
     0 8px 32px rgba(106, 90, 205, 0.3),

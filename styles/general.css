@@ -1,6 +1,29 @@
 @font-face {
   font-family: "Rollbox";
   src: url("../fonts/RollboxThin-ywad5.ttf") format("truetype");
+  font-weight: thin;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Rollbox";
+  src: url("../fonts/RollboxThinItalic-lgw1X.ttf") format("truetype");
+  font-weight: thin;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Rollbox";
+  src: url("../fonts/RollboxBold-OVxvO.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Rollbox";
+  src: url("../fonts/RollboxBoldItalic-ZVx0q.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
 }
 
 * {
@@ -22,6 +45,5 @@ p {
 button {
   font-family: "Rollbox", "Montserrat", sans-serif, arial;
   text-transform: uppercase;
-  font-size: 14px;
   color: white;
 }

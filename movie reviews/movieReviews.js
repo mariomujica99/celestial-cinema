@@ -2,27 +2,26 @@ const url = new URL(location.href);
 const movieId = url.searchParams.get("id")
 const movieTitle = url.searchParams.get("title")
 
-const REVIEWS_APILINK = 'http://localhost:8000/api/v1/reviews/';
+const REVIEWS_API_LINK = 'http://localhost:8000/api/v1/reviews/';
 const MOVIE_DETAILS_API = `https://api.themoviedb.org/3/movie/${movieId}?api_key=22dd0fdacd20bf222b19ecd6396b194c&append_to_response=release_dates`;
 const MOVIE_CREDITS_API = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=22dd0fdacd20bf222b19ecd6396b194c`;
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
-const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=22dd0fdacd20bf222b19ecd6396b194c&query=";
+const SEARCH_API = "https://api.themoviedb.org/3/search/movie?&api_key=22dd0fdacd20bf222b19ecd6396b194c&query=";
 
-const review = document.getElementById("review");
-const main = document.getElementById("section");
-const title = document.getElementById("title");
-const image = document.getElementById("image")
+const reviewsContainer = document.getElementById("reviews-container");
+const movieTitleElement = document.getElementById("movie-title");
+const moviePosterElement = document.getElementById("movie-poster")
 
-const form = document.getElementById("form");
-const search = document.getElementById("query");
+const searchForm = document.getElementById("search-form");
+const searchInput = document.getElementById("search-query");
 
-form.addEventListener("submit", (e) => {
+searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const searchItem = search.value.trim();
+  const searchTerm = searchInput.value.trim();
 
-  if (searchItem) {
-    window.location.href = `../index.html?search=${encodeURIComponent(searchItem)}`;
+  if (searchTerm) {
+    window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
   }
 });
 
@@ -36,40 +35,40 @@ function returnMovieDetails(url) {
       }
       return res.json();
     })
-    .then(function(data) {
-      console.log(data);
+    .then(function(movieData) {
+      console.log(movieData);
       
-      setBackdropBackground(data.backdrop_path);
+      setBackdropBackground(movieData.backdrop_path);
       
-      if (data.poster_path) {
-        image.src = IMG_PATH + data.poster_path;
-        image.onerror = function() {
-          this.src = '../no-image.jpg';
+      if (movieData.poster_path) {
+        moviePosterElement.src = IMG_PATH + movieData.poster_path;
+        moviePosterElement.onerror = function() {
+          this.src = '../images/no-image.jpg';
         };
       } else {
-        image.src = '../no-image.jpg';
+        moviePosterElement.src = '../images/no-image.jpg';
       }
       
-      const releaseYear = data.release_date ? new Date(data.release_date).getFullYear() : '';
+      const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
       
-      title.innerHTML = `${data.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}`;
+      movieTitleElement.innerHTML = `${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}`;
       
-      createMovieDetailsSection(data);
+      createMovieDetailsSection(movieData);
       
       returnMovieCredits(MOVIE_CREDITS_API);
       
     })
     .catch(error => {
       console.error('Error fetching movie details:', error);
-      title.innerHTML = movieTitle || 'MOVIE TITLE';
-      image.src = '../no-image.jpg';
+      movieTitleElement.innerHTML = movieTitle || 'MOVIE TITLE';
+      moviePosterElement.src = '../images/no-image.jpg';
       showErrorMessage('Failed to load movie details. Please try again later.');
     });
 }
 
 function createMovieDetailsSection(movieData) {
-  let movieInfoContainer = document.querySelector('.current-media-details');
-  if (!movieInfoContainer) {
+  let movieDetailsContainer = document.querySelector('.current-media-details');
+  if (!movieDetailsContainer) {
     console.error('Movie details container not found');
     return;
   }
@@ -90,7 +89,6 @@ function createMovieDetailsSection(movieData) {
   if (movieData.release_dates && movieData.release_dates.results) {
     const usRelease = movieData.release_dates.results.find(release => release.iso_3166_1 === 'US');
     if (usRelease && usRelease.release_dates && usRelease.release_dates.length > 0) {
-
       const theatricalRelease = usRelease.release_dates.find(rd => rd.type === 3) || usRelease.release_dates[0];
       contentRating = theatricalRelease.certification || '';
     }
@@ -98,8 +96,8 @@ function createMovieDetailsSection(movieData) {
   
   const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
   
-  movieInfoContainer.innerHTML = `
-    <p class="title" id="title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
+  movieDetailsContainer.innerHTML = `
+    <p class="title" id="movie-title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
     
     <div class="movie-info-line">
       ${contentRating ? `<span class="content-rating">${contentRating}</span>` : ''}
@@ -118,7 +116,7 @@ function createMovieDetailsSection(movieData) {
       <p class="overview-text">${movieData.overview || 'No overview available.'}</p>
     </div>
     
-    <div class="credits-section" id="credits-section">
+    <div class="credits-section" id="movie-credits-section">
       <div class="credits-loading"></div>
     </div>
     
@@ -131,18 +129,18 @@ function createMovieDetailsSection(movieData) {
 }
 
 function setBackdropBackground(backdropPath) {
-  const container = document.querySelector('.current-media-container');
-  if (container && backdropPath) {
+  const mediaContainer = document.querySelector('.current-media-container');
+  if (mediaContainer && backdropPath) {
     const backdropUrl = `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${backdropPath}`;
-    container.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.7), rgba(19, 23, 32, 0.8)), url('${backdropUrl}')`;
-    container.style.backgroundSize = 'cover';
-    container.style.backgroundPosition = 'center';
-    container.style.backgroundRepeat = 'no-repeat';
+    mediaContainer.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.7), rgba(19, 23, 32, 0.8)), url('${backdropUrl}')`;
+    mediaContainer.style.backgroundSize = 'cover';
+    mediaContainer.style.backgroundPosition = 'center';
+    mediaContainer.style.backgroundRepeat = 'no-repeat';
   } else {
-    container.style.background = `linear-gradient(90deg, rgba(45, 27, 61, 0.7), rgba(45, 27, 61, 0.8))`;
-    container.style.backgroundSize = 'cover';
-    container.style.backgroundPosition = 'center';
-    container.style.backgroundRepeat = 'no-repeat';
+    mediaContainer.style.background = `linear-gradient(90deg, rgba(45, 27, 61, 0.7), rgba(45, 27, 61, 0.8))`;
+    mediaContainer.style.backgroundSize = 'cover';
+    mediaContainer.style.backgroundPosition = 'center';
+    mediaContainer.style.backgroundRepeat = 'no-repeat';
   }
 }
 
@@ -154,13 +152,13 @@ function returnMovieCredits(url) {
       }
       return res.json();
     })
-    .then(function(data) {
-      console.log('Credits:', data);
-      updateCreditsSection(data);
+    .then(function(creditsData) {
+      console.log('Credits:', creditsData);
+      updateCreditsSection(creditsData);
     })
     .catch(error => {
       console.error('Error fetching movie credits:', error);
-      const creditsSection = document.getElementById('credits-section');
+      const creditsSection = document.getElementById('movie-credits-section');
       if (creditsSection) {
         creditsSection.innerHTML = '<div class="credits-loading">Credits unavailable</div>';
       }
@@ -168,7 +166,7 @@ function returnMovieCredits(url) {
 }
 
 function updateCreditsSection(creditsData) {
-  const creditsSection = document.getElementById('credits-section');
+  const creditsSection = document.getElementById('movie-credits-section');
   if (!creditsSection) return;
   
   const director = creditsData.crew.filter(person => person.job === 'Director');
@@ -242,57 +240,57 @@ function updateCreditsSection(creditsData) {
   creditsSection.innerHTML = creditsHTML;
 }
 
-const div_new = document.createElement('div');
-div_new.innerHTML = `
-  <div class="row-review">
-    <div class="column-review">
-      <div class="card-review">
+const newReviewForm = document.createElement('div');
+newReviewForm.innerHTML = `
+  <div class="review-item">
+    <div class="review-column">
+      <div class="review-card">
         <p class="new-review">New Review</p>
         <p class="user-text">User 
-          <input class="user-input" type="text" id="new_user" value="" placeholder="Enter your name">
+          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
         </p>
         <p class="review-text">Review 
-          <textarea class="review-input" id="new_review" placeholder="Write your review"></textarea>
+          <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
         </p>        
-        <p><button type="button" onclick="saveReview('new_review', 'new_user')">Save</button></p>
+        <p><button type="button" onclick="saveReview('new-review-input', 'new-user-input')">Save</button></p>
       </div>
     </div>
   </div>
 `;
 
-main.appendChild(div_new);
+reviewsContainer.appendChild(newReviewForm);
 
-returnReviews(REVIEWS_APILINK);
+returnReviews(REVIEWS_API_LINK);
 
 function returnReviews(url) {
-  fetch(url + "movie/" + movieId).then(res => res.json()).then(function(data) {
-    console.log(data);      
-    data.forEach(review => {
-      const div_card = document.createElement('div');
+  fetch(url + "movie/" + movieId).then(res => res.json()).then(function(reviewsData) {
+    console.log(reviewsData);      
+    reviewsData.forEach(reviewData => {
+      const reviewCard = document.createElement('div');
       
-      const escapedReview = escapeHtml(review.review);
-      const escapedUser = escapeHtml(review.user);
+      const escapedReview = escapeHtml(reviewData.review);
+      const escapedUser = escapeHtml(reviewData.user);
       
-      div_card.innerHTML = `
-        <div class="row-review">
-          <div class="column-review">
-            <div class="card-review" id="${review._id}">
-              <p class="user-review">${review.user}</p>
-              <p class="review-review">${review.review}</p>                
+      reviewCard.innerHTML = `
+        <div class="review-item">
+          <div class="review-column">
+            <div class="review-card" id="${reviewData._id}">
+              <p class="user-review">${reviewData.user}</p>
+              <p class="review-review">${reviewData.review}</p>                
               <p>
-                <button type="button" onclick="editReview('${review._id}')">Edit</button> 
-                <button type="button" onclick="deleteReview('${review._id}')">Delete</button>
+                <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
+                <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
               </p>
             </div>
           </div>
         </div>
       `;
       
-      const cardElement = div_card.querySelector('.card-review');
-      cardElement.setAttribute('data-original-review', review.review);
-      cardElement.setAttribute('data-original-user', review.user);
+      const cardElement = reviewCard.querySelector('.review-card');
+      cardElement.setAttribute('data-original-review', reviewData.review);
+      cardElement.setAttribute('data-original-user', reviewData.user);
       
-      main.appendChild(div_card);
+      reviewsContainer.appendChild(reviewCard);
     });
   }).catch(error => {
     console.error('Error fetching reviews:', error);
@@ -312,22 +310,22 @@ function unescapeHtml(html) {
   return div.textContent || div.innerText || '';
 }
 
-function editReview(id) {
-  console.log('Editing review:', id);
-  const element = document.getElementById(id);
+function editReview(reviewId) {
+  console.log('Editing review:', reviewId);
+  const reviewElement = document.getElementById(reviewId);
   
-  if (!element) {
-    console.error('Element not found with ID:', id);
+  if (!reviewElement) {
+    console.error('Review element not found with ID:', reviewId);
     return;
   }
   
-  const originalReview = element.getAttribute('data-original-review') || '';
-  const originalUser = element.getAttribute('data-original-user') || '';
+  const originalReview = reviewElement.getAttribute('data-original-review') || '';
+  const originalUser = reviewElement.getAttribute('data-original-user') || '';
   
-  const reviewInputId = "review" + id;
-  const userInputId = "user" + id;
+  const reviewInputId = "review-edit-" + reviewId;
+  const userInputId = "user-edit-" + reviewId;
   
-  element.innerHTML = `
+  reviewElement.innerHTML = `
     <p class="user-text">User 
       <input class="user-input" type="text" id="${userInputId}" value="${escapeHtml(originalUser)}">
     </p>
@@ -335,36 +333,36 @@ function editReview(id) {
       <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
     </p>
     <p>
-      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${id}')">Save</button>
+      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}')">Save</button>
       <button type="button" onclick="location.reload()">Cancel</button>
     </p>
   `;
 }
 
-function saveReview(reviewInputId, userInputId, id="") {
-  const review = document.getElementById(reviewInputId).value;
-  const user = document.getElementById(userInputId).value;
+function saveReview(reviewInputId, userInputId, reviewId="") {
+  const reviewText = document.getElementById(reviewInputId).value;
+  const userName = document.getElementById(userInputId).value;
 
-  if (id) {
-    fetch(REVIEWS_APILINK + id, {
+  if (reviewId) {
+    fetch(REVIEWS_API_LINK + reviewId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": user, "review": review})
+      body: JSON.stringify({"user": userName, "review": reviewText})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
     });
   } else {
-      fetch(REVIEWS_APILINK + "new", {
+      fetch(REVIEWS_API_LINK + "new", {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": user, "review": review, "movieId": movieId})
+      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": movieId})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
@@ -372,8 +370,8 @@ function saveReview(reviewInputId, userInputId, id="") {
   }
 }
 
-function deleteReview(id) {
-  fetch(REVIEWS_APILINK + id, {
+function deleteReview(reviewId) {
+  fetch(REVIEWS_API_LINK + reviewId, {
     method: 'DELETE'
   }).then(res => res.json()).then(res => {
     console.log(res);
@@ -397,8 +395,8 @@ function showErrorMessage(message) {
   `;
   errorDiv.textContent = message;
   
-  const container = document.querySelector('.current-media-container');
-  container.parentNode.insertBefore(errorDiv, container.nextSibling);
+  const mediaContainer = document.querySelector('.current-media-container');
+  mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer.nextSibling);
   
   setTimeout(() => {
     if (errorDiv.parentNode) {

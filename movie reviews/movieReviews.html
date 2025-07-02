@@ -3,10 +3,11 @@
   <head>
     <title>Celestial Cinema</title>
 
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
@@ -19,22 +20,22 @@
       <a class="active" href="../index.html">Celestial Cinema</a>
 
       <div class="search-container">
-        <form class="search-form" role="search" id="form">
-          <input class="search-input" type="search" id="query" name="q" placeholder="Search" autocomplete="off">
+        <form class="search-form" role="search" id="search-form">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search" autocomplete="off">
         </form>
       </div>
     </nav>
 
     <div class="current-media-container">
       <div class="current-media-image">
-        <img class="current-image" id="image" src="#">
+        <img class="current-image" id="movie-poster" src="#">
       </div>
       <div class="current-media-details">
-        <p class="title" id="title">Movie Title</p>
+        <p class="title" id="movie-title">Movie Title</p>
       </div>
     </div>
 
-    <section id="section"></section>
+    <section id="reviews-container"></section>
 
     <script src="movieReviews.js"></script>
   </body>

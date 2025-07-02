@@ -3,6 +3,8 @@
   <head>
     <title>Celestial Cinema</title>
 
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -17,8 +19,8 @@
       <a class="active" href="index.html">Celestial Cinema</a>
 
       <div class="search-container">
-        <form class="search-form" role="search" id="form">
-          <input class="search-input" type="search" id="query" name="q" placeholder="Search" autocomplete="off">
+        <form class="search-form" role="search" id="search-form">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search" autocomplete="off">
         </form>
       </div>
     </nav>
@@ -27,17 +29,16 @@
       <button class="trending-button">Trending</button>
       <button class="popular-button">Popular</button>
       <button class="now-playing-button">Now Playing</button>
-      <button class="movies-button">Movies</button>
       <button class="shows-button">TV Shows</button>
       <button class="people-button">People</button>
     </nav>
 
-    <section id="section">
+    <section id="movies-grid">
       <!--
-      <div class="row">
-        <div class="column">
-          <div class="card">
-            <img class="thumbnail" src="movie.jpg">
+      <div class="movie-item">
+        <div class="movie-column">
+          <div class="movie-card">
+            <img class="movie-thumbnail" src="movie.jpg">
             <p>Star Wars: Episode III — Revenge of The Sith</p>
           </div>
         </div>
@@ -45,6 +46,6 @@
       -->
     </section>
 
-    <script src="script.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>

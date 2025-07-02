@@ -37,6 +37,7 @@
   margin-top: 0;
   margin-bottom: 15px;
   letter-spacing: 2px;
+  font-weight: bold;
 }
 
 .movie-info-line {
@@ -93,6 +94,7 @@
 
 .overview-title {
   font-size: 1.1rem;
+  font-weight: bold;
   text-transform: uppercase;
   color: white;
   margin-bottom: 10px;
