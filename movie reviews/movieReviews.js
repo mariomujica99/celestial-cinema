@@ -2,11 +2,16 @@ const url = new URL(location.href);
 const movieId = url.searchParams.get("id")
 const movieTitle = url.searchParams.get("title")
 
-const REVIEWS_API_LINK = 'http://localhost:8000/api/v1/reviews/';
-const MOVIE_DETAILS_API = `https://api.themoviedb.org/3/movie/${movieId}?api_key=22dd0fdacd20bf222b19ecd6396b194c&append_to_response=release_dates`;
-const MOVIE_CREDITS_API = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=22dd0fdacd20bf222b19ecd6396b194c`;
-const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
-const SEARCH_API = "https://api.themoviedb.org/3/search/movie?&api_key=22dd0fdacd20bf222b19ecd6396b194c&query=";
+const API_KEY = '22dd0fdacd20bf222b19ecd6396b194c';
+
+const API_LINKS = {
+  REVIEWS: 'http://localhost:8000/api/v1/reviews/',
+  MOVIE_DETAILS: `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=release_dates`,
+  MOVIE_CREDITS: `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`,
+  SEARCH: `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=`,
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+};
 
 const reviewsContainer = document.getElementById("reviews-container");
 const movieTitleElement = document.getElementById("movie-title");
@@ -25,7 +30,7 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-returnMovieDetails(MOVIE_DETAILS_API);
+returnMovieDetails(API_LINKS.MOVIE_DETAILS);
 
 function returnMovieDetails(url) {
   fetch(url)
@@ -41,7 +46,7 @@ function returnMovieDetails(url) {
       setBackdropBackground(movieData.backdrop_path);
       
       if (movieData.poster_path) {
-        moviePosterElement.src = IMG_PATH + movieData.poster_path;
+        moviePosterElement.src = API_LINKS.IMG_PATH + movieData.poster_path;
         moviePosterElement.onerror = function() {
           this.src = '../images/no-image.jpg';
         };
@@ -55,7 +60,7 @@ function returnMovieDetails(url) {
       
       createMovieDetailsSection(movieData);
       
-      returnMovieCredits(MOVIE_CREDITS_API);
+      returnMovieCredits(API_LINKS.MOVIE_CREDITS);
       
     })
     .catch(error => {
@@ -131,7 +136,7 @@ function createMovieDetailsSection(movieData) {
 function setBackdropBackground(backdropPath) {
   const mediaContainer = document.querySelector('.current-movie-container');
   if (mediaContainer && backdropPath) {
-    const backdropUrl = `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${backdropPath}`;
+    const backdropUrl = `${API_LINKS.BACKDROP_PATH}${backdropPath}`;
     mediaContainer.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.7), rgba(19, 23, 32, 0.8)), url('${backdropUrl}')`;
     mediaContainer.style.backgroundSize = 'cover';
     mediaContainer.style.backgroundPosition = 'center';
@@ -260,7 +265,7 @@ newReviewForm.innerHTML = `
 
 reviewsContainer.appendChild(newReviewForm);
 
-returnReviews(REVIEWS_API_LINK);
+returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "movie/" + movieId).then(res => res.json()).then(function(reviewsData) {
@@ -344,7 +349,7 @@ function saveReview(reviewInputId, userInputId, reviewId="") {
   const userName = document.getElementById(userInputId).value;
 
   if (reviewId) {
-    fetch(REVIEWS_API_LINK + reviewId, {
+    fetch(API_LINKS.REVIEWS + reviewId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -356,7 +361,7 @@ function saveReview(reviewInputId, userInputId, reviewId="") {
       location.reload();
     });
   } else {
-      fetch(REVIEWS_API_LINK + "new", {
+      fetch(API_LINKS.REVIEWS + "new", {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -371,7 +376,7 @@ function saveReview(reviewInputId, userInputId, reviewId="") {
 }
 
 function deleteReview(reviewId) {
-  fetch(REVIEWS_API_LINK + reviewId, {
+  fetch(API_LINKS.REVIEWS + reviewId, {
     method: 'DELETE'
   }).then(res => res.json()).then(res => {
     console.log(res);

@@ -2,24 +2,24 @@
   margin: 0px 25px 10px 25px;
 }
 
-.trending-button,
-.popular-button,
-.now-playing-button,
-.shows-button,
-.people-button {
+.filters button {
   border: none;
   border-radius: 30px;
-  background: linear-gradient(90deg, #6A5ACD, #5B4FC7, #4C44C1);
+  background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
   padding: 7px 15px 7px 15px;
   margin-right: 5px;
   margin-bottom: 5px;
 }
 
-.trending-button:hover,
-.popular-button:hover,
-.now-playing-button:hover,
-.shows-button:hover,
-.people-button:hover {
-  background: linear-gradient(90deg, #8A7AED, #7B70E7, #6C65E1);
+.filters button:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   cursor: pointer;
+}
+
+.filters button.active {
+  background: linear-gradient(135deg, #0F0C29, #24243e, #302b63, #4a41a7);
+  border-color: rgba(106, 90, 205, 0.6);
+  box-shadow: 
+    0 8px 32px rgba(106, 90, 205, 0.3),
+    0 0 0 1px rgba(106, 90, 205, 0.5);
 }
