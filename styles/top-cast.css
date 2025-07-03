@@ -1,0 +1,94 @@
+.cast-section {
+  margin: 30px 25px;
+  padding: 25px 0;
+  border-top: 1px solid rgba(106, 90, 205, 0.2);
+  border-bottom: 1px solid rgba(106, 90, 205, 0.2);
+}
+
+.cast-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  margin: 0 0 20px 0;
+  letter-spacing: 1px;
+}
+
+.cast-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.cast-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cast-container::-webkit-scrollbar-track {
+  background: rgba(25, 38, 59, 0.5);
+  border-radius: 4px;
+}
+
+.cast-container::-webkit-scrollbar-thumb {
+  background: rgba(106, 90, 205, 0.6);
+  border-radius: 4px;
+}
+
+.cast-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(106, 90, 205, 0.8);
+}
+
+.cast-member {
+  flex: 0 0 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-radius: 12px;
+  padding: 5px 5px 10px 5px;
+}
+
+/*
+.cast-member:hover {
+  cursor: pointer;
+  background: linear-gradient(180deg, #28303d, #212d42, #19263b);
+  transition: 0.50 s;
+}
+*/
+
+.cast-photo {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  margin-bottom: 10px;
+}
+
+.cast-name {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.cast-character {
+  font-size: 0.6rem;
+  color: #CBD5E0;
+  margin: 0;
+  text-transform: uppercase;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.cast-loading {
+  font-size: 0.8rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

@@ -167,6 +167,10 @@ function returnMovieCredits(url) {
       if (creditsSection) {
         creditsSection.innerHTML = '<div class="credits-loading">Credits unavailable</div>';
       }
+      const castContainer = document.getElementById('cast-container');
+      if (castContainer) {
+        castContainer.innerHTML = '<div class="cast-loading">Cast information unavailable</div>';
+      }
     });
 }
 
@@ -243,6 +247,39 @@ function updateCreditsSection(creditsData) {
   creditsHTML += '</div>';
   
   creditsSection.innerHTML = creditsHTML;
+
+  displayCast(creditsData);
+}
+
+function displayCast(creditsData) {
+  const castContainer = document.getElementById('cast-container');
+  if (!castContainer) return;
+  
+  const cast = creditsData.cast.slice(0, 10);
+  
+  if (cast.length === 0) {
+    castContainer.innerHTML = '<div class="cast-loading">No cast information available</div>';
+    return;
+  }
+  
+  castContainer.innerHTML = '';
+  
+  cast.forEach(member => {
+    const castMember = document.createElement('div');
+    castMember.className = 'cast-member';
+    
+    const photoUrl = member.profile_path 
+      ? `${API_LINKS.IMG_PATH}${member.profile_path}`
+      : '../images/no-image.jpg';
+    
+    castMember.innerHTML = `
+      <img class="cast-photo" src="${photoUrl}" alt="${member.name}" onerror="this.src='../images/no-image.jpg'">
+      <div class="cast-name">${member.name}</div>
+      <div class="cast-character">${member.character || 'Unknown Role'}</div>
+    `;
+    
+    castContainer.appendChild(castMember);
+  });
 }
 
 const newReviewForm = document.createElement('div');
