@@ -21,16 +21,16 @@ function returnMovies(url) {
     console.log(data.results);
     data.results.forEach(movieData => {
       const movieItemWrapper = document.createElement('div');
-      movieItemWrapper.setAttribute('class', 'row');
+      movieItemWrapper.setAttribute('class', 'movie-item');
 
       const movieColumnWrapper = document.createElement('div');
-      movieColumnWrapper.setAttribute('class', 'column');
+      movieColumnWrapper.setAttribute('class', 'movie-column');
 
       const movieCard = document.createElement('div');
-      movieCard.setAttribute('class', 'card');
+      movieCard.setAttribute('class', 'movie-card');
 
       const movieThumbnail = document.createElement('img');
-      movieThumbnail.setAttribute('class', 'thumbnail');
+      movieThumbnail.setAttribute('class', 'movie-thumbnail');
       movieThumbnail.setAttribute('id', 'image');
 
       if (movieData.poster_path) {
@@ -43,7 +43,7 @@ function returnMovies(url) {
       }    
 
       const movieTitle = document.createElement('p');
-      movieTitle.setAttribute('id', 'title');
+      movieTitle.setAttribute('id', 'movie-title');
       movieTitle.innerHTML = `${movieData.title}`;
 
       movieCard.appendChild(movieThumbnail);

@@ -1,7 +1,7 @@
 .topnav {
   overflow: hidden;
   background-color: #131720;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 10px;
   display: flex;
   justify-content: space-between;
@@ -29,7 +29,6 @@
 }
 
 .search-form {
-  background-color: #19263b;
   background: linear-gradient(45deg, #28303d, #212d42, #19263b);
   width: 100%;
   height: 43px;

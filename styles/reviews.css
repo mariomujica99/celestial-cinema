@@ -1,6 +1,6 @@
 #reviews-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 10px;
   margin: 30px 25px;
 }
@@ -17,7 +17,7 @@
   background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
   border-radius: 20px;
   padding: 25px 20px 11px 20px;
-  height: 310px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -138,26 +138,32 @@
     0 0 0 1px rgba(106, 90, 205, 0.5);
 }
 
-@media (max-width: 768px) {
-  #section {
+@media (max-width: 650px) {
+  #reviews-container {
     grid-template-columns: 1fr;
   }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  #section {
+@media (min-width: 651px) and (max-width: 1000px) {
+  #reviews-container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 1025px) {
-  #section {
+@media (min-width: 1001px) and (max-width: 1350px){
+  #reviews-container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (min-width: 1400px) {
-  #section {
+@media (min-width: 1351px) and (max-width: 1650px){
+  #reviews-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1651px) {
+  #reviews-container {
     grid-template-columns: repeat(4, 1fr);
   }
 }

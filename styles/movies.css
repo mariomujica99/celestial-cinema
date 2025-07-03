@@ -8,30 +8,30 @@
   margin-bottom: 30px;
 }
 
-.thumbnail {
+.movie-thumbnail {
   width: 100%;
   border-radius: 20px;
-  object-fit: cover;
+  object-fit: fill;
   text-align: center;
 }
 
-.row {
+.movie-item {
   padding: 10px 10px 0px 10px;
   border-radius: 20px;
   cursor: pointer;
 }
 
-.row:hover {
-  background-color: #252b35;
+.movie-item:hover {
+  background: linear-gradient(180deg, #28303d, #212d42, #19263b);
   transition: 0.50 s;
 }
 
-.column {
+.movie-column {
   margin-bottom: 12px;
   position: relative;
 }
 
-.card {
+.movie-card {
   margin-top: 5px;
   text-transform: uppercase;
   text-align: center;
@@ -39,7 +39,7 @@
   color: white;
 }
 
-.card p {
+.movie-card p {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -48,38 +48,44 @@
   text-overflow: ellipsis;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 350px) {
   #movies-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
-@media (min-width: 600px) and (max-width: 900px) {
+@media (min-width: 351px) and (max-width: 650px) {
   #movies-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 900px) and (max-width: 1200px) {
+@media (min-width: 651px) and (max-width: 950px) {
   #movies-grid {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (min-width: 1200px) and (max-width: 1500px) {
+@media (min-width: 951px) and (max-width: 1250px) {
   #movies-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (min-width: 1500px) and (max-width: 1800px){
+@media (min-width: 1251px) and (max-width: 1550px) {
   #movies-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1551px) and (max-width: 1850px){
   #movies-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1851px) {
+  #movies-grid {
+    grid-template-columns: repeat(7, 1fr);
   }
 }

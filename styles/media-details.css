@@ -1,28 +1,24 @@
-.current-media-container {
-  margin-top: 10px;
+.current-movie-container {
   display: flex;
   padding: 25px;
   gap: 30px;
   align-items: center;
   position: relative;
-  min-height: 400px;
 }
 
-.current-media-image {
+.current-movie-image {
   flex-shrink: 0;
   margin-bottom: 0;
 }
 
-.current-image {
-  height: 500px;
-  width: 333px;
-  min-height: 500px;
-  min-width: 333px;
-  border-radius: 19px;
+.movie-poster {
+  height: 480px;
+  width: 100%;
+  border-radius: 20px;
   object-fit: cover;
 }
 
-.current-media-info {
+.current-movie-details {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -30,7 +26,7 @@
   font-family: "Rollbox", "Montserrat", sans-serif, arial;
 }
 
-.title {
+.movie-title {
   font-size: 1.8rem;
   text-transform: uppercase;
   color: white;
@@ -45,7 +41,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   flex-wrap: wrap;
   text-transform: uppercase;
 }
@@ -66,8 +62,8 @@
 }
 
 .user-score-container {
-  margin-top: 20px;
-  margin-bottom: 25px;
+  margin-top: 10px;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -97,11 +93,12 @@
   font-weight: bold;
   text-transform: uppercase;
   color: white;
-  margin-bottom: 10px;
+  margin: 15px 0 5px 0;
   letter-spacing: 1px;
 }
 
 .overview-text {
+  margin: 0;
   font-size: 1.001rem;
   font-family: "Montserrat";
   line-height: 1.5;
@@ -172,14 +169,14 @@
 }
 
 @media (max-width: 1111px) {
-  .current-media-container {
+  .current-movie-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
   }
   
-  .current-media-info {
+  .current-movie-info {
     width: 100%;
   }
   
@@ -199,7 +196,7 @@
     text-align: center;
   }
   
-  .title {
+  .movie-title {
     font-size: 1.4rem;
     text-align: center;
   }

@@ -67,7 +67,7 @@ function returnMovieDetails(url) {
 }
 
 function createMovieDetailsSection(movieData) {
-  let movieDetailsContainer = document.querySelector('.current-media-details');
+  let movieDetailsContainer = document.querySelector('.current-movie-details');
   if (!movieDetailsContainer) {
     console.error('Movie details container not found');
     return;
@@ -97,7 +97,7 @@ function createMovieDetailsSection(movieData) {
   const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
   
   movieDetailsContainer.innerHTML = `
-    <p class="title" id="movie-title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
+    <p class="movie-title" id="movie-title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
     
     <div class="movie-info-line">
       ${contentRating ? `<span class="content-rating">${contentRating}</span>` : ''}
@@ -129,7 +129,7 @@ function createMovieDetailsSection(movieData) {
 }
 
 function setBackdropBackground(backdropPath) {
-  const mediaContainer = document.querySelector('.current-media-container');
+  const mediaContainer = document.querySelector('.current-movie-container');
   if (mediaContainer && backdropPath) {
     const backdropUrl = `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${backdropPath}`;
     mediaContainer.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.7), rgba(19, 23, 32, 0.8)), url('${backdropUrl}')`;
@@ -395,7 +395,7 @@ function showErrorMessage(message) {
   `;
   errorDiv.textContent = message;
   
-  const mediaContainer = document.querySelector('.current-media-container');
+  const mediaContainer = document.querySelector('.current-movie-container');
   mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer.nextSibling);
   
   setTimeout(() => {
