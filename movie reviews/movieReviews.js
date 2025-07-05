@@ -287,14 +287,31 @@ newReviewForm.innerHTML = `
   <div class="review-item">
     <div class="review-column">
       <div class="review-card">
-        <p class="new-review">New Review</p>
+        <p class="new-review">New Review
+          <button type="button" onclick="saveReview('new-review-input', 'new-user-input', '', 'new-rating-input')">Save</button>
+        </p>
         <p class="user-text">User 
           <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
         </p>
+        <p class="rating-text">Rating
+          <img src="../images/star.png" alt="Star" class="star-icon"> 
+          <select class="rating-select" id="new-rating-input">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </p>
         <p class="review-text">Review 
           <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
-        </p>        
-        <p><button type="button" onclick="saveReview('new-review-input', 'new-user-input')">Save</button></p>
+        </p>
       </div>
     </div>
   </div>
@@ -312,12 +329,17 @@ function returnReviews(url) {
       
       const escapedReview = escapeHtml(reviewData.review);
       const escapedUser = escapeHtml(reviewData.user);
+      const rating = reviewData.rating || 0;
       
       reviewCard.innerHTML = `
         <div class="review-item">
           <div class="review-column">
             <div class="review-card" id="${reviewData._id}">
               <p class="user-review">${reviewData.user}</p>
+              <div class="rating-display">
+                <img src="../images/star.png" alt="Star" class="star-icon">
+                <span class="rating-score">${rating}/10</span>
+              </div>
               <p class="review-review">${reviewData.review}</p>                
               <p>
                 <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
@@ -331,6 +353,7 @@ function returnReviews(url) {
       const cardElement = reviewCard.querySelector('.review-card');
       cardElement.setAttribute('data-original-review', reviewData.review);
       cardElement.setAttribute('data-original-user', reviewData.user);
+      cardElement.setAttribute('data-original-rating', rating);
       
       reviewsContainer.appendChild(reviewCard);
     });
@@ -363,27 +386,42 @@ function editReview(reviewId) {
   
   const originalReview = reviewElement.getAttribute('data-original-review') || '';
   const originalUser = reviewElement.getAttribute('data-original-user') || '';
+  const originalRating = reviewElement.getAttribute('data-original-rating') || '0';
   
   const reviewInputId = "review-edit-" + reviewId;
   const userInputId = "user-edit-" + reviewId;
+  const ratingInputId = "rating-edit-" + reviewId;
+  
+  let ratingOptions = '';
+  for (let i = 0; i <= 10; i++) {
+    const selected = i == originalRating ? 'selected' : '';
+    ratingOptions += `<option value="${i}" ${selected}>${i}</option>`;
+  }
   
   reviewElement.innerHTML = `
     <p class="user-text">User 
       <input class="user-input" type="text" id="${userInputId}" value="${escapeHtml(originalUser)}">
     </p>
+    <p class="rating-text">Rating
+      <img src="../images/star.png" alt="Star" class="star-icon">  
+      <select class="rating-select" id="${ratingInputId}">
+        ${ratingOptions}
+      </select>
+    </p>
     <p class="review-text">Review 
       <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
     </p>
     <p>
-      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}')">Save</button>
+      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}', '${ratingInputId}')">Save</button>
       <button type="button" onclick="location.reload()">Cancel</button>
     </p>
   `;
 }
 
-function saveReview(reviewInputId, userInputId, reviewId="") {
+function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
   const reviewText = document.getElementById(reviewInputId).value;
   const userName = document.getElementById(userInputId).value;
+  const rating = ratingInputId ? parseInt(document.getElementById(ratingInputId).value) : 0;
 
   if (reviewId) {
     fetch(API_LINKS.REVIEWS + reviewId, {
@@ -392,7 +430,7 @@ function saveReview(reviewInputId, userInputId, reviewId="") {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText})
+      body: JSON.stringify({"user": userName, "review": reviewText, "rating": rating})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
@@ -404,7 +442,7 @@ function saveReview(reviewInputId, userInputId, reviewId="") {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": movieId})
+      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": movieId, "rating": rating})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();

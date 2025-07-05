@@ -25,8 +25,8 @@
 .review-card {
   background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
   border-radius: 20px;
-  padding: 25px 20px 11px 20px;
-  height: 300px;
+  padding: 20px 20px 2px 20px;
+  height: 290px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -40,13 +40,43 @@
   margin: 0 0 10px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-review button{
+  margin-bottom: 2px;
 }
 
 .user-review {
   color: white;
   font-size: 1.1rem;
-  margin: 0 0 18px 0;
+  margin: 4px 0 10px 0;
   text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px 0;
+}
+
+.star-icon {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 5px;
+  object-fit: contain;
+}
+
+.rating-score {
+  color: #6A5ACD;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
@@ -67,7 +97,7 @@
   word-wrap: break-word;
 }
 
-.review-text, .user-text {
+.review-text, .user-text, .rating-text {
   color: white;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -79,7 +109,22 @@
 }
 
 .user-text {
-  margin-bottom: 10px;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+  gap: 57px;
+}
+
+.user-text input{
+  margin: 0 0 2px 0;
+}
+
+.rating-text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
 }
 
 .review-text {
@@ -100,7 +145,29 @@
   box-sizing: border-box;
 }
 
+.rating-select {
+  margin-bottom: 3px;
+  font-family: "Montserrat", sans-serif, arial;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+  border-radius: 8px;
+  background: rgba(25, 38, 59, 0.8);
+  color: white;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.rating-select option {
+  background: rgba(25, 38, 59, 1);
+  color: white;
+  padding: 5px;
+}
+
 .review-input {
+  margin: 10px 0 0 0;
   height: 90px;
   resize: none;
   vertical-align: top;
@@ -110,7 +177,7 @@
   font-family: "Montserrat", sans-serif, arial;
 }
 
-.review-input:focus, .user-input:focus {
+.review-input:focus, .user-input:focus, .rating-select:focus {
   outline: none;
   border-color: #6A5ACD;
   box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
