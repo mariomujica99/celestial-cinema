@@ -111,7 +111,7 @@
 .user-text {
   flex-direction: row;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   gap: 57px;
 }
 
@@ -124,14 +124,16 @@
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .review-text {
   flex-grow: 1;
 }
 
-.review-input, .user-input {
+.review-input,
+.user-input,
+.rating-select {
   font-family: "Montserrat", sans-serif, arial;
   margin-top: 5px;
   width: 100%;
@@ -141,34 +143,16 @@
   background: rgba(25, 38, 59, 0.8);
   color: white;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
 }
 
 .rating-select {
   margin-bottom: 3px;
-  font-family: "Montserrat", sans-serif, arial;
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid rgba(106, 90, 205, 0.3);
-  border-radius: 8px;
-  background: rgba(25, 38, 59, 0.8);
-  color: white;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
   cursor: pointer;
 }
 
-.rating-select option {
-  background: rgba(25, 38, 59, 1);
-  color: white;
-  padding: 5px;
-}
-
 .review-input {
-  margin: 10px 0 0 0;
-  height: 90px;
+  margin: 0;
+  height: 107px;
   resize: none;
   vertical-align: top;
   word-wrap: break-word;
@@ -234,12 +218,12 @@
 
 @media (min-width: 1351px) and (max-width: 1650px){
   #reviews-container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (min-width: 1651px) {
   #reviews-container {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }

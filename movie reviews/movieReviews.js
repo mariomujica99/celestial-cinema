@@ -8,7 +8,6 @@ const API_LINKS = {
   REVIEWS: 'http://localhost:8000/api/v1/reviews/',
   MOVIE_DETAILS: `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=release_dates`,
   MOVIE_CREDITS: `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`,
-  SEARCH: `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=`,
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
@@ -65,7 +64,7 @@ function returnMovieDetails(url) {
     })
     .catch(error => {
       console.error('Error fetching movie details:', error);
-      movieTitleElement.innerHTML = movieTitle || 'MOVIE TITLE';
+      movieTitleElement.innerHTML = movieTitle || '';
       moviePosterElement.src = '../images/no-image.jpg';
       showErrorMessage('Failed to load movie details. Please try again later.');
     });
@@ -270,10 +269,10 @@ function displayCast(creditsData) {
     
     const photoUrl = member.profile_path 
       ? `${API_LINKS.IMG_PATH}${member.profile_path}`
-      : '../images/no-image.jpg';
+      : '../images/no-image-cast.jpg';
     
     castMember.innerHTML = `
-      <img class="cast-photo" src="${photoUrl}" alt="${member.name}" onerror="this.src='../images/no-image.jpg'">
+      <img class="cast-photo" src="${photoUrl}" alt="${member.name}" onerror="this.src='../images/no-image-cast.jpg'">
       <div class="cast-name">${member.name}</div>
       <div class="cast-character">${member.character || 'Unknown Role'}</div>
     `;
@@ -309,7 +308,7 @@ newReviewForm.innerHTML = `
             <option value="10">10</option>
           </select>
         </p>
-        <p class="review-text">Review 
+        <p class="review-text"> 
           <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
         </p>
       </div>
@@ -322,7 +321,7 @@ reviewsContainer.appendChild(newReviewForm);
 returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
-  fetch(url + "movie/" + movieId).then(res => res.json()).then(function(reviewsData) {
+  fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
     console.log(reviewsData);      
     reviewsData.forEach(reviewData => {
       const reviewCard = document.createElement('div');
@@ -369,12 +368,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-function unescapeHtml(html) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  return div.textContent || div.innerText || '';
-}
-
 function editReview(reviewId) {
   console.log('Editing review:', reviewId);
   const reviewElement = document.getElementById(reviewId);
@@ -408,7 +401,7 @@ function editReview(reviewId) {
         ${ratingOptions}
       </select>
     </p>
-    <p class="review-text">Review 
+    <p class="review-text"> 
       <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
     </p>
     <p>

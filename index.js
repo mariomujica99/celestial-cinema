@@ -7,11 +7,12 @@ const API_LINKS = {
   NOW_PLAYING: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&page=1`,
   UPCOMING: `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&page=1`,
   TOP_RATED: `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&page=1`,
-  SEARCH: `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=`,
+  POPULAR_TV: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&page=1`,
+  SEARCH_MULTI: `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=`,
   IMG_PATH: `https://image.tmdb.org/t/p/w1280`
 };
 
-const moviesGridContainer = document.getElementById("movies-grid");
+const mediaGridContainer = document.getElementById("media-grid");
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
@@ -20,9 +21,12 @@ const popularButton = document.querySelector(".popular-button");
 const nowPlayingButton = document.querySelector(".now-playing-button");
 const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
+const showsButton = document.querySelector(".shows-button");
 
 const urlParams = new URLSearchParams(window.location.search);
 const searchParam = urlParams.get("search");
+
+let currentContentType = 'movie';
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -38,7 +42,7 @@ searchForm.addEventListener("submit", (e) => {
       button.classList.remove('active');
     });
     
-    returnMovies(API_LINKS.SEARCH + searchTerm);
+    returnMedia(API_LINKS.SEARCH_MULTI + searchTerm, 'multi');
     searchInput.value = "";
   }
 });
@@ -47,59 +51,75 @@ if (searchParam) {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'none';
   searchInput.value = searchParam;
-  returnMovies(API_LINKS.SEARCH + searchParam);
+  returnMedia(API_LINKS.SEARCH_MULTI + searchParam, 'multi');
 } else {
-  returnMovies(API_LINKS.TRENDING_WEEK);
+  returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
 }
 
-function returnMovies(url) {
-  moviesGridContainer.innerHTML = '';
+function returnMedia(url, contentType = 'movie') {
+  mediaGridContainer.innerHTML = '';
+  currentContentType = contentType;
   
   fetch(url).then(res => res.json()).then(function(data) {
     console.log(data.results);
-    data.results.forEach(movieData => {
-      const movieItemWrapper = document.createElement('div');
-      movieItemWrapper.setAttribute('class', 'movie-item');
+    data.results.forEach(itemData => {
+      if (contentType === 'multi' && itemData.media_type === 'person') {
+        return;
+      }
+      
+      const mediaItemWrapper = document.createElement('div');
+      mediaItemWrapper.setAttribute('class', 'media-item');
 
-      const movieColumnWrapper = document.createElement('div');
-      movieColumnWrapper.setAttribute('class', 'movie-column');
+      const mediaColumnWrapper = document.createElement('div');
+      mediaColumnWrapper.setAttribute('class', 'media-column');
 
-      const movieCard = document.createElement('div');
-      movieCard.setAttribute('class', 'movie-card');
+      const mediaCard = document.createElement('div');
+      mediaCard.setAttribute('class', 'media-card');
 
-      const movieThumbnail = document.createElement('img');
-      movieThumbnail.setAttribute('class', 'movie-thumbnail');
-      movieThumbnail.setAttribute('id', 'image');
+      const mediaThumbnail = document.createElement('img');
+      mediaThumbnail.setAttribute('class', 'media-thumbnail');
+      mediaThumbnail.setAttribute('id', 'image');
 
-      if (movieData.poster_path) {
-        movieThumbnail.src = API_LINKS.IMG_PATH + movieData.poster_path;
-        movieThumbnail.onerror = function() {
+      if (itemData.poster_path) {
+        mediaThumbnail.src = API_LINKS.IMG_PATH + itemData.poster_path;
+        mediaThumbnail.onerror = function() {
           this.src = '/images/no-image.jpg';
         };
       } else {
-        movieThumbnail.src = '/images/no-image.jpg';
+        mediaThumbnail.src = '/images/no-image.jpg';
       }    
 
-      const movieTitle = document.createElement('p');
-      movieTitle.setAttribute('id', 'movie-title');
-      movieTitle.innerHTML = `${movieData.title}`;
+      const mediaTitle = document.createElement('p');
+      mediaTitle.setAttribute('id', 'media-title');
+      const title = itemData.title || itemData.name;
+      mediaTitle.innerHTML = `${title}`;
 
-      movieCard.appendChild(movieThumbnail);
-      movieCard.appendChild(movieTitle);
+      mediaCard.appendChild(mediaThumbnail);
+      mediaCard.appendChild(mediaTitle);
       
       const reviewsLink = document.createElement('a');
-      reviewsLink.href = `movie reviews/movieReviews.html?id=${movieData.id}&title=${encodeURIComponent(movieData.title)}`;
+      
+      let itemContentType = contentType;
+      if (contentType === 'multi') {
+        itemContentType = itemData.media_type;
+      }
+      
+      if (itemContentType === 'tv') {
+        reviewsLink.href = `tv reviews/tvReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`;
+      } else {
+        reviewsLink.href = `movie reviews/movieReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`;
+      }
       reviewsLink.style.textDecoration = "none";
       reviewsLink.style.color = "inherit";
       
-      reviewsLink.appendChild(movieCard);
-      movieColumnWrapper.appendChild(reviewsLink);
-      movieItemWrapper.appendChild(movieColumnWrapper);
-      moviesGridContainer.appendChild(movieItemWrapper);
+      reviewsLink.appendChild(mediaCard);
+      mediaColumnWrapper.appendChild(reviewsLink);
+      mediaItemWrapper.appendChild(mediaColumnWrapper);
+      mediaGridContainer.appendChild(mediaItemWrapper);
     });
   }).catch(error => {
-    console.error('Error fetching movies:', error);
-    showErrorMessage('Failed to load movies. Please try again later.');
+    console.error('Error fetching content:', error);
+    showErrorMessage('Failed to load content. Please try again later.');
   });
 }
 
@@ -116,35 +136,42 @@ trendingTodayButton.addEventListener("click", () => {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'block';
   setActiveButton(trendingTodayButton);
-  returnMovies(API_LINKS.TRENDING_DAY);
+  returnMedia(API_LINKS.TRENDING_DAY, 'movie');
 });
 
 popularButton.addEventListener("click", () => {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'block';
   setActiveButton(popularButton);
-  returnMovies(API_LINKS.POPULAR);
+  returnMedia(API_LINKS.POPULAR, 'movie');
 });
 
 nowPlayingButton.addEventListener("click", () => {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'block';
   setActiveButton(nowPlayingButton);
-  returnMovies(API_LINKS.NOW_PLAYING);
+  returnMedia(API_LINKS.NOW_PLAYING, 'movie');
 });
 
 upcomingButton.addEventListener("click", () => {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'block';
   setActiveButton(upcomingButton);
-  returnMovies(API_LINKS.UPCOMING);
+  returnMedia(API_LINKS.UPCOMING, 'movie');
 });
 
 topRatedButton.addEventListener("click", () => {
   const filtersSection = document.querySelector('.filters');
   filtersSection.style.display = 'block';
   setActiveButton(topRatedButton);
-  returnMovies(API_LINKS.TOP_RATED);
+  returnMedia(API_LINKS.TOP_RATED, 'movie');
+});
+
+showsButton.addEventListener("click", () => {
+  const filtersSection = document.querySelector('.filters');
+  filtersSection.style.display = 'block';
+  setActiveButton(showsButton);
+  returnMedia(API_LINKS.POPULAR_TV, 'tv');
 });
 
 function showErrorMessage(message) {
@@ -163,8 +190,8 @@ function showErrorMessage(message) {
   `;
   errorDiv.textContent = message;
   
-  const mediaContainer = document.querySelector('.current-movie-container');
-  mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer.nextSibling);
+  const mediaContainer = document.getElementById('media-grid');
+  mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer);
   
   setTimeout(() => {
     if (errorDiv.parentNode) {

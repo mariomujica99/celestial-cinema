@@ -9,25 +9,52 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
     <link rel="stylesheet" href="../styles/movies.css">
     <link rel="stylesheet" href="../styles/reviews.css">
+    <link rel="stylesheet" href="../styles/movie-details.css">
+    <link rel="stylesheet" href="../styles/show-details.css">
+    <link rel="stylesheet" href="../styles/media-details.css">
+    <link rel="stylesheet" href="../styles/top-cast.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
 
       <div class="search-container">
-        <form class="search-form" role="search" id="form">
-          <input class="search-input" type="search" id="query" name="q" placeholder="Search" autocomplete="off">
+        <form class="search-form" role="search" id="search-form">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search" autocomplete="off">
         </form>
       </div>
     </nav>
-    
-    <section id="section"></section>
 
-    <script src="movieReviews.js"></script>
+    <div class="current-tv-container">
+      <div class="current-tv-image">
+        <img class="tv-poster" id="tv-poster" src="#">
+      </div>
+      <div class="current-tv-details">
+        <p class="tv-title" id="tv-title">TV Show Title</p>
+      </div>
+    </div>
+
+    <div class="seasons-section">
+      <p class="seasons-title">Seasons</p>
+      <div class="seasons-container" id="seasons-container">
+        <div class="seasons-loading">Loading seasons...</div>
+      </div>
+    </div>
+
+    <div class="cast-section">
+      <p class="cast-title">Top Cast</p>
+      <div class="cast-container" id="cast-container">
+        <div class="cast-loading"></div>
+      </div>
+    </div>
+
+    <p class="reviews-title">Reviews</p>
+    <section id="reviews-container"></section>
+
+    <script src="tvReviews.js"></script>
   </body>
 </html>
