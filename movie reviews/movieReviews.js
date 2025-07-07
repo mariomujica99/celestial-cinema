@@ -2,14 +2,12 @@ const url = new URL(location.href);
 const movieId = url.searchParams.get("id")
 const movieTitle = url.searchParams.get("title")
 
-const API_KEY = '22dd0fdacd20bf222b19ecd6396b194c';
-
 const API_LINKS = {
-  REVIEWS: 'http://localhost:8000/api/v1/reviews/',
-  MOVIE_DETAILS: `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=release_dates`,
-  MOVIE_CREDITS: `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`,
-  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+    REVIEWS: 'http://localhost:8000/api/v1/reviews/',
+    MOVIE_DETAILS: `http://localhost:8000/api/v1/movies/details/${movieId}`,
+    MOVIE_CREDITS: `http://localhost:8000/api/v1/movies/credits/${movieId}`,
+    IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+    BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const reviewsContainer = document.getElementById("reviews-container");

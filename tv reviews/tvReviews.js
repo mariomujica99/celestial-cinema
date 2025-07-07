@@ -2,15 +2,13 @@ const url = new URL(location.href);
 const tvId = url.searchParams.get("id")
 const tvTitle = url.searchParams.get("title")
 
-const API_KEY = '22dd0fdacd20bf222b19ecd6396b194c';
-
 const API_LINKS = {
-  REVIEWS: 'http://localhost:8000/api/v1/reviews/',
-  TV_DETAILS: `https://api.themoviedb.org/3/tv/${tvId}?api_key=${API_KEY}&append_to_response=content_ratings,external_ids`,
-  TV_CREDITS: `https://api.themoviedb.org/3/tv/${tvId}/credits?api_key=${API_KEY}`,
-  TV_SEASONS: `https://api.themoviedb.org/3/tv/${tvId}?api_key=${API_KEY}`,
-  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+    REVIEWS: 'http://localhost:8000/api/v1/reviews/',
+    TV_DETAILS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
+    TV_CREDITS: `http://localhost:8000/api/v1/movies/tv/credits/${tvId}`,
+    TV_SEASONS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
+    IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+    BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const reviewsContainer = document.getElementById("reviews-container");

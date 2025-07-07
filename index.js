@@ -1,15 +1,13 @@
-const API_KEY = '22dd0fdacd20bf222b19ecd6396b194c';
-
 const API_LINKS = {
-  TRENDING_WEEK: `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`,
-  TRENDING_DAY: `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`,
-  POPULAR: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=1`,
-  NOW_PLAYING: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&page=1`,
-  UPCOMING: `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&page=1`,
-  TOP_RATED: `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&page=1`,
-  POPULAR_TV: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&page=1`,
-  SEARCH_MULTI: `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=`,
-  IMG_PATH: `https://image.tmdb.org/t/p/w1280`
+    TRENDING_WEEK: 'http://localhost:8000/api/v1/movies/trending/week',
+    TRENDING_DAY: 'http://localhost:8000/api/v1/movies/trending/day',
+    POPULAR: 'http://localhost:8000/api/v1/movies/popular',
+    NOW_PLAYING: 'http://localhost:8000/api/v1/movies/now-playing',
+    UPCOMING: 'http://localhost:8000/api/v1/movies/upcoming',
+    TOP_RATED: 'http://localhost:8000/api/v1/movies/top-rated',
+    POPULAR_TV: 'http://localhost:8000/api/v1/movies/tv/popular',
+    SEARCH_MULTI: 'http://localhost:8000/api/v1/movies/search?query=',
+    IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
 };
 
 const mediaGridContainer = document.getElementById("media-grid");
