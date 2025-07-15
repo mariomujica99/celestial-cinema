@@ -22,11 +22,21 @@ const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
 
+const loadMoreBtn = document.getElementById("load-more-btn");
+const loadMoreContainer = document.getElementById("load-more-container");
+
+loadMoreBtn.addEventListener("click", loadMoreMedia);
+
 const urlParams = new URLSearchParams(window.location.search);
 const searchParam = urlParams.get("search");
 const filterParam = urlParams.get("filter");
 
 let currentContentType = 'movie';
+let currentPage = 1;
+let hasMoreMedia = true;
+let isLoadingMedia = false;
+let currentSearchTerm = '';
+let currentApiUrl = '';
 
 function setActiveButton(activeButton) {
   const filterButtons = document.querySelectorAll('.filters button');
@@ -61,6 +71,7 @@ searchForm.addEventListener("submit", (e) => {
 
   if (searchTerm) {
     hideFiltersForSearch();
+    currentSearchTerm = searchTerm;
     returnMedia(API_LINKS.SEARCH_MULTI + searchTerm, 'multi');
     searchInput.value = "";
   }
@@ -106,15 +117,35 @@ if (searchParam) {
   returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
 }
 
-function returnMedia(url, contentType = 'movie') {
-  mediaGridContainer.innerHTML = '';
-  currentContentType = contentType;
+function returnMedia(url, contentType = 'movie', append = false) {
+  if (!append) {
+    mediaGridContainer.innerHTML = '';
+    currentPage = 1;
+    hasMoreMedia = true;
+    currentApiUrl = url;
+  }
   
-  fetch(url).then(res => res.json()).then(function(data) {
+  currentContentType = contentType;
+  isLoadingMedia = true;
+  
+  if (append) {
+    loadMoreBtn.textContent = 'Loading';
+    loadMoreBtn.disabled = true;
+  }
+  
+  const pageUrl = url.includes('?') ? `${url}&page=${currentPage}` : `${url}?page=${currentPage}`;
+  
+  fetch(pageUrl).then(res => res.json()).then(function(data) {
     console.log(data.results);
     
     if (!data.results || data.results.length === 0) {
-      mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+      if (!append) {
+        mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+        loadMoreContainer.style.display = 'none';
+      } else {
+        hasMoreMedia = false;
+        loadMoreContainer.style.display = 'none';
+      }
       return;
     }
     
@@ -126,7 +157,13 @@ function returnMedia(url, contentType = 'movie') {
     });
     
     if (validResults.length === 0) {
-      mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+      if (!append) {
+        mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+        loadMoreContainer.style.display = 'none';
+      } else {
+        hasMoreMedia = false;
+        loadMoreContainer.style.display = 'none';
+      }
       return;
     }
     
@@ -181,50 +218,83 @@ function returnMedia(url, contentType = 'movie') {
       mediaItemWrapper.appendChild(mediaColumnWrapper);
       mediaGridContainer.appendChild(mediaItemWrapper);
     });
+    
+    hasMoreMedia = data.total_pages ? currentPage < data.total_pages : validResults.length >= 20;
+    
+    if (hasMoreMedia) {
+      loadMoreContainer.style.display = 'flex';
+      loadMoreBtn.textContent = 'Load More';
+      loadMoreBtn.disabled = false;
+    } else {
+      loadMoreContainer.style.display = 'none';
+    }
+    
+    isLoadingMedia = false;
+    
   }).catch(error => {
     console.error('Error fetching content:', error);
-    mediaGridContainer.innerHTML = '<div class="error-message">Failed to load content. Please try again later.</div>';
+    if (!append) {
+      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load content. Please try again later.</div>';
+    }
+    loadMoreContainer.style.display = 'none';
+    isLoadingMedia = false;
+    loadMoreBtn.textContent = 'Load More';
+    loadMoreBtn.disabled = false;
   });
+}
+
+function loadMoreMedia() {
+  if (isLoadingMedia || !hasMoreMedia) return;
+  
+  currentPage++;
+  returnMedia(currentApiUrl, currentContentType, true);
 }
 
 trendingTodayButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(trendingTodayButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.TRENDING_DAY, 'movie');
 });
 
 popularButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(popularButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.POPULAR, 'movie');
 });
 
 nowPlayingButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(nowPlayingButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.NOW_PLAYING, 'movie');
 });
 
 upcomingButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(upcomingButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.UPCOMING, 'movie');
 });
 
 topRatedButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(topRatedButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.TOP_RATED, 'movie');
 });
 
 showsButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(showsButton);
+  loadMoreContainer.style.display = 'none';
   returnMedia(API_LINKS.POPULAR_TV, 'tv');
 });
 
 reviewsButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(reviewsButton);
+  loadMoreContainer.style.display = 'none';
   window.location.href = `all reviews/allReviews.html`;
 });
