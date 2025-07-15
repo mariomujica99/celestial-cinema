@@ -34,18 +34,34 @@
 .media-card {
   margin-top: 5px;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
 }
 
 .media-card p {
-  font-size: 1.001rem;
-  color: white;
+  font-size: 0.9rem;
+  color: rgb(224, 224, 224);
+  font-weight: bold;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.user-score-grid {
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  color: rgb(224, 224, 224);
+  background: linear-gradient(135deg, #b34b9e, #333399);
+  padding: 3px 10px 3px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  margin-left: 0;
 }
 
 @media (max-width: 350px) {
@@ -54,7 +70,12 @@
   }
 
   .media-card p{
-    font-size: 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .user-score-grid {
+    font-size: 0.65rem;
+    padding: 2px 8px 2px 8px;
   }
 }
 
@@ -64,7 +85,12 @@
   }
 
   .media-card p{
+    font-size: 0.75rem;
+  }
+
+  .user-score-grid {
     font-size: 0.7rem;
+    padding: 2px 8px 2px 8px;
   }
 }
 
@@ -76,6 +102,11 @@
   .media-card p{
     font-size: 0.8rem;
   }
+
+  .user-score-grid {
+    font-size: 0.75rem;
+    padding: 3px 9px 3px 9px;
+  }
 }
 
 @media (min-width: 951px) and (max-width: 1250px) {
@@ -84,13 +115,26 @@
   }
 
   .media-card p{
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .user-score-grid {
+    font-size: 0.8rem;
+    padding: 3px 9px 3px 9px;
   }
 }
 
 @media (min-width: 1251px) and (max-width: 1550px) {
   #media-grid {
     grid-template-columns: repeat(5, 1fr);
+  }
+
+  .media-card p{
+    font-size: 0.9rem;
+  }
+
+  .user-score-grid {
+    font-size: 0.85rem;
   }
 }
 
@@ -102,6 +146,11 @@
   .media-card p{
     font-size: 1.1rem;
   }
+
+  .user-score-grid {
+    font-size: 1rem;
+    padding: 4px 12px 4px 12px;
+  }
 }
 
 @media (min-width: 1851px) {
@@ -111,5 +160,10 @@
 
   .media-card p{
     font-size: 1.2rem;
+  }
+
+  .user-score-grid {
+    font-size: 1.1rem;
+    padding: 5px 15px 5px 15px;
   }
 }

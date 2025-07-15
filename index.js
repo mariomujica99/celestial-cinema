@@ -197,6 +197,15 @@ function returnMedia(url, contentType = 'movie', append = false) {
 
       mediaCard.appendChild(mediaThumbnail);
       mediaCard.appendChild(mediaTitle);
+
+      const userScore = document.createElement('div');
+      userScore.setAttribute('class', 'user-score-grid');
+      const scoreValue = itemData.vote_average ? Math.round(itemData.vote_average * 10) : 0;
+      userScore.innerHTML = `${scoreValue}%`;
+
+      mediaCard.appendChild(mediaThumbnail);
+      mediaCard.appendChild(mediaTitle);
+      mediaCard.appendChild(userScore);
       
       const reviewsLink = document.createElement('a');
       
