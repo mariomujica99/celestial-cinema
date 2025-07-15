@@ -38,7 +38,7 @@
 }
 
 .media-card p {
-  font-size: 1rem;
+  font-size: 1.001rem;
   color: white;
   display: -webkit-box;
   -webkit-line-clamp: 2;

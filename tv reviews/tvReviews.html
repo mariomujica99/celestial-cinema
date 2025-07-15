@@ -11,12 +11,13 @@
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
-    <link rel="stylesheet" href="../styles/movies.css">
+    <link rel="stylesheet" href="../styles/media-grid.css">
     <link rel="stylesheet" href="../styles/reviews.css">
     <link rel="stylesheet" href="../styles/movie-details.css">
     <link rel="stylesheet" href="../styles/show-details.css">
     <link rel="stylesheet" href="../styles/media-details.css">
     <link rel="stylesheet" href="../styles/top-cast.css">
+    <link rel="stylesheet" href="../styles/status-messages.css">
   </head>
   <body>
     <nav class="topnav">
@@ -34,14 +35,14 @@
         <img class="tv-poster" id="tv-poster" src="#">
       </div>
       <div class="current-tv-details">
-        <p class="tv-title" id="tv-title">TV Show Title</p>
+        <p class="tv-title" id="tv-title"></p>
       </div>
     </div>
 
     <div class="seasons-section">
       <p class="seasons-title">Seasons</p>
       <div class="seasons-container" id="seasons-container">
-        <div class="seasons-loading">Loading seasons...</div>
+        <div class="seasons-loading"></div>
       </div>
     </div>
 
@@ -56,5 +57,6 @@
     <section id="reviews-container"></section>
 
     <script src="tvReviews.js"></script>
+    <script src="../general/utils.js"></script>
   </body>
 </html>

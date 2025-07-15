@@ -20,11 +20,39 @@ const nowPlayingButton = document.querySelector(".now-playing-button");
 const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
+const reviewsButton = document.querySelector(".reviews-button");
 
 const urlParams = new URLSearchParams(window.location.search);
 const searchParam = urlParams.get("search");
+const filterParam = urlParams.get("filter");
 
 let currentContentType = 'movie';
+
+function setActiveButton(activeButton) {
+  const filterButtons = document.querySelectorAll('.filters button');
+  filterButtons.forEach(button => {
+    button.classList.remove('active');
+  });
+  
+  activeButton.classList.add('active');
+}
+
+function ensureFiltersVisible() {
+  const filtersSection = document.querySelector('.filters');
+  if (filtersSection.style.display === 'none') {
+    filtersSection.style.display = 'flex';
+  }
+}
+
+function hideFiltersForSearch() {
+  const filtersSection = document.querySelector('.filters');
+  filtersSection.style.display = 'none';
+  
+  const filterButtons = document.querySelectorAll('.filters button');
+  filterButtons.forEach(button => {
+    button.classList.remove('active');
+  });
+}
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -32,25 +60,49 @@ searchForm.addEventListener("submit", (e) => {
   const searchTerm = searchInput.value.trim();
 
   if (searchTerm) {
-    const filtersSection = document.querySelector('.filters');
-    filtersSection.style.display = 'none';
-    
-    const filterButtons = document.querySelectorAll('.filters button');
-    filterButtons.forEach(button => {
-      button.classList.remove('active');
-    });
-    
+    hideFiltersForSearch();
     returnMedia(API_LINKS.SEARCH_MULTI + searchTerm, 'multi');
     searchInput.value = "";
   }
 });
 
 if (searchParam) {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'none';
+  hideFiltersForSearch();
   searchInput.value = searchParam;
   returnMedia(API_LINKS.SEARCH_MULTI + searchParam, 'multi');
+} else if (filterParam) {
+  ensureFiltersVisible();
+  
+  switch (filterParam) {
+    case 'trending':
+      setActiveButton(trendingTodayButton);
+      returnMedia(API_LINKS.TRENDING_DAY, 'movie');
+      break;
+    case 'popular':
+      setActiveButton(popularButton);
+      returnMedia(API_LINKS.POPULAR, 'movie');
+      break;
+    case 'now-playing':
+      setActiveButton(nowPlayingButton);
+      returnMedia(API_LINKS.NOW_PLAYING, 'movie');
+      break;
+    case 'upcoming':
+      setActiveButton(upcomingButton);
+      returnMedia(API_LINKS.UPCOMING, 'movie');
+      break;
+    case 'top-rated':
+      setActiveButton(topRatedButton);
+      returnMedia(API_LINKS.TOP_RATED, 'movie');
+      break;
+    case 'shows':
+      setActiveButton(showsButton);
+      returnMedia(API_LINKS.POPULAR_TV, 'tv');
+      break;
+    default:
+      returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
+  }
 } else {
+  ensureFiltersVisible();
   returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
 }
 
@@ -60,11 +112,25 @@ function returnMedia(url, contentType = 'movie') {
   
   fetch(url).then(res => res.json()).then(function(data) {
     console.log(data.results);
-    data.results.forEach(itemData => {
+    
+    if (!data.results || data.results.length === 0) {
+      mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+      return;
+    }
+    
+    const validResults = data.results.filter(itemData => {
       if (contentType === 'multi' && itemData.media_type === 'person') {
-        return;
+        return false;
       }
-      
+      return true;
+    });
+    
+    if (validResults.length === 0) {
+      mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+      return;
+    }
+    
+    validResults.forEach(itemData => {
       const mediaItemWrapper = document.createElement('div');
       mediaItemWrapper.setAttribute('class', 'media-item');
 
@@ -117,83 +183,48 @@ function returnMedia(url, contentType = 'movie') {
     });
   }).catch(error => {
     console.error('Error fetching content:', error);
-    showErrorMessage('Failed to load content. Please try again later.');
+    mediaGridContainer.innerHTML = '<div class="error-message">Failed to load content. Please try again later.</div>';
   });
-}
-
-function setActiveButton(activeButton) {
-  const filterButtons = document.querySelectorAll('.filters button');
-  filterButtons.forEach(button => {
-    button.classList.remove('active');
-  });
-  
-  activeButton.classList.add('active');
 }
 
 trendingTodayButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(trendingTodayButton);
   returnMedia(API_LINKS.TRENDING_DAY, 'movie');
 });
 
 popularButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(popularButton);
   returnMedia(API_LINKS.POPULAR, 'movie');
 });
 
 nowPlayingButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(nowPlayingButton);
   returnMedia(API_LINKS.NOW_PLAYING, 'movie');
 });
 
 upcomingButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(upcomingButton);
   returnMedia(API_LINKS.UPCOMING, 'movie');
 });
 
 topRatedButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(topRatedButton);
   returnMedia(API_LINKS.TOP_RATED, 'movie');
 });
 
 showsButton.addEventListener("click", () => {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'block';
+  ensureFiltersVisible();
   setActiveButton(showsButton);
   returnMedia(API_LINKS.POPULAR_TV, 'tv');
 });
 
-function showErrorMessage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message';
-  errorDiv.style.cssText = `
-    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-    color: white;
-    padding: 15px 15px 13px 15px;
-    margin: 25px;
-    border-radius: 8px;
-    text-align: center;
-    font-family: "Rollbox", "Montserrat", sans-serif, arial;
-    text-transform: uppercase;
-    font-size: 1.001rem;
-  `;
-  errorDiv.textContent = message;
-  
-  const mediaContainer = document.getElementById('media-grid');
-  mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer);
-  
-  setTimeout(() => {
-    if (errorDiv.parentNode) {
-      errorDiv.parentNode.removeChild(errorDiv);
-    }
-  }, 5000);
-}
+reviewsButton.addEventListener("click", () => {
+  ensureFiltersVisible();
+  setActiveButton(reviewsButton);
+  window.location.href = `all reviews/allReviews.html`;
+});

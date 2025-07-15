@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="../styles/show-details.css">
     <link rel="stylesheet" href="../styles/media-details.css">
     <link rel="stylesheet" href="../styles/top-cast.css">
+    <link rel="stylesheet" href="../styles/all-reviews.css">
+    <link rel="stylesheet" href="../styles/filters.css">
     <link rel="stylesheet" href="../styles/status-messages.css">
   </head>
   <body>
@@ -30,26 +32,39 @@
       </div>
     </nav>
 
-    <div class="current-movie-container">
-      <div class="current-movie-image">
-        <img class="movie-poster" id="movie-poster" src="#">
+    <nav class="filters">
+      <button class="trending-today-button">Trending</button>
+      <button class="popular-button">Popular</button>
+      <button class="now-playing-button">Now Playing</button>
+      <button class="upcoming-button">Upcoming</button>
+      <button class="top-rated-button">Top Rated</button>
+      <button class="shows-button">TV Shows</button>
+      <button class="reviews-button">Reviews</button>
+    </nav>
+
+    <div class="search-filters">
+      <div class="filter-input-container">
+        <label for="user-filter">User</label>
+        <input type="text" id="user-filter" placeholder="Search by user name" class="filter-input">
       </div>
-      <div class="current-movie-details">
-        <p class="movie-title" id="movie-title"></p>
+      <div class="filter-input-container">
+        <label for="media-filter">Media</label>
+        <input type="text" id="media-filter" placeholder="Search by movie/TV show" class="filter-input">
       </div>
+      <button id="clear-filters" class="clear-filters-btn">Clear</button>
     </div>
 
-    <div class="cast-section">
-      <p class="cast-title">Top Cast</p>
-      <div class="cast-container" id="cast-container">
-        <div class="cast-loading"></div>
-      </div>
+    <p class="reviews-title">All Reviews</p>
+
+    <section id="reviews-container">
+      <div class="reviews-loading">Loading reviews...</div>
+    </section>
+
+    <div class="load-more-container">
+      <button id="load-more-btn" class="load-more-btn" style="display: none;">Load More Reviews</button>
     </div>
 
-    <p class="reviews-title">Reviews</p>
-    <section id="reviews-container"></section>
-
-    <script src="movieReviews.js"></script>
+    <script src="allReviews.js"></script>
     <script src="../general/utils.js"></script>
   </body>
 </html>

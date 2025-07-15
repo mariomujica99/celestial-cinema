@@ -1,14 +1,27 @@
 .filters {
   margin: 0px 25px 10px 25px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: flex;
+  padding: 5px 2px 5px 2px;
+  gap: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
 }
 
 .filters button {
   border: none;
   border-radius: 30px;
   background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
-  padding: 7px 15px 7px 15px;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  padding: 7px 15px 6px 15px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px transparent;
 }
 
 .filters button:hover {
@@ -18,8 +31,5 @@
 
 .filters button.active {
   background: linear-gradient(135deg, #0F0C29, #24243e, #302b63, #4a41a7);
-  border-color: rgba(106, 90, 205, 0.6);
-  box-shadow: 
-    0 8px 32px rgba(106, 90, 205, 0.3),
-    0 0 0 1px rgba(106, 90, 205, 0.5);
+  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
 }

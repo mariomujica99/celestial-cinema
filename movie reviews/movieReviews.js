@@ -287,10 +287,12 @@ newReviewForm.innerHTML = `
         <p class="new-review">New Review
           <button type="button" onclick="saveReview('new-review-input', 'new-user-input', '', 'new-rating-input')">Save</button>
         </p>
-        <p class="user-text">User 
+        <div class="user-line">
+          <p class="user-text">User</p>
           <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
-        </p>
-        <p class="rating-text">Rating
+        </div>
+        <div class="rating-line">
+          <p class="rating-text">Rating</p>
           <img src="../images/star.png" alt="Star" class="star-icon"> 
           <select class="rating-select" id="new-rating-input">
             <option value="0">0</option>
@@ -305,7 +307,7 @@ newReviewForm.innerHTML = `
             <option value="9">9</option>
             <option value="10">10</option>
           </select>
-        </p>
+        </div>
         <p class="review-text"> 
           <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
         </p>
@@ -334,14 +336,19 @@ function returnReviews(url) {
             <div class="review-card" id="${reviewData._id}">
               <p class="user-review">${reviewData.user}</p>
               <div class="rating-display">
-                <img src="../images/star.png" alt="Star" class="star-icon">
-                <span class="rating-score">${rating}/10</span>
+                  <div class="rating-left">
+                      <img src="../images/star.png" alt="Star" class="star-icon">
+                      <span class="rating-score">${rating}/10</span>
+                  </div>
+                  <div class="timestamp">
+                      ${formatTimestamp(reviewData.createdAt)}
+                  </div>
               </div>
               <p class="review-review">${reviewData.review}</p>                
-              <p>
-                <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
-                <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
-              </p>
+              <div class="review-actions">
+                  <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
+                  <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
+              </div>
             </div>
           </div>
         </div>
@@ -390,22 +397,24 @@ function editReview(reviewId) {
   }
   
   reviewElement.innerHTML = `
-    <p class="user-text">User 
+    <div class="user-line">
+      <p class="user-text">User</p>
       <input class="user-input" type="text" id="${userInputId}" value="${escapeHtml(originalUser)}">
-    </p>
-    <p class="rating-text">Rating
+    </div>
+    <div class="rating-line">
+      <p class="rating-text">Rating</p>
       <img src="../images/star.png" alt="Star" class="star-icon">  
       <select class="rating-select" id="${ratingInputId}">
         ${ratingOptions}
       </select>
-    </p>
+    </div>
     <p class="review-text"> 
       <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
     </p>
-    <p>
+    <div class="review-actions">
       <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}', '${ratingInputId}')">Save</button>
       <button type="button" onclick="location.reload()">Cancel</button>
-    </p>
+    </div>
   `;
 }
 
@@ -437,6 +446,10 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
+    })
+    .catch(error => {
+      console.error('Error saving review:', error);
+      showErrorMessage('Failed to save review. Please try again.');
     });
   }
 }
@@ -448,30 +461,22 @@ function deleteReview(reviewId) {
     console.log(res);
     location.reload();
   })
+  .catch(error => {
+    console.error('Error deleting review:', error);
+    showErrorMessage('Failed to delete review. Please try again.');
+  });
 }
 
 function showErrorMessage(message) {
   const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message';
-  errorDiv.style.cssText = `
-    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-    color: white;
-    padding: 15px 15px 13px 15px;
-    margin: 25px;
-    border-radius: 8px;
-    text-align: center;
-    font-family: "Rollbox", "Montserrat", sans-serif, arial;
-    text-transform: uppercase;
-    font-size: 1.001rem;
-  `;
+  errorDiv.className = 'error-message-red';
   errorDiv.textContent = message;
-  
   const mediaContainer = document.querySelector('.current-movie-container');
   mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer.nextSibling);
-  
+
   setTimeout(() => {
-    if (errorDiv.parentNode) {
-      errorDiv.parentNode.removeChild(errorDiv);
-    }
+      if (errorDiv.parentNode) {
+          errorDiv.remove();
+      }
   }, 5000);
 }
