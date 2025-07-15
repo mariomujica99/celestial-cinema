@@ -430,10 +430,14 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText, "rating": rating})
+      body: JSON.stringify({"user": userName, "review": reviewText, "rating": rating, "mediaType": "movie"})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
+    })
+    .catch(error => {
+      console.error('Error saving review:', error);
+      showErrorMessage('Failed to save review. Please try again.');
     });
   } else {
       fetch(API_LINKS.REVIEWS + "new", {
@@ -442,7 +446,7 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": movieId, "rating": rating})
+      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": movieId, "rating": rating, "mediaType": "movie"})
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();

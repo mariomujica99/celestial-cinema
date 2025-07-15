@@ -47,9 +47,22 @@
         <label for="user-filter">User</label>
         <input type="text" id="user-filter" placeholder="Search by user name" class="filter-input">
       </div>
+      
       <div class="filter-input-container">
         <label for="media-filter">Media</label>
         <input type="text" id="media-filter" placeholder="Search by movie/TV show" class="filter-input">
+      </div>
+
+      <div class="filter-input-container">
+        <label for="sort-filter">Sort By</label>
+        <select id="sort-filter" class="filter-input">
+          <option value="date-newest">Date (Newest First)</option>
+          <option value="date-oldest">Date (Oldest First)</option>
+          <option value="rating-highest">Rating (Highest First)</option>
+          <option value="rating-lowest">Rating (Lowest First)</option>
+          <option value="title-az">Media Title (A-Z)</option>
+          <option value="title-za">Media Title (Z-A)</option>
+        </select>
       </div>
       <button id="clear-filters" class="clear-filters-btn">Clear</button>
     </div>

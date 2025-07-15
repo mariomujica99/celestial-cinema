@@ -20,6 +20,7 @@ const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
+const sortFilterInput = document.getElementById("sort-filter");
 
 let currentPage = 1;
 let hasMoreReviews = true;
@@ -38,10 +39,12 @@ searchForm.addEventListener("submit", (e) => {
 
 userFilterInput.addEventListener("input", debounce(applyFilters, 300));
 mediaFilterInput.addEventListener("input", debounce(applyFilters, 300));
+sortFilterInput.addEventListener("change", applyFilters);
 
 clearFiltersBtn.addEventListener("click", () => {
   userFilterInput.value = "";
   mediaFilterInput.value = "";
+  sortFilterInput.value = "date-newest";
   applyFilters();
 });
 
@@ -188,7 +191,8 @@ async function displayReviews(reviews, append = false) {
     const reviewCard = document.createElement('div');
     reviewCard.className = 'review-item';
     
-    const mediaInfo = await getMediaInfo(reviewData.movieId, reviewData.mediaType || 'movie');
+    const mediaId = reviewData.mediaId || reviewData.movieId;
+    const mediaInfo = await getMediaInfo(mediaId, reviewData.mediaType || 'movie');
     
     const actualMediaType = mediaInfo.mediaType;
     
@@ -201,7 +205,7 @@ async function displayReviews(reviews, append = false) {
         <div class="review-card" id="${reviewData._id}">
           <div class="review-header">
             <p class="user-review">${reviewData.user}</p>
-            <div class="media-info" onclick="navigateToMediaDetails('${reviewData.movieId}', '${actualMediaType}')">
+            <div class="media-info" onclick="navigateToMediaDetails('${mediaId}', '${actualMediaType}')">
               <img class="media-thumbnail-small" src="${mediaInfo.posterUrl}" alt="${mediaInfo.title}" onerror="this.src='images/no-image.jpg'">
               <div class="media-details">
                 <p class="media-title-small">${mediaInfo.title}</p>
@@ -232,53 +236,69 @@ async function displayReviews(reviews, append = false) {
     cardElement.setAttribute('data-original-user', reviewData.user);
     cardElement.setAttribute('data-original-rating', rating);
     cardElement.setAttribute('data-media-title', mediaInfo.title);
-    cardElement.setAttribute('data-movie-id', reviewData.movieId);
+    cardElement.setAttribute('data-media-id', mediaId);
     cardElement.setAttribute('data-media-type', actualMediaType);
     reviewsContainer.appendChild(reviewCard);
   }
 }
 
-function navigateToMediaDetails(movieId, mediaType) {
-  const reviewCard = document.querySelector(`[data-movie-id="${movieId}"]`);
+function navigateToMediaDetails(mediaId, mediaType) {
+  const reviewCard = document.querySelector(`[data-media-id="${mediaId}"]`);
   const title = reviewCard ? reviewCard.getAttribute('data-media-title') : 'Unknown';
   
   if (mediaType === 'tv') {
-    window.location.href = `../tv reviews/tvReviews.html?id=${movieId}&title=${encodeURIComponent(title)}`;
+    window.location.href = `../tv reviews/tvReviews.html?id=${mediaId}&title=${encodeURIComponent(title)}`;
   } else {
-    window.location.href = `../movie reviews/movieReviews.html?id=${movieId}&title=${encodeURIComponent(title)}`;
+    window.location.href = `../movie reviews/movieReviews.html?id=${mediaId}&title=${encodeURIComponent(title)}`;
   }
 }
 
-async function getMediaInfo(movieId, mediaType = 'movie') {
-  const cacheKey = `${mediaType}_${movieId}`;
+async function getMediaInfo(mediaId, mediaType = 'movie') {
+  const cacheKey = `${mediaType}_${mediaId}`;
   if (mediaCache[cacheKey]) {
       return mediaCache[cacheKey];
   }
   
   try {
-      let detectedMediaType = 'movie';
       let data;
+      let detectedMediaType = mediaType;
       
-      let url = `${API_LINKS.MOVIE_DETAILS}${movieId}`;
+      let url;
+      if (mediaType === 'tv') {
+        url = `${API_LINKS.TV_DETAILS}${mediaId}`;
+      } else {
+        url = `${API_LINKS.MOVIE_DETAILS}${mediaId}`;
+      }
+      
       let response = await fetch(url);
       
       if (response.ok) {
         data = await response.json();
-        detectedMediaType = 'movie';
+        detectedMediaType = mediaType;
       } else {
-        url = `${API_LINKS.TV_DETAILS}${movieId}`;
-        response = await fetch(url);
-        
-        if (response.ok) {
-          data = await response.json();
-          detectedMediaType = 'tv';
+        if (mediaType === 'tv') {
+          url = `${API_LINKS.MOVIE_DETAILS}${mediaId}`;
+          response = await fetch(url);
+          if (response.ok) {
+            data = await response.json();
+            detectedMediaType = 'movie';
+          }
         } else {
+          url = `${API_LINKS.TV_DETAILS}${mediaId}`;
+          response = await fetch(url);
+          if (response.ok) {
+            data = await response.json();
+            detectedMediaType = 'tv';
+          }
+        }
+        
+        if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
       }
       
       const mediaInfo = {
-        title: data.title || data.name || 'Unknown Title',
+        title: data.title || data.name || '',
         year: data.release_date || data.first_air_date 
           ? new Date(data.release_date || data.first_air_date).getFullYear()
           : '',
@@ -287,9 +307,8 @@ async function getMediaInfo(movieId, mediaType = 'movie') {
           : 'images/no-image.jpg',
         mediaType: detectedMediaType
       };
-      
-      mediaCache[`movie_${movieId}`] = mediaInfo;
-      mediaCache[`tv_${movieId}`] = mediaInfo;
+    
+      mediaCache[cacheKey] = mediaInfo;
       
       return mediaInfo;
 
@@ -299,7 +318,7 @@ async function getMediaInfo(movieId, mediaType = 'movie') {
       title: '',
       year: '',
       posterUrl: 'images/no-image.jpg',
-      mediaType: 'movie'
+      mediaType: mediaType
     };
     mediaCache[cacheKey] = fallbackInfo;
     return fallbackInfo;
@@ -309,36 +328,30 @@ async function getMediaInfo(movieId, mediaType = 'movie') {
 function applyFilters() {
   const userFilter = userFilterInput.value.trim().toLowerCase();
   const mediaFilter = mediaFilterInput.value.trim().toLowerCase();
+  const sortBy = sortFilterInput.value;
   
   if (!userFilter && !mediaFilter) {
-    filteredReviews = [];
-    displayReviews(allReviews);
-    
-    if (hasMoreReviews) {
-      loadMoreBtn.style.display = 'block';
-      loadMoreBtn.textContent = 'Load More Reviews';
-    } else {
-      loadMoreBtn.style.display = 'none';
-    }
-    return;
+    filteredReviews = [...allReviews];
+  } else {
+    filteredReviews = allReviews.filter(review => {
+      const matchesUser = !userFilter || review.user.toLowerCase().includes(userFilter);
+      
+      let matchesMedia = true;
+      if (mediaFilter) {
+        const reviewCard = document.querySelector(`[id="${review._id}"]`);
+        if (reviewCard) {
+          const mediaTitle = reviewCard.getAttribute('data-media-title') || '';
+          matchesMedia = mediaTitle.toLowerCase().includes(mediaFilter);
+        } else {
+          matchesMedia = false;
+        }
+      }
+      
+      return matchesUser && matchesMedia;
+    });
   }
   
-  filteredReviews = allReviews.filter(review => {
-    const matchesUser = !userFilter || review.user.toLowerCase().includes(userFilter);
-    
-    let matchesMedia = true;
-    if (mediaFilter) {
-      const reviewCard = document.querySelector(`[id="${review._id}"]`);
-      if (reviewCard) {
-        const mediaTitle = reviewCard.getAttribute('data-media-title') || '';
-        matchesMedia = mediaTitle.toLowerCase().includes(mediaFilter);
-      } else {
-        matchesMedia = false;
-      }
-    }
-    
-    return matchesUser && matchesMedia;
-  });
+  sortReviews(filteredReviews, sortBy);
   
   const reviewsToShow = filteredReviews.slice(0, 24);
   displayReviews(reviewsToShow);
@@ -355,8 +368,49 @@ function applyFilters() {
   }
 }
 
+function sortReviews(reviews, sortBy) {
+  switch (sortBy) {
+    case 'date-newest':
+      reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      break;
+    case 'date-oldest':
+      reviews.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      break;
+    case 'rating-highest':
+      reviews.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      break;
+    case 'rating-lowest':
+      reviews.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+      break;
+    case 'title-az':
+      reviews.sort((a, b) => {
+        const titleA = getMediaTitleFromReview(a) || '';
+        const titleB = getMediaTitleFromReview(b) || '';
+        return titleA.localeCompare(titleB);
+      });
+      break;
+    case 'title-za':
+      reviews.sort((a, b) => {
+        const titleA = getMediaTitleFromReview(a) || '';
+        const titleB = getMediaTitleFromReview(b) || '';
+        return titleB.localeCompare(titleA);
+      });
+      break;
+    default:
+      reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+}
+
+function getMediaTitleFromReview(review) {
+  const reviewCard = document.querySelector(`[id="${review._id}"]`);
+  if (reviewCard) {
+    return reviewCard.getAttribute('data-media-title') || '';
+  }
+  return '';
+}
+
 function isFiltering() {
-  return userFilterInput.value.trim() || mediaFilterInput.value.trim();
+    return userFilterInput.value.trim() || mediaFilterInput.value.trim() || sortFilterInput.value !== 'date-newest';
 }
 
 function escapeHtml(text) {
