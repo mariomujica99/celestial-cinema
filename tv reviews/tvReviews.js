@@ -6,7 +6,8 @@ const API_LINKS = {
     REVIEWS: 'http://localhost:8000/api/v1/reviews/',
     TV_DETAILS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
     TV_CREDITS: `http://localhost:8000/api/v1/movies/tv/credits/${tvId}`,
-    TV_SEASONS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
+    TV_SEASONS: `http://localhost:8000/api/v1/movies/tv/seasons/${tvId}`,
+    TV_EPISODES: `http://localhost:8000/api/v1/movies/tv/season/${tvId}/`,
     IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
     BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
@@ -17,6 +18,9 @@ const tvPosterElement = document.getElementById("tv-poster")
 
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
+
+let seasonsData = [];
+let episodesData = {};
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -296,8 +300,22 @@ newReviewForm.innerHTML = `
     <div class="review-column">
       <div class="review-card">
         <p class="new-review">New Review
-          <button type="button" onclick="saveReview('new-review-input', 'new-user-input', '', 'new-rating-input')">Save</button>
+          <button type="button" onclick="saveReview('new-review-input', 'new-user-input', '', 'new-rating-input', 'new-season-input', 'new-episode-input')">Save</button>
         </p>
+        <div class="episodes-line">
+          <div class="season-line">
+            <p class="season-text"></p>
+            <select class="season-select" id="new-season-input" onchange="handleSeasonChange(this)">
+              <option value="">Select Season</option>
+            </select>
+          </div>
+          <div class="episode-line">
+            <p class="episode-text"></p>
+            <select class="episode-select" id="new-episode-input" disabled>
+              <option value="all">All Episodes (Season Review)</option>
+            </select>
+          </div>
+        </div>
         <div class="user-line">
           <p class="user-text">User</p>
           <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
@@ -318,7 +336,7 @@ newReviewForm.innerHTML = `
             <option value="9">9</option>
             <option value="10">10</option>
           </select>
-          </div>
+        </div>
         <p class="review-text"> 
           <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
         </p>
@@ -328,6 +346,7 @@ newReviewForm.innerHTML = `
 `;
 
 reviewsContainer.appendChild(newReviewForm);
+fetchSeasonsForDropdown();
 
 returnReviews(API_LINKS.REVIEWS);
 
@@ -341,11 +360,21 @@ function returnReviews(url) {
       const escapedUser = escapeHtml(reviewData.user);
       const rating = reviewData.rating || 0;
       
+      let seasonEpisodeDisplay = '';
+      if (reviewData.season) {
+        if (reviewData.episode) {
+          seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Episode ${reviewData.episode}</div>`;
+        } else {
+          seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} (Full Season)</div>`;
+        }
+      }
+      
       reviewCard.innerHTML = `
         <div class="review-item">
           <div class="review-column">
             <div class="review-card" id="${reviewData._id}">
               <p class="user-review">${reviewData.user}</p>
+              ${seasonEpisodeDisplay}
               <div class="rating-display">
                   <div class="rating-left">
                       <img src="../images/star.png" alt="Star" class="star-icon">
@@ -369,6 +398,8 @@ function returnReviews(url) {
       cardElement.setAttribute('data-original-review', reviewData.review);
       cardElement.setAttribute('data-original-user', reviewData.user);
       cardElement.setAttribute('data-original-rating', rating);
+      cardElement.setAttribute('data-original-season', reviewData.season || '');
+      cardElement.setAttribute('data-original-episode', reviewData.episode || 'all');
       
       reviewsContainer.appendChild(reviewCard);
     });
@@ -396,10 +427,14 @@ function editReview(reviewId) {
   const originalReview = reviewElement.getAttribute('data-original-review') || '';
   const originalUser = reviewElement.getAttribute('data-original-user') || '';
   const originalRating = reviewElement.getAttribute('data-original-rating') || '0';
+  const originalSeason = reviewElement.getAttribute('data-original-season') || '';
+  const originalEpisode = reviewElement.getAttribute('data-original-episode') || 'all';
   
   const reviewInputId = "review-edit-" + reviewId;
   const userInputId = "user-edit-" + reviewId;
   const ratingInputId = "rating-edit-" + reviewId;
+  const seasonInputId = "season-edit-" + reviewId;
+  const episodeInputId = "episode-edit-" + reviewId;
   
   let ratingOptions = '';
   for (let i = 0; i <= 10; i++) {
@@ -408,6 +443,20 @@ function editReview(reviewId) {
   }
   
   reviewElement.innerHTML = `
+    <div class="episodes-line">
+      <div class="season-line">
+        <p class="season-text"></p>
+        <select class="season-select" id="${seasonInputId}" onchange="handleSeasonChange(this)">
+          <option value="">Select Season</option>
+        </select>
+      </div>
+      <div class="episode-line">
+        <p class="episode-text"></p>
+        <select class="episode-select" id="${episodeInputId}" disabled>
+          <option value="all">All Episodes (Season Review)</option>
+        </select>
+      </div>
+    </div>
     <div class="user-line">
       <p class="user-text">User</p>
       <input class="user-input" type="text" id="${userInputId}" value="${escapeHtml(originalUser)}">
@@ -423,16 +472,78 @@ function editReview(reviewId) {
       <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
     </p>
     <div class="review-actions">
-      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}', '${ratingInputId}')">Save</button>
+      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}', '${ratingInputId}', '${seasonInputId}', '${episodeInputId}')">Save</button>
       <button type="button" onclick="location.reload()">Cancel</button>
     </div>
   `;
+  
+  populateSeasonDropdown();
+  setTimeout(() => {
+    const seasonSelect = document.getElementById(seasonInputId);
+    const episodeSelect = document.getElementById(episodeInputId);
+    
+    if (seasonSelect && originalSeason) {
+      seasonSelect.value = originalSeason;
+      episodeSelect.disabled = false;
+      fetchEpisodesForSeason(originalSeason);
+      
+      setTimeout(() => {
+        if (episodeSelect) {
+          episodeSelect.value = originalEpisode;
+        }
+      }, 100);
+    }
+  }, 100);
 }
 
-function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
-  const reviewText = document.getElementById(reviewInputId).value;
-  const userName = document.getElementById(userInputId).value;
-  const rating = ratingInputId ? parseInt(document.getElementById(ratingInputId).value) : 0;
+function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="", seasonInputId="", episodeInputId="") {
+  const reviewTextElement = document.getElementById(reviewInputId);
+  const userNameElement = document.getElementById(userInputId);
+  const ratingElement = ratingInputId ? document.getElementById(ratingInputId) : null;
+  
+  if (!reviewTextElement || !userNameElement) {
+    console.error('Required form elements not found');
+    showErrorMessage('Form elements missing. Please try again.');
+    return;
+  }
+  
+  const reviewText = reviewTextElement.value;
+  const userName = userNameElement.value;
+  const rating = ratingElement ? parseInt(ratingElement.value) : 0;
+  
+  let season = null;
+  let episode = null;
+  
+  if (seasonInputId) {
+    const seasonElement = document.getElementById(seasonInputId);
+    if (seasonElement) {
+      const seasonValue = seasonElement.value;
+      season = seasonValue ? parseInt(seasonValue) : null;
+    }
+  }
+  
+  if (episodeInputId && season) {
+    const episodeElement = document.getElementById(episodeInputId);
+    if (episodeElement) {
+      const episodeValue = episodeElement.value;
+      episode = episodeValue === "all" ? null : parseInt(episodeValue);
+    }
+  }
+
+  const requestBody = {
+    "user": userName, 
+    "review": reviewText, 
+    "rating": rating, 
+    "mediaType": "tv"
+  };
+  
+  if (season !== null) {
+    requestBody.season = season;
+  }
+  
+  if (episode !== null) {
+    requestBody.episode = episode;
+  }
 
   if (reviewId) {
     fetch(API_LINKS.REVIEWS + reviewId, {
@@ -441,7 +552,7 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText, "rating": rating, "mediaType": "tv"})
+      body: JSON.stringify(requestBody)
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
@@ -451,13 +562,15 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
       showErrorMessage('Failed to save review. Please try again.');
     });
   } else {
+    requestBody.movieId = tvId;
+    
     fetch(API_LINKS.REVIEWS + "new", {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"user": userName, "review": reviewText, "movieId": tvId, "rating": rating, "mediaType": "tv"})
+      body: JSON.stringify(requestBody)
     }).then(res => res.json()).then(res => {
       console.log(res);
       location.reload();
@@ -494,4 +607,85 @@ function showErrorMessage(message) {
           errorDiv.remove();
       }
   }, 5000);
+}
+
+function fetchSeasonsForDropdown() {
+    fetch(API_LINKS.TV_SEASONS)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            seasonsData = data.seasons || [];
+            populateSeasonDropdown();
+        })
+        .catch(error => {
+            console.error('Error fetching seasons:', error);
+        });
+}
+
+function fetchEpisodesForSeason(seasonNumber) {
+    if (episodesData[seasonNumber]) {
+        populateEpisodeDropdown(seasonNumber);
+        return;
+    }
+    
+    fetch(API_LINKS.TV_EPISODES + seasonNumber)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            episodesData[seasonNumber] = data.episodes || [];
+            populateEpisodeDropdown(seasonNumber);
+        })
+        .catch(error => {
+            console.error('Error fetching episodes:', error);
+        });
+}
+
+function populateSeasonDropdown() {
+    const seasonSelects = document.querySelectorAll('.season-select');
+    seasonSelects.forEach(select => {
+        select.innerHTML = '<option value="">Select Season</option>';
+        seasonsData.forEach(season => {
+            const option = document.createElement('option');
+            option.value = season.season_number;
+            option.textContent = `Season ${season.season_number}`;
+            select.appendChild(option);
+        });
+    });
+}
+
+function populateEpisodeDropdown(seasonNumber) {
+    const episodeSelects = document.querySelectorAll('.episode-select');
+    episodeSelects.forEach(select => {
+        select.innerHTML = '<option value="all">All Episodes (Season Review)</option>';
+        
+        if (episodesData[seasonNumber]) {
+            episodesData[seasonNumber].forEach(episode => {
+                const option = document.createElement('option');
+                option.value = episode.episode_number;
+                option.textContent = `Episode ${episode.episode_number}: ${episode.name || 'Untitled'}`;
+                select.appendChild(option);
+            });
+        }
+    });
+}
+
+function handleSeasonChange(seasonSelect) {
+    const seasonNumber = seasonSelect.value;
+    const episodeSelect = seasonSelect.closest('.review-card').querySelector('.episode-select');
+    
+    if (seasonNumber) {
+        episodeSelect.disabled = false;
+        fetchEpisodesForSeason(seasonNumber);
+    } else {
+        episodeSelect.disabled = true;
+        episodeSelect.innerHTML = '<option value="all">All Episodes (Season Review)</option>';
+    }
 }

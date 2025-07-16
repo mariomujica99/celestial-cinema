@@ -199,7 +199,16 @@ async function displayReviews(reviews, append = false) {
     const escapedReview = escapeHtml(reviewData.review);
     const escapedUser = escapeHtml(reviewData.user);
     const rating = reviewData.rating || 0;
-    
+
+    let seasonEpisodeDisplay = '';
+    if (actualMediaType === 'tv' && reviewData.season) {
+      if (reviewData.episode) {
+        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Episode ${reviewData.episode}</div>`;
+      } else {
+        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} (Full Season)</div>`;
+      }
+    }
+  
     reviewCard.innerHTML = `
       <div class="review-column">
         <div class="review-card" id="${reviewData._id}">
@@ -213,6 +222,7 @@ async function displayReviews(reviews, append = false) {
               </div>
             </div>
           </div>
+          ${seasonEpisodeDisplay}
           <div class="rating-display">
             <div class="rating-left">
               <img src="../images/star.png" alt="Star" class="star-icon">
