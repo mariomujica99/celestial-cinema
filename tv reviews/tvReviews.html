@@ -54,7 +54,12 @@
       </div>
     </div>
 
-    <p class="reviews-title">Reviews</p>
+    <div class="reviews-header">
+      <p class="reviews-title">Reviews</p>
+      <select class="season-filter-dropdown" id="season-filter" onchange="filterReviewsBySeason()">
+        <option value="all">All Seasons</option>
+      </select>
+    </div>
     <section id="reviews-container"></section>
 
     <script src="tvReviews.js"></script>

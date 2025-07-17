@@ -1,3 +1,32 @@
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.season-filter-dropdown {
+  font-family: "Montserrat", sans-serif, arial;
+  padding: 10px 14px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+  border-radius: 8px;
+  background: rgba(25, 38, 59, 0.8);
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+  box-sizing: border-box;
+  margin-right: 25px;
+}
+
+.season-filter-dropdown:focus {
+  outline: none;
+  border-color: #6A5ACD;
+  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
+  background: rgba(25, 38, 59, 1);
+}
+
 .episodes-line {
   display: flex;
   flex-direction: row;

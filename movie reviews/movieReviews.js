@@ -44,11 +44,18 @@ function returnMovieDetails(url) {
       
       if (movieData.poster_path) {
         moviePosterElement.src = API_LINKS.IMG_PATH + movieData.poster_path;
+        moviePosterElement.onload = function() {
+          this.classList.add('loaded');
+        };
         moviePosterElement.onerror = function() {
           this.src = '../images/no-image.jpg';
+          this.classList.add('loaded');
         };
       } else {
         moviePosterElement.src = '../images/no-image.jpg';
+        moviePosterElement.onload = function() {
+          this.classList.add('loaded');
+        };
       }
       
       const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
@@ -139,7 +146,7 @@ function setBackdropBackground(backdropPath) {
     mediaContainer.style.backgroundPosition = 'center';
     mediaContainer.style.backgroundRepeat = 'no-repeat';
   } else {
-    mediaContainer.style.background = `linear-gradient(90deg, rgba(45, 27, 61, 0.7), rgba(45, 27, 61, 0.8))`;
+    mediaContainer.style.background = `linear-gradient(rgba(19, 23, 32, 0.4), rgba(19, 23, 32, 0.5)), url('${'../images/no-image-backdrop.jpg'}')`;
     mediaContainer.style.backgroundSize = 'cover';
     mediaContainer.style.backgroundPosition = 'center';
     mediaContainer.style.backgroundRepeat = 'no-repeat';
@@ -322,7 +329,8 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
-    console.log(reviewsData);      
+    console.log(reviewsData);
+    updateReviewsTitle(reviewsData);
     reviewsData.forEach(reviewData => {
       const reviewCard = document.createElement('div');
       
@@ -365,6 +373,24 @@ function returnReviews(url) {
     console.error('Error fetching reviews:', error);
     showErrorMessage('Failed to load reviews. Please check your connection.');
   });
+}
+
+function updateReviewsTitle(reviewsData) {
+  const reviewsTitleElement = document.querySelector('.reviews-title');
+  if (!reviewsTitleElement) return;
+  
+  if (reviewsData.length > 0) {
+    const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+    const averageRating = (totalRating / reviewsData.length).toFixed(1);
+    
+    reviewsTitleElement.innerHTML = `
+      REVIEWS 
+      <img src="../images/star.png" alt="Star" class="star-icon" style="margin-left: 15px; padding-top: 2px;"> 
+      ${averageRating}/10
+    `;
+  } else {
+    reviewsTitleElement.innerHTML = 'REVIEWS';
+  }
 }
 
 function escapeHtml(text) {

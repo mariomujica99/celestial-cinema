@@ -97,6 +97,16 @@
   text-transform: uppercase;
 }
 
+.movie-poster,
+.tv-poster {
+  opacity: 0;
+}
+
+.movie-poster.loaded,
+.tv-poster.loaded {
+  opacity: 1;
+}
+
 .imdb-link-container {
   margin-top: 20px;
   padding-top: 20px;

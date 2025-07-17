@@ -49,11 +49,18 @@ function returnTVDetails(url) {
       
       if (tvData.poster_path) {
         tvPosterElement.src = API_LINKS.IMG_PATH + tvData.poster_path;
+        tvPosterElement.onload = function() {
+          this.classList.add('loaded');
+        };
         tvPosterElement.onerror = function() {
           this.src = '../images/no-image.jpg';
+          this.classList.add('loaded');
         };
       } else {
         tvPosterElement.src = '../images/no-image.jpg';
+        tvPosterElement.onload = function() {
+          this.classList.add('loaded');
+        };
       }
       
       const firstAirYear = tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '';
@@ -176,6 +183,11 @@ function displaySeasons(tvData) {
       <div class="season-title">Season ${season.season_number}</div>
       <div class="season-info">${airDate ? `${airDate} • ` : ''}${episodeCount} Episode${episodeCount !== 1 ? 's' : ''}</div>
     `;
+
+    seasonCard.addEventListener('click', () => {
+      const showTitle = tvData.name || tvTitle || 'Unknown Title';
+      window.location.href = `tvEpisodesList.html?id=${tvId}&season=${season.season_number}&title=${encodeURIComponent(showTitle)}`;
+    });
     
     seasonsContainer.appendChild(seasonCard);
   });
@@ -190,7 +202,7 @@ function setBackdropBackground(backdropPath) {
     mediaContainer.style.backgroundPosition = 'center';
     mediaContainer.style.backgroundRepeat = 'no-repeat';
   } else {
-    mediaContainer.style.background = `linear-gradient(90deg, rgba(45, 27, 61, 0.7), rgba(45, 27, 61, 0.8))`;
+    mediaContainer.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.4), rgba(19, 23, 32, 0.5)), url('${'../images/no-image-backdrop.jpg'}')`;
     mediaContainer.style.backgroundSize = 'cover';
     mediaContainer.style.backgroundPosition = 'center';
     mediaContainer.style.backgroundRepeat = 'no-repeat';
@@ -352,61 +364,43 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + tvId).then(res => res.json()).then(function(reviewsData) {
-    console.log(reviewsData);      
-    reviewsData.forEach(reviewData => {
-      const reviewCard = document.createElement('div');
-      
-      const escapedReview = escapeHtml(reviewData.review);
-      const escapedUser = escapeHtml(reviewData.user);
-      const rating = reviewData.rating || 0;
-      
-      let seasonEpisodeDisplay = '';
-      if (reviewData.season) {
-        if (reviewData.episode) {
-          seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Episode ${reviewData.episode}</div>`;
-        } else {
-          seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} (Full Season)</div>`;
-        }
-      }
-      
-      reviewCard.innerHTML = `
-        <div class="review-item">
-          <div class="review-column">
-            <div class="review-card" id="${reviewData._id}">
-              <p class="user-review">${reviewData.user}</p>
-              ${seasonEpisodeDisplay}
-              <div class="rating-display">
-                  <div class="rating-left">
-                      <img src="../images/star.png" alt="Star" class="star-icon">
-                      <span class="rating-score">${rating}/10</span>
-                  </div>
-                  <div class="timestamp">
-                      ${formatTimestamp(reviewData.createdAt)}
-                  </div>
-              </div>
-              <p class="review-review">${reviewData.review}</p>                
-              <div class="review-actions">
-                  <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
-                  <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      const cardElement = reviewCard.querySelector('.review-card');
-      cardElement.setAttribute('data-original-review', reviewData.review);
-      cardElement.setAttribute('data-original-user', reviewData.user);
-      cardElement.setAttribute('data-original-rating', rating);
-      cardElement.setAttribute('data-original-season', reviewData.season || '');
-      cardElement.setAttribute('data-original-episode', reviewData.episode || 'all');
-      
-      reviewsContainer.appendChild(reviewCard);
-    });
+    console.log(reviewsData);
+    
+    // Store all reviews data for filtering
+    allReviewsData = reviewsData;
+    
+    updateReviewsTitle(reviewsData);
+    displayFilteredReviews(reviewsData);
   }).catch(error => {
     console.error('Error fetching reviews:', error);
     showErrorMessage('Failed to load reviews. Please check your connection.');
   });
+}
+
+function updateReviewsTitle(reviewsData, selectedSeason = 'all') {
+  const reviewsTitleElement = document.querySelector('.reviews-title');
+  if (!reviewsTitleElement) return;
+  
+  let titleText = 'REVIEWS';
+  
+  if (selectedSeason !== 'all') {
+    titleText = `REVIEWS FOR SEASON ${selectedSeason}`;
+  } else {
+    titleText = 'REVIEWS FOR ALL SEASONS';
+  }
+  
+  if (reviewsData.length > 0) {
+    const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+    const averageRating = (totalRating / reviewsData.length).toFixed(1);
+    
+    reviewsTitleElement.innerHTML = `
+      ${titleText}
+      <img src="../images/star.png" alt="Star" class="star-icon" style="margin-left: 15px; padding-top: 2px;"> 
+      ${averageRating}/10
+    `;
+  } else {
+    reviewsTitleElement.innerHTML = titleText;
+  }
 }
 
 function escapeHtml(text) {
@@ -620,6 +614,7 @@ function fetchSeasonsForDropdown() {
         .then(function(data) {
             seasonsData = data.seasons || [];
             populateSeasonDropdown();
+            populateSeasonFilter(); // Add this line here
         })
         .catch(error => {
             console.error('Error fetching seasons:', error);
@@ -688,4 +683,104 @@ function handleSeasonChange(seasonSelect) {
         episodeSelect.disabled = true;
         episodeSelect.innerHTML = '<option value="all">All Episodes (Season Review)</option>';
     }
+}
+
+let allReviewsData = [];
+
+function populateSeasonFilter() {
+  const seasonFilter = document.getElementById('season-filter');
+  if (!seasonFilter) return;
+  
+  // Clear existing options except "All Seasons"
+  seasonFilter.innerHTML = '<option value="all">All Seasons</option>';
+  
+  // Add season options
+  seasonsData.forEach(season => {
+    if (season.season_number > 0) {
+      const option = document.createElement('option');
+      option.value = season.season_number;
+      option.textContent = `Season ${season.season_number}`;
+      seasonFilter.appendChild(option);
+    }
+  });
+}
+
+function filterReviewsBySeason() {
+  const seasonFilter = document.getElementById('season-filter');
+  const selectedSeason = seasonFilter.value;
+  
+  // Clear all reviews except the new review form (first child)
+  const reviewsContainer = document.getElementById('reviews-container');
+  const newReviewForm = reviewsContainer.firstElementChild;
+  reviewsContainer.innerHTML = '';
+  reviewsContainer.appendChild(newReviewForm);
+  
+  // Filter reviews based on selected season
+  let filteredReviews = allReviewsData;
+  if (selectedSeason !== 'all') {
+    filteredReviews = allReviewsData.filter(review => 
+      review.season && review.season.toString() === selectedSeason
+    );
+  }
+  
+  // Update reviews title
+  updateReviewsTitle(filteredReviews, selectedSeason);
+  
+  // Display filtered reviews
+  displayFilteredReviews(filteredReviews);
+}
+
+function displayFilteredReviews(reviewsData) {
+  const reviewsContainer = document.getElementById('reviews-container');
+  
+  reviewsData.forEach(reviewData => {
+    const reviewCard = document.createElement('div');
+    
+    const escapedReview = escapeHtml(reviewData.review);
+    const escapedUser = escapeHtml(reviewData.user);
+    const rating = reviewData.rating || 0;
+    
+    let seasonEpisodeDisplay = '';
+    if (reviewData.season) {
+      if (reviewData.episode) {
+        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Episode ${reviewData.episode}</div>`;
+      } else {
+        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} (Full Season)</div>`;
+      }
+    }
+    
+    reviewCard.innerHTML = `
+      <div class="review-item">
+        <div class="review-column">
+          <div class="review-card" id="${reviewData._id}">
+            <p class="user-review">${reviewData.user}</p>
+            ${seasonEpisodeDisplay}
+            <div class="rating-display">
+                <div class="rating-left">
+                    <img src="../images/star.png" alt="Star" class="star-icon">
+                    <span class="rating-score">${rating}/10</span>
+                </div>
+                <div class="timestamp">
+                    ${formatTimestamp(reviewData.createdAt)}
+                </div>
+            </div>
+            <p class="review-review">${reviewData.review}</p>                
+            <div class="review-actions">
+                <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
+                <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const cardElement = reviewCard.querySelector('.review-card');
+    cardElement.setAttribute('data-original-review', reviewData.review);
+    cardElement.setAttribute('data-original-user', reviewData.user);
+    cardElement.setAttribute('data-original-rating', rating);
+    cardElement.setAttribute('data-original-season', reviewData.season || '');
+    cardElement.setAttribute('data-original-episode', reviewData.episode || 'all');
+    
+    reviewsContainer.appendChild(reviewCard);
+  });
 }
