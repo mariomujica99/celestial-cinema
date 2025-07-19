@@ -25,12 +25,10 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-// Back button functionality
 backButton.addEventListener("click", () => {
   window.location.href = `tvReviews.html?id=${tvId}&title=${encodeURIComponent(tvTitle || '')}`;
 });
 
-// Load TV details and episodes
 loadTVDetails();
 loadEpisodes();
 
@@ -88,17 +86,13 @@ function displayEpisodes(episodes) {
     
     let stillUrl;
     if (episode.still_path) {
-      // Episode has its own image
       stillUrl = `${API_LINKS.IMG_PATH}${episode.still_path}`;
     } else {
-      // Episode doesn't have its own image
       const hasAired = episode.air_date && new Date(episode.air_date) <= new Date();
       
       if (window.tvBackdropPath) {
-        // Show has backdrop - use it for both aired and unaired episodes without stills
         stillUrl = `${API_LINKS.BACKDROP_PATH}${window.tvBackdropPath}`;
       } else {
-        // Show doesn't have backdrop - use no-image placeholder
         stillUrl = '../images/no-image-episode.jpg';
       }
     }
@@ -137,9 +131,7 @@ function displayEpisodes(episodes) {
   });
 }
 
-// Also update the setBackdropBackground function to store the backdrop path:
 function setBackdropBackground(backdropPath) {
-  // Store backdrop path globally for use in episodes
   window.tvBackdropPath = backdropPath;
   
   const episodesHeader = document.querySelector('.episodes-header');

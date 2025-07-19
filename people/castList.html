@@ -11,8 +11,8 @@
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
+    <link rel="stylesheet" href="../styles/cast-list.css">
     <link rel="stylesheet" href="../styles/status-messages.css">
-    <link rel="stylesheet" href="../styles/episodes-list.css">
   </head>
   <body>
     <nav class="topnav">
@@ -25,20 +25,26 @@
       </div>
     </nav>
 
-    <div class="episodes-header">
+    <div class="cast-list-header">
       <div class="header-content">
-        <button class="back-button" id="back-button">← Back</button>
-        <h1 class="season-title" id="season-title"></h1>
+        <button class="back-button" onclick="history.back()">← Back</button>
+        <h1 class="cast-list-title" id="cast-list-title">Full Cast & Crew</h1>
       </div>
     </div>
 
-    <div class="episodes-section">
-      <div class="episodes-container" id="episodes-container">
-        <div class="episodes-loading">Loading</div>
+    <div class="cast-search-filters">
+      <div class="filter-input-container">
+        <input type="text" class="filter-input" id="cast-search-input" placeholder="Search by name, role, or department">
       </div>
     </div>
 
-    <script src="tvEpisodesList.js"></script>
+    <div class="cast-list-section">
+      <div class="cast-list-container" id="cast-list-container">
+        <div class="cast-loading">Loading</div>
+      </div>
+    </div>
+
+    <script src="castList.js"></script>
     <script src="../general/utils.js"></script>
   </body>
 </html>

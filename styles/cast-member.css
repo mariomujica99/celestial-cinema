@@ -1,25 +1,32 @@
-.current-tv-container {
+.cast-member-container {
   display: flex;
   padding: 25px;
   gap: 30px;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   margin-bottom: 35px;
 }
 
-.current-tv-image {
+.cast-member-image {
   flex-shrink: 0;
   margin-bottom: 0;
 }
 
-.tv-poster {
+.cast-member-photo {
   height: 480px;
-  width: 100%;
+  width: 320px;
   border-radius: 20px;
   object-fit: cover;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.current-tv-details {
+.cast-member-photo.loaded {
+  opacity: 1;
+}
+
+.cast-member-details {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -27,33 +34,45 @@
   font-family: "Rollbox", "Montserrat", sans-serif, arial;
 }
 
-.tv-title {
+.cast-member-name {
   font-size: 1.8rem;
   text-transform: uppercase;
   color: white;
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   letter-spacing: 2px;
   font-weight: bold;
 }
 
-.tv-info-line {
-  color: #CBD5E0;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 5px;
-  flex-wrap: wrap;
-  text-transform: uppercase;
+.biography-section {
+  margin-bottom: 25px;
 }
 
-.seasons-section {
+.biography-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  margin: 15px 0 5px 0;
+  letter-spacing: 1px;
+}
+
+.biography-text {
+  margin: 0;
+  font-size: 1.001rem;
+  font-family: "Montserrat";
+  line-height: 1.5;
+  color: #e7e6e6;
+  text-transform: none;
+}
+
+.known-for-section {
   margin: 30px 25px 0 25px;
   padding: 25px 0 0 0;
   border-top: 1px solid rgba(106, 90, 205, 0.2);
 }
 
-.seasons-title {
+.known-for-title {
   font-size: 1.4rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -62,20 +81,32 @@
   letter-spacing: 1px;
 }
 
-.seasons-container {
+.known-for-container {
   display: flex;
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.seasons-container::-webkit-scrollbar {
-  display: none;
+.known-for-container::-webkit-scrollbar {
+  height: 8px;
 }
 
-.season-card {
+.known-for-container::-webkit-scrollbar-track {
+  background: rgba(25, 38, 59, 0.5);
+  border-radius: 4px;
+}
+
+.known-for-container::-webkit-scrollbar-thumb {
+  background: rgba(106, 90, 205, 0.6);
+  border-radius: 4px;
+}
+
+.known-for-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(106, 90, 205, 0.8);
+}
+
+.known-for-item {
   flex: 0 0 140px;
   display: flex;
   flex-direction: column;
@@ -86,14 +117,12 @@
   transition: transform 0.3s ease;
 }
 
-
-.season-card:hover {
+.known-for-item:hover {
   cursor: pointer;
   transform: translateY(-3px);
 }
 
-
-.season-poster {
+.known-for-poster {
   width: 100%;
   height: 200px;
   border-radius: 12px;
@@ -102,7 +131,7 @@
   margin-bottom: 10px;
 }
 
-.season-title {
+.known-for-title-text {
   font-size: 0.8rem;
   font-weight: bold;
   color: white;
@@ -112,7 +141,7 @@
   line-height: 1.2;
 }
 
-.season-info {
+.known-for-info {
   font-size: 0.6rem;
   color: #CBD5E0;
   margin: 0;
@@ -120,7 +149,7 @@
   line-height: 1.2;
 }
 
-.seasons-loading {
+.known-for-loading {
   font-size: 0.8rem;
   color: white;
   text-transform: uppercase;
@@ -130,19 +159,19 @@
 }
 
 @media (max-width: 1111px) {
-  .current-tv-container {
+  .cast-member-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
   }
   
-  .tv-info-line {
-    justify-content: center;
-  }
-  
-  .tv-title {
+  .cast-member-name {
     font-size: 1.4rem;
     text-align: center;
+  }
+  
+  .biography-section {
+    text-align: left;
   }
 }

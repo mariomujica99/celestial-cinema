@@ -12,6 +12,13 @@
   color: white;
   margin: 0 0 20px 0;
   letter-spacing: 1px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: inline-block;
+}
+
+.cast-title:hover {
+  color: #6A5ACD;
 }
 
 .cast-container {
@@ -20,24 +27,12 @@
   overflow-x: auto;
   padding-bottom: 10px;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .cast-container::-webkit-scrollbar {
-  height: 8px;
-}
-
-.cast-container::-webkit-scrollbar-track {
-  background: rgba(25, 38, 59, 0.5);
-  border-radius: 4px;
-}
-
-.cast-container::-webkit-scrollbar-thumb {
-  background: rgba(106, 90, 205, 0.6);
-  border-radius: 4px;
-}
-
-.cast-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(106, 90, 205, 0.8);
+  display: none;
 }
 
 .cast-member {
@@ -48,15 +43,15 @@
   text-align: center;
   border-radius: 12px;
   padding: 5px 5px 10px 5px;
+  transition: transform 0.3s ease;
 }
 
-/*
+
 .cast-member:hover {
   cursor: pointer;
-  background: linear-gradient(180deg, #28303d, #212d42, #19263b);
-  transition: 0.50 s;
+  transform: translateY(-3px);
 }
-*/
+
 
 .cast-photo {
   width: 100%;
@@ -90,4 +85,33 @@
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.full-cast-button {
+  flex: 0 0 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 5px;
+}
+
+.full-cast-btn {
+  background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+  color: white;
+  border: none;
+  padding: 8px 18px 7px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.full-cast-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
 }

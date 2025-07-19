@@ -155,7 +155,6 @@
   letter-spacing: 1px;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .episodes-header {
     padding: 10px 15px 20px 15px;

@@ -253,6 +253,11 @@ function updateCreditsSection(creditsData) {
   creditsSection.innerHTML = creditsHTML;
 
   displayCast(creditsData);
+
+  const castTitle = document.querySelector('.cast-title');
+  if (castTitle) {
+      castTitle.addEventListener('click', viewFullCast);
+  }
 }
 
 function displayCast(creditsData) {
@@ -281,9 +286,28 @@ function displayCast(creditsData) {
       <div class="cast-name">${member.name}</div>
       <div class="cast-character">${member.character || 'Unknown Role'}</div>
     `;
+
+    castMember.addEventListener('click', () => {
+      window.location.href = `../people/castMember.html?id=${member.id}&name=${encodeURIComponent(member.name)}`;
+    });
     
     castContainer.appendChild(castMember);
   });
+
+  const fullCastButton = document.createElement('div');
+  fullCastButton.className = 'full-cast-button';
+  fullCastButton.innerHTML = `
+    <button class="full-cast-btn" onclick="viewFullCast()">Full Cast</button>
+  `;
+  castContainer.appendChild(fullCastButton);
+}
+
+function viewFullCast() {
+    const mediaType = window.location.pathname.includes('tv') ? 'tv' : 'movie';
+    const mediaTitle = document.getElementById('tv-title') || document.getElementById('movie-title');
+    const title = mediaTitle ? mediaTitle.textContent : '';
+    
+    window.location.href = `../people/castList.html?id=${movieId}&type=${mediaType}&title=${encodeURIComponent(title)}`;
 }
 
 const newReviewForm = document.createElement('div');

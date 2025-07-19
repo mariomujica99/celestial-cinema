@@ -13,7 +13,7 @@
   color: white;
   text-align: center;
   width: 295px;
-  min-width: 295px;
+  min-width: 255px;
   padding: 14px 16px;
   margin-top: 5px;
   margin-left: 8px;
@@ -31,7 +31,7 @@
 .search-form {
   background: linear-gradient(45deg, #28303d, #212d42, #19263b);
   width: 100%;
-  height: 43px;
+  height: 40px;
   border-radius: 30px;
   display: flex;
   align-items: center;
@@ -39,11 +39,33 @@
 
 .search-input {
   all: unset;
-  font: 13px system-ui;
+  font-size: 0.8rem;
   color: #fff;
   height: 100%;
   width: 100%;
   padding: 8px 10px 5px 20px;
   font-family: "Rollbox", sans-serif, arial;
   text-transform: uppercase;
+}
+
+@media (max-width: 610px) {
+  .search-container {
+    margin-right: 24px;
+    width: 100%;
+    max-width: 283px;
+  }
+
+  .search-form {
+    height: 30px;
+  }
+
+  .search-input {
+    font-size: 0.8rem;
+    padding: 8px 10px 5px 15px;
+  }
+
+  .topnav a {
+    width: 255px;
+    font-size: 1.1rem;
+  }
 }

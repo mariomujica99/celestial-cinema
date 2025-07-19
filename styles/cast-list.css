@@ -1,0 +1,241 @@
+.cast-list-header {
+  padding: 10px 25px 40px 25px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
+.cast-list-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.cast-list-section {
+  padding: 0 25px 35px 25px;
+}
+
+.cast-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.department-section {
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(106, 90, 205, 0.2);
+  padding-bottom: 30px;
+}
+
+.department-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.department-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  margin: 0 0 25px 0;
+  letter-spacing: 1.5px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #6A5ACD;
+}
+
+.people-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.person-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, rgba(45, 27, 61, 0.2), rgba(25, 38, 59, 0.2));
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid rgba(106, 90, 205, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.person-card:hover {
+  background: linear-gradient(135deg, rgba(45, 27, 61, 0.4), rgba(25, 38, 59, 0.4));
+  border-color: rgba(106, 90, 205, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(106, 90, 205, 0.15);
+}
+
+.person-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  flex-shrink: 0;
+}
+
+.person-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.person-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.person-role {
+  font-size: 0.9rem;
+  color: #CBD5E0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cast-loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cast-search-filters {
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 25px 25px 25px;
+}
+
+.cast-search-filters .filter-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+  width: 375px;
+  flex: 1;
+}
+
+.cast-search-filters .filter-input {
+  padding: 10px 15px 7px 15px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+  border-radius: 8px;
+  background: rgba(25, 38, 59, 0.8);
+  color: white;
+  font-size: 0.8rem;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  text-transform: uppercase;
+}
+
+.cast-search-filters .filter-input:focus {
+  outline: none;
+  border-color: #6A5ACD;
+  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
+  background: rgba(25, 38, 59, 1);
+}
+
+.cast-search-filters .filter-input::placeholder {
+  color: #CBD5E0;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .cast-list-header {
+    padding: 10px 15px 20px 15px;
+  }
+  .cast-search-filters {
+    padding: 0 15px 25px 15px;
+  }
+
+  .cast-search-filters .filter-input-container {
+    width: 290px;
+  }
+
+  .cast-search-filters .filter-input {
+    font-size: 0.6rem;
+  }
+  
+  .cast-list-title {
+    font-size: 1.6rem;
+  }
+  
+  .cast-list-section {
+    padding: 0 15px 25px 15px;
+  }
+  
+  .department-title {
+    font-size: 1.4rem;
+  }
+  
+  .person-card {
+    gap: 15px;
+    padding: 12px;
+  }
+  
+  .person-photo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .person-name {
+    font-size: 1.001rem;
+  }
+  
+  .person-role {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cast-list-title {
+    font-size: 1.3rem;
+  }
+  
+  .department-title {
+    font-size: 1.1rem;
+  }
+  
+  .person-name {
+    font-size: 0.9rem;
+  }
+  
+  .person-role {
+    font-size: 0.7rem;
+  }
+}

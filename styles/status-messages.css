@@ -73,3 +73,11 @@
   transform: none;
   box-shadow: none;
 }
+
+@media (max-width: 480px) {
+  .load-more-btn {
+    padding: 10px 20px 8px 20px;
+    font-size: 1.001rem;
+    min-width: 100px;
+  }
+}

@@ -273,6 +273,11 @@ function updateCreditsSection(creditsData) {
   creditsSection.innerHTML = creditsHTML;
 
   displayCast(creditsData);
+
+  const castTitle = document.querySelector('.cast-title');
+  if (castTitle) {
+      castTitle.addEventListener('click', viewFullCast);
+  }
 }
 
 function displayCast(creditsData) {
@@ -301,9 +306,28 @@ function displayCast(creditsData) {
       <div class="cast-name">${member.name}</div>
       <div class="cast-character">${member.character || 'Unknown Role'}</div>
     `;
+
+    castMember.addEventListener('click', () => {
+      window.location.href = `../people/castMember.html?id=${member.id}&name=${encodeURIComponent(member.name)}`;
+    });
     
     castContainer.appendChild(castMember);
   });
+
+  const fullCastButton = document.createElement('div');
+  fullCastButton.className = 'full-cast-button';
+  fullCastButton.innerHTML = `
+    <button class="full-cast-btn" onclick="viewFullCast()">Full Cast</button>
+  `;
+  castContainer.appendChild(fullCastButton);
+}
+
+function viewFullCast() {
+    const mediaType = window.location.pathname.includes('tv') ? 'tv' : 'movie';
+    const mediaTitle = document.getElementById('tv-title') || document.getElementById('movie-title');
+    const title = mediaTitle ? mediaTitle.textContent : '';
+    
+    window.location.href = `../people/castList.html?id=${tvId || movieId}&type=${mediaType}&title=${encodeURIComponent(title)}`;
 }
 
 const newReviewForm = document.createElement('div');
@@ -365,8 +389,7 @@ returnReviews(API_LINKS.REVIEWS);
 function returnReviews(url) {
   fetch(url + "media/" + tvId).then(res => res.json()).then(function(reviewsData) {
     console.log(reviewsData);
-    
-    // Store all reviews data for filtering
+
     allReviewsData = reviewsData;
     
     updateReviewsTitle(reviewsData);
@@ -614,7 +637,7 @@ function fetchSeasonsForDropdown() {
         .then(function(data) {
             seasonsData = data.seasons || [];
             populateSeasonDropdown();
-            populateSeasonFilter(); // Add this line here
+            populateSeasonFilter();
         })
         .catch(error => {
             console.error('Error fetching seasons:', error);
@@ -691,10 +714,8 @@ function populateSeasonFilter() {
   const seasonFilter = document.getElementById('season-filter');
   if (!seasonFilter) return;
   
-  // Clear existing options except "All Seasons"
   seasonFilter.innerHTML = '<option value="all">All Seasons</option>';
-  
-  // Add season options
+
   seasonsData.forEach(season => {
     if (season.season_number > 0) {
       const option = document.createElement('option');
@@ -709,24 +730,20 @@ function filterReviewsBySeason() {
   const seasonFilter = document.getElementById('season-filter');
   const selectedSeason = seasonFilter.value;
   
-  // Clear all reviews except the new review form (first child)
   const reviewsContainer = document.getElementById('reviews-container');
   const newReviewForm = reviewsContainer.firstElementChild;
   reviewsContainer.innerHTML = '';
   reviewsContainer.appendChild(newReviewForm);
   
-  // Filter reviews based on selected season
   let filteredReviews = allReviewsData;
   if (selectedSeason !== 'all') {
     filteredReviews = allReviewsData.filter(review => 
       review.season && review.season.toString() === selectedSeason
     );
   }
-  
-  // Update reviews title
+
   updateReviewsTitle(filteredReviews, selectedSeason);
-  
-  // Display filtered reviews
+
   displayFilteredReviews(filteredReviews);
 }
 

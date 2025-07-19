@@ -11,8 +11,9 @@
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
+    <link rel="stylesheet" href="../styles/cast-member.css">
+    <link rel="stylesheet" href="../styles/media-details.css">
     <link rel="stylesheet" href="../styles/status-messages.css">
-    <link rel="stylesheet" href="../styles/episodes-list.css">
   </head>
   <body>
     <nav class="topnav">
@@ -25,20 +26,27 @@
       </div>
     </nav>
 
-    <div class="episodes-header">
-      <div class="header-content">
-        <button class="back-button" id="back-button">← Back</button>
-        <h1 class="season-title" id="season-title"></h1>
+    <div class="cast-member-container">
+      <div class="cast-member-image">
+        <img class="cast-member-photo" id="cast-member-photo" src="#">
+      </div>
+      <div class="cast-member-details">
+        <p class="cast-member-name" id="cast-member-name"></p>
+        <div class="biography-section">
+          <p class="biography-title">Biography</p>
+          <p class="biography-text" id="biography-text"></p>
+        </div>
       </div>
     </div>
 
-    <div class="episodes-section">
-      <div class="episodes-container" id="episodes-container">
-        <div class="episodes-loading">Loading</div>
+    <div class="known-for-section">
+      <p class="known-for-title">Known For</p>
+      <div class="known-for-container" id="known-for-container">
+        <div class="known-for-loading"></div>
       </div>
     </div>
 
-    <script src="tvEpisodesList.js"></script>
+    <script src="castMember.js"></script>
     <script src="../general/utils.js"></script>
   </body>
 </html>
