@@ -22,6 +22,10 @@ const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
 
+const filtersNav = document.getElementById('filters-nav');
+const scrollArrowLeft = document.getElementById('scroll-arrow-left');
+const scrollArrowRight = document.getElementById('scroll-arrow-right');
+
 const loadMoreBtn = document.getElementById("load-more-btn");
 const loadMoreContainer = document.getElementById("load-more-container");
 
@@ -252,6 +256,29 @@ function returnMedia(url, contentType = 'movie', append = false) {
   });
 }
 
+function storeScrollPosition() {
+  const filtersNav = document.getElementById('filters-nav');
+  if (filtersNav) {
+    sessionStorage.setItem('filtersScrollPosition', filtersNav.scrollLeft);
+  }
+}
+
+function restoreScrollPosition() {
+  const savedPosition = sessionStorage.getItem('filtersScrollPosition');
+  if (savedPosition !== null) {
+    const filtersNav = document.getElementById('filters-nav');
+    if (filtersNav) {
+      requestAnimationFrame(() => {
+        filtersNav.scrollLeft = parseInt(savedPosition);
+        updateScrollArrows();
+        sessionStorage.removeItem('filtersScrollPosition');
+      });
+    }
+  }
+}
+
+window.addEventListener('load', restoreScrollPosition);
+
 function loadMoreMedia() {
   if (isLoadingMedia || !hasMoreMedia) return;
   
@@ -260,6 +287,7 @@ function loadMoreMedia() {
 }
 
 trendingTodayButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(trendingTodayButton);
   loadMoreContainer.style.display = 'none';
@@ -267,6 +295,7 @@ trendingTodayButton.addEventListener("click", () => {
 });
 
 popularButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(popularButton);
   loadMoreContainer.style.display = 'none';
@@ -274,6 +303,7 @@ popularButton.addEventListener("click", () => {
 });
 
 nowPlayingButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(nowPlayingButton);
   loadMoreContainer.style.display = 'none';
@@ -281,6 +311,7 @@ nowPlayingButton.addEventListener("click", () => {
 });
 
 upcomingButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(upcomingButton);
   loadMoreContainer.style.display = 'none';
@@ -288,6 +319,7 @@ upcomingButton.addEventListener("click", () => {
 });
 
 topRatedButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(topRatedButton);
   loadMoreContainer.style.display = 'none';
@@ -295,6 +327,7 @@ topRatedButton.addEventListener("click", () => {
 });
 
 showsButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(showsButton);
   loadMoreContainer.style.display = 'none';
@@ -302,8 +335,34 @@ showsButton.addEventListener("click", () => {
 });
 
 reviewsButton.addEventListener("click", () => {
+  storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(reviewsButton);
   loadMoreContainer.style.display = 'none';
-  window.location.href = `all reviews/allReviews.html`;
+  requestAnimationFrame(() => {
+    window.location.href = `all reviews/allReviews.html`;
+  });
 });
+
+function updateScrollArrows() {
+  const scrollLeft = filtersNav.scrollLeft;
+  const scrollWidth = filtersNav.scrollWidth;
+  const clientWidth = filtersNav.clientWidth;
+  
+  if (scrollLeft > 0) {
+    scrollArrowLeft.classList.add('visible');
+  } else {
+    scrollArrowLeft.classList.remove('visible');
+  }
+  
+  if (scrollLeft < scrollWidth - clientWidth - 1) {
+    scrollArrowRight.classList.add('visible');
+  } else {
+    scrollArrowRight.classList.remove('visible');
+  }
+}
+
+filtersNav.addEventListener('scroll', updateScrollArrows);
+window.addEventListener('resize', updateScrollArrows);
+
+updateScrollArrows();

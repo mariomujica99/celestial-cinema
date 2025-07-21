@@ -297,7 +297,7 @@ function displayCast(creditsData) {
   const fullCastButton = document.createElement('div');
   fullCastButton.className = 'full-cast-button';
   fullCastButton.innerHTML = `
-    <button class="full-cast-btn" onclick="viewFullCast()">Full Cast</button>
+    <button class="full-cast-btn" onclick="viewFullCast()">Full Cast →</button>
   `;
   castContainer.appendChild(fullCastButton);
 }

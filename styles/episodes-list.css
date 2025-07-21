@@ -155,9 +155,14 @@
   letter-spacing: 1px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 650px) {
   .episodes-header {
     padding: 10px 15px 20px 15px;
+  }
+
+  .back-button {
+    padding: 7px 15px 6px 15px;
+    font-size: 0.8rem;
   }
   
   .season-title {
@@ -196,7 +201,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
   .season-title {
     font-size: 1.3rem;
   }
@@ -210,10 +215,10 @@
   }
   
   .episode-info-line {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
   
   .episode-overview {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 }

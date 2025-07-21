@@ -258,13 +258,13 @@
   transform: translateY(-1px);
 }
 
-@media (max-width: 670px) {
+@media (max-width: 650px) {
   #reviews-container {
     grid-template-columns: 1fr;
   }
 }
 
-@media (min-width: 671px) and (max-width: 1000px) {
+@media (min-width: 651px) and (max-width: 1000px) {
   #reviews-container {
     grid-template-columns: repeat(2, 1fr);
   }

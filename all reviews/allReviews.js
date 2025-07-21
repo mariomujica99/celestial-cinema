@@ -22,6 +22,10 @@ const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
 const sortFilterInput = document.getElementById("sort-filter");
 
+const filtersNav = document.getElementById('filters-nav');
+const scrollArrowLeft = document.getElementById('scroll-arrow-left');
+const scrollArrowRight = document.getElementById('scroll-arrow-right');
+
 let currentPage = 1;
 let hasMoreReviews = true;
 let isLoading = false;
@@ -67,34 +71,49 @@ function setActiveButton(activeButton) {
 setActiveButton(reviewsButton);
 
 trendingTodayButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=trending";
 });
 
 popularButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=popular";
 });
 
 nowPlayingButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=now-playing";
 });
 
 upcomingButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=upcoming";
 });
 
 topRatedButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=top-rated";
 });
 
 showsButton.addEventListener("click", () => {
+    storeScrollPosition();
     window.location.href = "../index.html?filter=shows";
 });
 
 reviewsButton.addEventListener("click", (e) => {
     e.preventDefault();
     setActiveButton(reviewsButton);
-    location.reload();
+    requestAnimationFrame(() => {
+        location.reload();
+    });
 });
+
+function storeScrollPosition() {
+  const filtersNav = document.getElementById('filters-nav');
+  if (filtersNav) {
+    sessionStorage.setItem('filtersScrollPosition', filtersNav.scrollLeft);
+  }
+}
 
 loadInitialReviews();
 
@@ -512,6 +531,45 @@ function deleteReview(reviewId) {
     showErrorMessage('Failed to delete review. Please try again.');
   });
 }
+
+function updateScrollArrows() {
+  const scrollLeft = filtersNav.scrollLeft;
+  const scrollWidth = filtersNav.scrollWidth;
+  const clientWidth = filtersNav.clientWidth;
+  
+  if (scrollLeft > 0) {
+    scrollArrowLeft.classList.add('visible');
+  } else {
+    scrollArrowLeft.classList.remove('visible');
+  }
+  
+  if (scrollLeft < scrollWidth - clientWidth - 1) {
+    scrollArrowRight.classList.add('visible');
+  } else {
+    scrollArrowRight.classList.remove('visible');
+  }
+}
+
+filtersNav.addEventListener('scroll', updateScrollArrows);
+window.addEventListener('resize', updateScrollArrows);
+
+updateScrollArrows();
+
+function restoreScrollPosition() {
+  const savedPosition = sessionStorage.getItem('filtersScrollPosition');
+  if (savedPosition !== null) {
+    const filtersNav = document.getElementById('filters-nav');
+    if (filtersNav) {
+      requestAnimationFrame(() => {
+        filtersNav.scrollLeft = parseInt(savedPosition);
+        updateScrollArrows();
+        sessionStorage.removeItem('filtersScrollPosition');
+      });
+    }
+  }
+}
+
+window.addEventListener('load', restoreScrollPosition);
 
 function showErrorMessage(message) {
   const errorDiv = document.createElement('div');

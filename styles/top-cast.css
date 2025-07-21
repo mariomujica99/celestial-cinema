@@ -115,3 +115,10 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
 }
+
+@media (max-width: 650px) {
+  .full-cast-btn {
+    padding: 8px 15px 7px 15px;
+    font-size: 0.7rem;
+  }
+}

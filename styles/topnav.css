@@ -39,7 +39,7 @@
 
 .search-input {
   all: unset;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #fff;
   height: 100%;
   width: 100%;
@@ -48,7 +48,7 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 610px) {
+@media (max-width: 650px) {
   .search-container {
     margin-right: 24px;
     width: 100%;
