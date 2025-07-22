@@ -33,6 +33,13 @@ let allReviews = [];
 let filteredReviews = [];
 let mediaCache = {};
 
+let currentFilters = {
+  user: '',
+  media: '',
+  sort: 'date-newest'
+};
+let isFiltering = false;
+
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const searchTerm = searchInput.value.trim();
@@ -41,20 +48,41 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-userFilterInput.addEventListener("input", debounce(applyFilters, 300));
-mediaFilterInput.addEventListener("input", debounce(applyFilters, 300));
-sortFilterInput.addEventListener("change", applyFilters);
+userFilterInput.addEventListener("input", debounce(() => {
+  currentFilters.user = userFilterInput.value.trim();
+  applyFilters();
+}, 300));
+
+mediaFilterInput.addEventListener("input", debounce(() => {
+  currentFilters.media = mediaFilterInput.value.trim();
+  applyFilters();
+}, 300));
+
+sortFilterInput.addEventListener("change", () => {
+  currentFilters.sort = sortFilterInput.value;
+  applyFilters();
+});
 
 clearFiltersBtn.addEventListener("click", () => {
   userFilterInput.value = "";
   mediaFilterInput.value = "";
   sortFilterInput.value = "date-newest";
-  applyFilters();
+  currentFilters = {
+    user: '',
+    media: '',
+    sort: 'date-newest'
+  };
+  isFiltering = false;
+  
+  requestAnimationFrame(() => {
+    loadInitialReviews();
+  });
 });
 
 loadMoreBtn.addEventListener("click", () => {
-  if (isFiltering()) {
-    loadMoreFilteredReviews();
+  if (isFiltering) {
+    currentPage++;
+    loadFilteredReviews(true);
   } else {
     loadMoreReviews();
   }
@@ -120,9 +148,18 @@ loadInitialReviews();
 function loadInitialReviews() {
   currentPage = 1;
   hasMoreReviews = true;
-  reviewsContainer.innerHTML = '<div class="reviews-loading"></div>';
+  isFiltering = false;
+  currentFilters = {
+    user: '',
+    media: '',
+    sort: 'date-newest'
+  };
+  reviewsContainer.innerHTML = '<div class="reviews-loading">Loading</div>';
   loadMoreBtn.style.display = 'none';
-  returnReviews(API_LINKS.REVIEWS + `?page=${currentPage}&limit=24`);
+  
+  requestAnimationFrame(() => {
+    returnReviews(API_LINKS.REVIEWS + `?page=${currentPage}&limit=24`);
+  });
 }
 
 function loadMoreReviews() {
@@ -134,21 +171,128 @@ function loadMoreReviews() {
   returnReviews(API_LINKS.REVIEWS + `?page=${currentPage}&limit=24`, true);
 }
 
-function loadMoreFilteredReviews() {
-  const reviewsPerPage = 24;
-  const currentDisplayed = reviewsContainer.querySelectorAll('.review-item').length;
-  const nextBatch = filteredReviews.slice(currentDisplayed, currentDisplayed + reviewsPerPage);
+function loadFilteredReviews(append = false) {
+  if (isLoading) return;
   
-  if (nextBatch.length === 0) {
-    loadMoreBtn.style.display = 'none';
-    return;
+  isLoading = true;
+  if (!append) {
+    loadMoreBtn.textContent = 'Loading';
+    loadMoreBtn.disabled = true;
   }
   
-  displayReviews(nextBatch, true);
+  const params = new URLSearchParams({
+    page: currentPage,
+    limit: 24,
+    sort: currentFilters.sort
+  });
   
-  if (currentDisplayed + nextBatch.length >= filteredReviews.length) {
-    loadMoreBtn.style.display = 'none';
+  if (currentFilters.user) {
+    params.append('user', currentFilters.user);
   }
+  
+  const url = `${API_LINKS.REVIEWS}?${params.toString()}`;
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(async function(data) {
+      console.log('Filtered reviews data:', data);
+      
+      if (!append) {
+        reviewsContainer.innerHTML = '';
+        allReviews = [];
+      }
+      
+      if (data.reviews && data.reviews.length > 0) {
+        let filteredData = data.reviews;
+        
+        if (currentFilters.media.trim()) {
+          const mediaFilterPromises = filteredData.map(async (review) => {
+            const mediaId = review.mediaId || review.movieId;
+            const mediaInfo = await getMediaInfo(mediaId, review.mediaType || 'movie');
+            const matchesMedia = mediaInfo.title.toLowerCase().includes(currentFilters.media.toLowerCase());
+            return matchesMedia ? review : null;
+          });
+          
+          const resolvedFilters = await Promise.all(mediaFilterPromises);
+          filteredData = resolvedFilters.filter(review => review !== null);
+        }
+        
+        if (filteredData.length > 0) {
+          if (currentFilters.sort === 'title-az' || currentFilters.sort === 'title-za') {
+            await sortReviews(filteredData, currentFilters.sort);
+          }
+          
+          allReviews = append ? [...allReviews, ...filteredData] : filteredData;
+          await displayReviews(filteredData, append);
+          
+          const serverHasMore = data.hasMore === true;
+          const currentDisplayCount = reviewsContainer.querySelectorAll('.review-item').length;
+          
+          if (currentFilters.media.trim()) {
+            if (serverHasMore && currentDisplayCount >= 24) {
+              loadMoreBtn.style.display = 'block';
+              loadMoreBtn.textContent = 'Load More Reviews';
+              hasMoreReviews = true;
+            } else if (serverHasMore && currentDisplayCount < 24 && currentPage < 15) {
+              currentPage++;
+              isLoading = false;
+              loadFilteredReviews(true);
+              return;
+            } else {
+              loadMoreBtn.style.display = 'none';
+              hasMoreReviews = false;
+            }
+          } else {
+            if (serverHasMore && currentDisplayCount > 0) {
+              loadMoreBtn.style.display = 'block';
+              loadMoreBtn.textContent = 'Load More Reviews';
+              hasMoreReviews = true;
+            } else {
+              loadMoreBtn.style.display = 'none';
+              hasMoreReviews = false;
+            }
+          }
+          
+        } else {
+          if (currentFilters.media.trim() && data.hasMore && currentPage < 15) {
+            currentPage++;
+            isLoading = false;
+            loadFilteredReviews(append);
+            return;
+          } else {
+            if (!append) {
+              reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found matching your filters</div>';
+            }
+            hasMoreReviews = false;
+            loadMoreBtn.style.display = 'none';
+          }
+        }
+      } else {
+        if (!append) {
+          reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found matching your filters</div>';
+        }
+        hasMoreReviews = false;
+        loadMoreBtn.style.display = 'none';
+      }
+
+      isLoading = false;
+      loadMoreBtn.textContent = 'Load More Reviews';
+      loadMoreBtn.disabled = false;
+    })
+    .catch(error => {
+      console.error('Error fetching filtered reviews:', error);
+      if (!append) {
+        reviewsContainer.innerHTML = '<div class="error-message">Failed to load reviews. Please try again later.</div>';
+      }
+      isLoading = false;
+      loadMoreBtn.textContent = 'Load More Reviews';
+      loadMoreBtn.disabled = false;
+    });
 }
 
 function returnReviews(url, append = false) {
@@ -355,49 +499,32 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
 }
 
 function applyFilters() {
-  const userFilter = userFilterInput.value.trim().toLowerCase();
-  const mediaFilter = mediaFilterInput.value.trim().toLowerCase();
-  const sortBy = sortFilterInput.value;
+  const hasUserFilter = currentFilters.user.trim() !== '';
+  const hasMediaFilter = currentFilters.media.trim() !== '';
+  const hasSortFilter = currentFilters.sort !== 'date-newest';
   
-  if (!userFilter && !mediaFilter) {
-    filteredReviews = [...allReviews];
-  } else {
-    filteredReviews = allReviews.filter(review => {
-      const matchesUser = !userFilter || review.user.toLowerCase().includes(userFilter);
-      
-      let matchesMedia = true;
-      if (mediaFilter) {
-        const reviewCard = document.querySelector(`[id="${review._id}"]`);
-        if (reviewCard) {
-          const mediaTitle = reviewCard.getAttribute('data-media-title') || '';
-          matchesMedia = mediaTitle.toLowerCase().includes(mediaFilter);
-        } else {
-          matchesMedia = false;
-        }
-      }
-      
-      return matchesUser && matchesMedia;
+  isFiltering = hasUserFilter || hasMediaFilter || hasSortFilter;
+  
+  currentPage = 1;
+  hasMoreReviews = true;
+  allReviews = [];
+  mediaCache = {};
+  
+  reviewsContainer.innerHTML = '<div class="reviews-loading">Loading</div>';
+  loadMoreBtn.style.display = 'none';
+  
+  if (!isFiltering) {
+    requestAnimationFrame(() => {
+      returnReviews(API_LINKS.REVIEWS + `?page=${currentPage}&limit=24`);
     });
-  }
-  
-  sortReviews(filteredReviews, sortBy);
-  
-  const reviewsToShow = filteredReviews.slice(0, 24);
-  displayReviews(reviewsToShow);
-  
-  if (filteredReviews.length > 24) {
-    loadMoreBtn.style.display = 'block';
-    loadMoreBtn.textContent = 'Load More Reviews';
   } else {
-    loadMoreBtn.style.display = 'none';
-  }
-  
-  if (filteredReviews.length === 0) {
-    reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found matching your filters</div>';
+    requestAnimationFrame(() => {
+      loadFilteredReviews();
+    });
   }
 }
 
-function sortReviews(reviews, sortBy) {
+async function sortReviews(reviews, sortBy) {
   switch (sortBy) {
     case 'date-newest':
       reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -412,18 +539,26 @@ function sortReviews(reviews, sortBy) {
       reviews.sort((a, b) => (a.rating || 0) - (b.rating || 0));
       break;
     case 'title-az':
-      reviews.sort((a, b) => {
-        const titleA = getMediaTitleFromReview(a) || '';
-        const titleB = getMediaTitleFromReview(b) || '';
-        return titleA.localeCompare(titleB);
-      });
-      break;
     case 'title-za':
-      reviews.sort((a, b) => {
-        const titleA = getMediaTitleFromReview(a) || '';
-        const titleB = getMediaTitleFromReview(b) || '';
-        return titleB.localeCompare(titleA);
+      const mediaInfoPromises = reviews.map(async (review) => {
+        const mediaId = review.mediaId || review.movieId;
+        const mediaInfo = await getMediaInfo(mediaId, review.mediaType || 'movie');
+        return { review, title: mediaInfo.title || '' };
       });
+      
+      const reviewsWithTitles = await Promise.all(mediaInfoPromises);
+      
+      reviewsWithTitles.sort((a, b) => {
+        if (sortBy === 'title-az') {
+          return a.title.localeCompare(b.title);
+        } else {
+          return b.title.localeCompare(a.title);
+        }
+      });
+      
+      for (let i = 0; i < reviews.length; i++) {
+        reviews[i] = reviewsWithTitles[i].review;
+      }
       break;
     default:
       reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -436,10 +571,6 @@ function getMediaTitleFromReview(review) {
     return reviewCard.getAttribute('data-media-title') || '';
   }
   return '';
-}
-
-function isFiltering() {
-    return userFilterInput.value.trim() || mediaFilterInput.value.trim() || sortFilterInput.value !== 'date-newest';
 }
 
 function escapeHtml(text) {
