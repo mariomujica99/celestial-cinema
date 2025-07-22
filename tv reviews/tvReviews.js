@@ -420,27 +420,36 @@ function returnReviews(url) {
 
 function updateReviewsTitle(reviewsData, selectedSeason = 'all') {
   const reviewsTitleElement = document.querySelector('.reviews-title');
-  if (!reviewsTitleElement) return;
+  const reviewsLeftElement = document.querySelector('.reviews-left');
+  if (!reviewsTitleElement || !reviewsLeftElement) return;
   
   let titleText = 'REVIEWS';
-  
   if (selectedSeason !== 'all') {
     titleText = `REVIEWS FOR SEASON ${selectedSeason}`;
   } else {
     titleText = 'REVIEWS FOR ALL SEASONS';
   }
   
+  reviewsTitleElement.textContent = titleText;
+  
+  const existingRatingInfo = reviewsLeftElement.querySelector('.rating-info');
+  if (existingRatingInfo) {
+    existingRatingInfo.remove();
+  }
+  
   if (reviewsData.length > 0) {
     const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
     const averageRating = (totalRating / reviewsData.length).toFixed(1);
+    const reviewCount = reviewsData.length;
     
-    reviewsTitleElement.innerHTML = `
-      ${titleText}
-      <img src="../images/star.png" alt="Star" class="star-icon" style="margin-left: 15px; padding-top: 2px;"> 
-      ${averageRating}/10
+    const ratingInfoElement = document.createElement('div');
+    ratingInfoElement.className = 'rating-info';
+    ratingInfoElement.innerHTML = `
+      <img src="../images/star.png" alt="Star" class="star-icon">
+      ${averageRating}/10 (${reviewCount})
     `;
-  } else {
-    reviewsTitleElement.innerHTML = titleText;
+    
+    reviewsLeftElement.appendChild(ratingInfoElement);
   }
 }
 

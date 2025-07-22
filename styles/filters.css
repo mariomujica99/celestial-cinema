@@ -1,5 +1,5 @@
 .filters {
-  margin: 0px 25px 10px 25px;
+  margin: 0px 22px 10px 22px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -36,7 +36,7 @@
 
 .filters-container {
   position: relative;
-  margin: 0px 25px 10px 25px;
+  margin: 0px 22px 10px 22px;
 }
 
 .filters {

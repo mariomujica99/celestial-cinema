@@ -55,10 +55,14 @@
     </div>
 
     <div class="reviews-header">
-      <p class="reviews-title">Reviews</p>
-      <select class="season-filter-dropdown" id="season-filter" onchange="filterReviewsBySeason()">
-        <option value="all">All Seasons</option>
-      </select>
+      <div class="reviews-left">
+        <p class="reviews-title">Reviews</p>
+      </div>
+      <div class="reviews-right">
+        <select class="season-filter-dropdown" id="season-filter" onchange="filterReviewsBySeason()">
+          <option value="all">All Seasons</option>
+        </select>
+      </div>
     </div>
     <section id="reviews-container"></section>
 

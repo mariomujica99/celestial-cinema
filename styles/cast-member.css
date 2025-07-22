@@ -14,7 +14,7 @@
 
 .cast-member-photo {
   height: 480px;
-  width: 320px;
+  width: 100%;
   border-radius: 20px;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
@@ -158,12 +158,22 @@
   padding: 20px;
 }
 
+@media (max-width: 650px) {
+  .cast-member-photo {
+    height: 440px;
+  }
+}
+
 @media (max-width: 1111px) {
   .cast-member-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
+  }
+
+  .cast-member-photo {
+    height: 440px;
   }
   
   .cast-member-name {

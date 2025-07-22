@@ -1,8 +1,8 @@
 .topnav {
   overflow: hidden;
   background-color: #131720;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 24px;
+  padding-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,11 +12,9 @@
   display: block;
   color: white;
   text-align: center;
-  width: 295px;
-  min-width: 255px;
-  padding: 14px 16px;
-  margin-top: 5px;
-  margin-left: 8px;
+  width: 263px;
+  min-width: 223px;;
+  margin: 5px 12px 0 24px;
   text-decoration: none;
   font-size: 1.30rem;
   text-transform: uppercase;
@@ -65,7 +63,7 @@
   }
 
   .topnav a {
-    width: 255px;
+    width: 223px;
     font-size: 1.1rem;
   }
 }

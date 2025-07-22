@@ -99,8 +99,8 @@
 
 .person-photo {
   width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  height: 100%;
+  border-radius: 10%;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
   flex-shrink: 0;
@@ -214,8 +214,7 @@
   }
   
   .person-photo {
-    width: 50px;
-    height: 50px;
+    width: 60px;
   }
   
   .person-name {
