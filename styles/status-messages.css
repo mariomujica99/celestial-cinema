@@ -77,7 +77,7 @@
 @media (max-width: 650px) {
   .load-more-btn {
     padding: 10px 20px 8px 20px;
-    font-size: 1.001rem;
+    font-size: 0.9rem;
     min-width: 100px;
   }
 }

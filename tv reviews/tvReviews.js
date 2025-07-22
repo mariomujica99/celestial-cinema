@@ -19,6 +19,14 @@ const tvPosterElement = document.getElementById("tv-poster")
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
+const loadMoreBtn = document.getElementById("load-more-btn");
+
+let currentPage = 1;
+let hasMoreReviews = true;
+let isLoading = false;
+let allFilteredReviews = [];
+let displayedReviews = [];
+let displayedReviewsCount = 8;
 let seasonsData = [];
 let episodesData = {};
 
@@ -382,6 +390,8 @@ newReviewForm.innerHTML = `
 `;
 
 reviewsContainer.appendChild(newReviewForm);
+
+loadMoreBtn.addEventListener('click', loadMoreFilteredReviews);
 fetchSeasonsForDropdown();
 
 returnReviews(API_LINKS.REVIEWS);
@@ -391,9 +401,17 @@ function returnReviews(url) {
     console.log(reviewsData);
 
     allReviewsData = reviewsData;
-    
+    allFilteredReviews = reviewsData;
+
     updateReviewsTitle(reviewsData);
-    displayFilteredReviews(reviewsData);
+    displayFilteredReviews(reviewsData.slice(0, 8));
+    displayedReviewsCount = Math.min(8, reviewsData.length);
+
+    if (reviewsData.length > 8) {
+      loadMoreBtn.style.display = 'block';
+    } else {
+      loadMoreBtn.style.display = 'none';
+    }
   }).catch(error => {
     console.error('Error fetching reviews:', error);
     showErrorMessage('Failed to load reviews. Please check your connection.');
@@ -742,13 +760,26 @@ function filterReviewsBySeason() {
     );
   }
 
+  allFilteredReviews = filteredReviews;
+  displayedReviewsCount = Math.min(8, filteredReviews.length);
   updateReviewsTitle(filteredReviews, selectedSeason);
+  displayFilteredReviews(filteredReviews.slice(0, 8));
 
-  displayFilteredReviews(filteredReviews);
+  if (filteredReviews.length > 8) {
+    loadMoreBtn.style.display = 'block';
+  } else {
+    loadMoreBtn.style.display = 'none';
+  }
 }
 
-function displayFilteredReviews(reviewsData) {
+function displayFilteredReviews(reviewsData, append = false) {
   const reviewsContainer = document.getElementById('reviews-container');
+  
+  if (!append) {
+    const newReviewForm = reviewsContainer.firstElementChild;
+    reviewsContainer.innerHTML = '';
+    reviewsContainer.appendChild(newReviewForm);
+  }
   
   reviewsData.forEach(reviewData => {
     const reviewCard = document.createElement('div');
@@ -800,4 +831,21 @@ function displayFilteredReviews(reviewsData) {
     
     reviewsContainer.appendChild(reviewCard);
   });
+}
+
+function loadMoreFilteredReviews() {
+  const reviewsPerPage = 8;
+  const nextBatch = allFilteredReviews.slice(displayedReviewsCount, displayedReviewsCount + reviewsPerPage);
+  
+  if (nextBatch.length === 0) {
+    loadMoreBtn.style.display = 'none';
+    return;
+  }
+  
+  displayFilteredReviews(nextBatch, true);
+  displayedReviewsCount += nextBatch.length;
+  
+  if (displayedReviewsCount >= allFilteredReviews.length) {
+    loadMoreBtn.style.display = 'none';
+  }
 }

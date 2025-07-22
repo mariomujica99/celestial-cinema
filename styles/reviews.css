@@ -258,6 +258,23 @@
   transform: translateY(-1px);
 }
 
+.review-card:hover,
+.review-card:has(select:focus),
+.review-card:has(.review-input:focus),
+.review-card:has(.user-input:focus) {
+  box-shadow: 0 4px 20px rgba(106, 90, 205, 0.2);
+}
+
+.review-card:has(.new-review):hover,
+.review-card:has(.new-review):has(select:focus),
+.review-card:has(.new-review):has(.review-input:focus),
+.review-card:has(.new-review):has(.user-input:focus) {
+  border-color: rgba(106, 90, 205, 0.6);
+  box-shadow: 
+    0 8px 32px rgba(106, 90, 205, 0.3),
+    0 0 0 1px rgba(106, 90, 205, 0.5);
+}
+
 @media (max-width: 650px) {
   #reviews-container {
     grid-template-columns: 1fr;

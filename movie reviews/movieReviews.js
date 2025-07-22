@@ -17,6 +17,13 @@ const moviePosterElement = document.getElementById("movie-poster")
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
+const loadMoreBtn = document.getElementById("load-more-btn");
+
+let currentPage = 1;
+let hasMoreReviews = true;
+let isLoading = false;
+let allMovieReviews = [];
+
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -349,53 +356,88 @@ newReviewForm.innerHTML = `
 
 reviewsContainer.appendChild(newReviewForm);
 
+loadMoreBtn.addEventListener('click', loadMoreMovieReviews);
+
 returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
     console.log(reviewsData);
+    allMovieReviews = reviewsData;
     updateReviewsTitle(reviewsData);
-    reviewsData.forEach(reviewData => {
-      const reviewCard = document.createElement('div');
-      
-      const escapedReview = escapeHtml(reviewData.review);
-      const escapedUser = escapeHtml(reviewData.user);
-      const rating = reviewData.rating || 0;
-      
-      reviewCard.innerHTML = `
-        <div class="review-item">
-          <div class="review-column">
-            <div class="review-card" id="${reviewData._id}">
-              <p class="user-review">${reviewData.user}</p>
-              <div class="rating-display">
-                  <div class="rating-left">
-                      <img src="../images/star.png" alt="Star" class="star-icon">
-                      <span class="rating-score">${rating}/10</span>
-                  </div>
-                  <div class="timestamp">
-                      ${formatTimestamp(reviewData.createdAt)}
-                  </div>
-              </div>
-              <p class="review-review">${reviewData.review}</p>                
-              <div class="review-actions">
-                  <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
-                  <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      const cardElement = reviewCard.querySelector('.review-card');
-      cardElement.setAttribute('data-original-review', reviewData.review);
-      cardElement.setAttribute('data-original-user', reviewData.user);
-      cardElement.setAttribute('data-original-rating', rating);
-      
-      reviewsContainer.appendChild(reviewCard);
-    });
+    
+    displayMovieReviews(reviewsData.slice(0, 8));
+    
+    if (reviewsData.length > 8) {
+      loadMoreBtn.style.display = 'block';
+    }
   }).catch(error => {
     console.error('Error fetching reviews:', error);
     showErrorMessage('Failed to load reviews. Please check your connection.');
+  });
+}
+
+function loadMoreMovieReviews() {
+  const reviewsPerPage = 8;
+  const currentDisplayed = reviewsContainer.querySelectorAll('.review-item').length - 1;
+  const nextBatch = allMovieReviews.slice(currentDisplayed, currentDisplayed + reviewsPerPage);
+  
+  if (nextBatch.length === 0) {
+    loadMoreBtn.style.display = 'none';
+    return;
+  }
+  
+  displayMovieReviews(nextBatch, true);
+  
+  if (currentDisplayed + nextBatch.length >= allMovieReviews.length) {
+    loadMoreBtn.style.display = 'none';
+  }
+}
+
+function displayMovieReviews(reviewsData, append = false) {
+  if (!append) {
+    const newReviewForm = reviewsContainer.firstElementChild;
+    reviewsContainer.innerHTML = '';
+    reviewsContainer.appendChild(newReviewForm);
+  }
+  
+  reviewsData.forEach(reviewData => {
+    const reviewCard = document.createElement('div');
+    
+    const escapedReview = escapeHtml(reviewData.review);
+    const escapedUser = escapeHtml(reviewData.user);
+    const rating = reviewData.rating || 0;
+    
+    reviewCard.innerHTML = `
+      <div class="review-item">
+        <div class="review-column">
+          <div class="review-card" id="${reviewData._id}">
+            <p class="user-review">${reviewData.user}</p>
+            <div class="rating-display">
+                <div class="rating-left">
+                    <img src="../images/star.png" alt="Star" class="star-icon">
+                    <span class="rating-score">${rating}/10</span>
+                </div>
+                <div class="timestamp">
+                    ${formatTimestamp(reviewData.createdAt)}
+                </div>
+            </div>
+            <p class="review-review">${reviewData.review}</p>                
+            <div class="review-actions">
+                <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
+                <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const cardElement = reviewCard.querySelector('.review-card');
+    cardElement.setAttribute('data-original-review', reviewData.review);
+    cardElement.setAttribute('data-original-user', reviewData.user);
+    cardElement.setAttribute('data-original-rating', rating);
+    
+    reviewsContainer.appendChild(reviewCard);
   });
 }
 
