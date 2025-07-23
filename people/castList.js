@@ -53,7 +53,6 @@ function fetchCredits(url) {
             return res.json();
         })
         .then(function(creditsData) {
-            console.log('Credits:', creditsData);
             displayCastAndCrew(creditsData);
         })
         .catch(error => {

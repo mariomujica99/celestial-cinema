@@ -140,8 +140,6 @@ function returnMedia(url, contentType = 'movie', append = false) {
   const pageUrl = url.includes('?') ? `${url}&page=${currentPage}` : `${url}?page=${currentPage}`;
   
   fetch(pageUrl).then(res => res.json()).then(function(data) {
-    console.log(data.results);
-    
     if (!data.results || data.results.length === 0) {
       if (!append) {
         mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';

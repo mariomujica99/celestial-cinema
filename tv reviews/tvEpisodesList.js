@@ -63,7 +63,6 @@ function loadEpisodes() {
       return res.json();
     })
     .then(function(data) {
-      console.log('Episodes data:', data);
       displayEpisodes(data.episodes || []);
     })
     .catch(error => {

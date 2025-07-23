@@ -50,9 +50,7 @@ function returnTVDetails(url) {
       }
       return res.json();
     })
-    .then(function(tvData) {
-      console.log(tvData);
-      
+    .then(function(tvData) {      
       setBackdropBackground(tvData.backdrop_path);
       
       if (tvData.poster_path) {
@@ -226,7 +224,6 @@ function returnTVCredits(url) {
       return res.json();
     })
     .then(function(creditsData) {
-      console.log('TV Credits:', creditsData);
       updateCreditsSection(creditsData);
     })
     .catch(error => {
@@ -398,8 +395,6 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + tvId).then(res => res.json()).then(function(reviewsData) {
-    console.log(reviewsData);
-
     allReviewsData = reviewsData;
     allFilteredReviews = reviewsData;
 
@@ -460,7 +455,6 @@ function escapeHtml(text) {
 }
 
 function editReview(reviewId) {
-  console.log('Editing review:', reviewId);
   const reviewElement = document.getElementById(reviewId);
   
   if (!reviewElement) {

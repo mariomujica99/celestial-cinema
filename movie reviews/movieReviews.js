@@ -44,9 +44,7 @@ function returnMovieDetails(url) {
       }
       return res.json();
     })
-    .then(function(movieData) {
-      console.log(movieData);
-      
+    .then(function(movieData) {     
       setBackdropBackground(movieData.backdrop_path);
       
       if (movieData.poster_path) {
@@ -169,7 +167,6 @@ function returnMovieCredits(url) {
       return res.json();
     })
     .then(function(creditsData) {
-      console.log('Credits:', creditsData);
       updateCreditsSection(creditsData);
     })
     .catch(error => {
@@ -362,7 +359,6 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
-    console.log(reviewsData);
     allMovieReviews = reviewsData;
     updateReviewsTitle(reviewsData);
     
@@ -476,7 +472,6 @@ function escapeHtml(text) {
 }
 
 function editReview(reviewId) {
-  console.log('Editing review:', reviewId);
   const reviewElement = document.getElementById(reviewId);
   
   if (!reviewElement) {

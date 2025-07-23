@@ -37,9 +37,7 @@ function returnCastDetails(url) {
       }
       return res.json();
     })
-    .then(function(castData) {
-      console.log(castData);
-      
+    .then(function(castData) {      
       if (castData.profile_path) {
         castMemberPhotoElement.src = API_LINKS.IMG_PATH + castData.profile_path;
         castMemberPhotoElement.onload = function() {
@@ -81,7 +79,6 @@ function returnCastCredits(url) {
       return res.json();
     })
     .then(function(creditsData) {
-      console.log('Cast Credits:', creditsData);
       displayKnownFor(creditsData);
     })
     .catch(error => {

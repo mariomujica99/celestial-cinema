@@ -229,8 +229,6 @@ function loadFilteredReviews(append = false) {
       return res.json();
     })
     .then(async function(data) {
-      console.log('Filtered reviews data:', data);
-      
       if (!append) {
         reviewsContainer.innerHTML = '';
         allReviews = [];
@@ -363,8 +361,6 @@ function returnReviews(url, append = false) {
     return res.json();
   })
   .then(function(data) {
-    console.log('Reviews data:', data);
-    
     if (!append) {
       allReviews = [];
       reviewsContainer.innerHTML = '';
@@ -594,7 +590,6 @@ function escapeHtml(text) {
 }
 
 function editReview(reviewId) {
-  console.log('Editing review:', reviewId);
   const reviewElement = document.getElementById(reviewId);
   
   if (!reviewElement) {
