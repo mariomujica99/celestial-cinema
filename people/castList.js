@@ -4,11 +4,11 @@ const mediaType = url.searchParams.get("type");
 const mediaTitle = url.searchParams.get("title");
 
 const API_LINKS = {
-    MOVIE_CREDITS: `http://localhost:8000/api/v1/movies/credits/${mediaId}`,
-    TV_CREDITS: `http://localhost:8000/api/v1/movies/tv/credits/${mediaId}`,
-    TV_AGGREGATE_CREDITS: `http://localhost:8000/api/v1/movies/tv/aggregate_credits/${mediaId}`,
-    MOVIE_DETAILS: `http://localhost:8000/api/v1/movies/details/${mediaId}`,
-    TV_DETAILS: `http://localhost:8000/api/v1/movies/tv/details/${mediaId}`,
+    MOVIE_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/credits/${mediaId}`,
+    TV_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/credits/${mediaId}`,
+    TV_AGGREGATE_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/aggregate_credits/${mediaId}`,
+    MOVIE_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/details/${mediaId}`,
+    TV_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${mediaId}`,
     IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
     BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };

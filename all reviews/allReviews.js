@@ -1,7 +1,7 @@
 const API_LINKS = {
-  REVIEWS: 'http://localhost:8000/api/v1/reviews/',
-  MOVIE_DETAILS: 'http://localhost:8000/api/v1/movies/details/',
-  TV_DETAILS: 'http://localhost:8000/api/v1/movies/tv/details/',
+  REVIEWS: 'https://celestial-cinema-backend.onrender.com/api/v1/reviews/',
+  MOVIE_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/',
+  TV_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/',
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
 };
 

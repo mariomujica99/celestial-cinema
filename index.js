@@ -1,13 +1,13 @@
 const API_LINKS = {
-    TRENDING_WEEK: 'http://localhost:8000/api/v1/movies/trending/week',
-    TRENDING_DAY: 'http://localhost:8000/api/v1/movies/trending/day',
-    POPULAR: 'http://localhost:8000/api/v1/movies/popular',
-    NOW_PLAYING: 'http://localhost:8000/api/v1/movies/now-playing',
-    UPCOMING: 'http://localhost:8000/api/v1/movies/upcoming',
-    TOP_RATED: 'http://localhost:8000/api/v1/movies/top-rated',
-    POPULAR_TV: 'http://localhost:8000/api/v1/movies/tv/popular',
-    SEARCH_MULTI: 'http://localhost:8000/api/v1/movies/search?query=',
-    IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
+  TRENDING_WEEK: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/week',
+  TRENDING_DAY: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/day',
+  POPULAR: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/popular',
+  NOW_PLAYING: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/now-playing',
+  UPCOMING: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/upcoming',
+  TOP_RATED: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/top-rated',
+  POPULAR_TV: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/popular',
+  SEARCH_MULTI: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
 };
 
 const mediaGridContainer = document.getElementById("media-grid");

@@ -3,13 +3,13 @@ const tvId = url.searchParams.get("id")
 const tvTitle = url.searchParams.get("title")
 
 const API_LINKS = {
-    REVIEWS: 'http://localhost:8000/api/v1/reviews/',
-    TV_DETAILS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
-    TV_CREDITS: `http://localhost:8000/api/v1/movies/tv/credits/${tvId}`,
-    TV_SEASONS: `http://localhost:8000/api/v1/movies/tv/seasons/${tvId}`,
-    TV_EPISODES: `http://localhost:8000/api/v1/movies/tv/season/${tvId}/`,
-    IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-    BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+  REVIEWS: 'https://celestial-cinema-backend.onrender.com/api/v1/reviews/',
+  TV_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${tvId}`,
+  TV_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/credits/${tvId}`,
+  TV_SEASONS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/seasons/${tvId}`,
+  TV_EPISODES: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/season/${tvId}/`,
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const reviewsContainer = document.getElementById("reviews-container");

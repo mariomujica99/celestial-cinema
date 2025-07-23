@@ -3,10 +3,10 @@ const castId = url.searchParams.get("id");
 const castName = url.searchParams.get("name");
 
 const API_LINKS = {
-    CAST_DETAILS: `http://localhost:8000/api/v1/movies/person/${castId}`,
-    CAST_CREDITS: `http://localhost:8000/api/v1/movies/person/${castId}/credits`,
-    IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-    BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+  CAST_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/person/${castId}`,
+  CAST_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/person/${castId}/credits`,
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const castMemberPhotoElement = document.getElementById("cast-member-photo");

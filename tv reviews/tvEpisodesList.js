@@ -4,10 +4,10 @@ const seasonNumber = url.searchParams.get("season");
 const tvTitle = url.searchParams.get("title");
 
 const API_LINKS = {
-    TV_DETAILS: `http://localhost:8000/api/v1/movies/tv/details/${tvId}`,
-    TV_EPISODES: `http://localhost:8000/api/v1/movies/tv/season/${tvId}/${seasonNumber}`,
-    IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-    BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+  TV_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${tvId}`,
+  TV_EPISODES: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/season/${tvId}/${seasonNumber}`,
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const episodesContainer = document.getElementById("episodes-container");
