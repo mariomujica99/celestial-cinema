@@ -186,10 +186,10 @@ function returnMedia(url, contentType = 'movie', append = false) {
       if (itemData.poster_path) {
         mediaThumbnail.src = API_LINKS.IMG_PATH + itemData.poster_path;
         mediaThumbnail.onerror = function() {
-          this.src = '/images/no-image.jpg';
+          this.src = 'images/no-image.jpg';
         };
       } else {
-        mediaThumbnail.src = '/images/no-image.jpg';
+        mediaThumbnail.src = 'images/no-image.jpg';
       }    
 
       const mediaTitle = document.createElement('p');
