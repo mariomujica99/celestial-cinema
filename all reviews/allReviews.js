@@ -44,13 +44,7 @@ let currentFilters = {
 };
 let isFiltering = false;
 
-searchForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const searchTerm = searchInput.value.trim();
-  if (searchTerm) {
-    window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
-  }
-});
+initSearchRedirect(searchForm, searchInput);
 
 userFilterInput.addEventListener("input", debounce(() => {
   currentFilters.user = userFilterInput.value.trim();
@@ -583,12 +577,6 @@ function applyFilters() {
   }
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
 function editReview(reviewId) {
   const reviewElement = document.getElementById(reviewId);
   
@@ -605,11 +593,7 @@ function editReview(reviewId) {
   const userInputId = "user-edit-" + reviewId;
   const ratingInputId = "rating-edit-" + reviewId;
   
-  let ratingOptions = '';
-  for (let i = 0; i <= 10; i++) {
-    const selected = i == originalRating ? 'selected' : '';
-    ratingOptions += `<option value="${i}" ${selected}>${i}</option>`;
-  }
+  const ratingOptions = generateRatingOptions(originalRating);
   
   reviewElement.innerHTML = `
     <div class="user-line">
@@ -710,28 +694,3 @@ function restoreScrollPosition() {
 }
 
 window.addEventListener('load', restoreScrollPosition);
-
-function showErrorMessage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message-red';
-  errorDiv.textContent = message;
-  document.body.appendChild(errorDiv);
-
-  setTimeout(() => {
-    if (errorDiv.parentNode) {
-      errorDiv.remove();
-    }
-  }, 5000);
-}
-
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}

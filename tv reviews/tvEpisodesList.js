@@ -17,13 +17,7 @@ const backButton = document.getElementById("back-button");
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
-searchForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const searchTerm = searchInput.value.trim();
-  if (searchTerm) {
-    window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
-  }
-});
+initSearchRedirect(searchForm, searchInput);
 
 backButton.addEventListener("click", () => {
   window.location.href = `tvReviews.html?id=${tvId}&title=${encodeURIComponent(tvTitle || '')}`;
@@ -41,7 +35,14 @@ function loadTVDetails() {
       return res.json();
     })
     .then(function(tvData) {
-      setBackdropBackground(tvData.backdrop_path);
+      window.tvBackdropPath = tvData.backdrop_path;
+      setBackdropBackground(
+          document.querySelector('.episodes-header'),
+          tvData.backdrop_path,
+          API_LINKS.BACKDROP_PATH,
+          '../images/no-image-backdrop.jpg',
+          [0.8, 0.9]
+      );
       
       const firstAirYear = tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '';
       const showTitle = `${tvData.name || tvTitle || 'Unknown Title'} ${firstAirYear ? `(${firstAirYear})` : ''}`;
@@ -67,7 +68,7 @@ function loadEpisodes() {
     })
     .catch(error => {
       console.error('Error fetching episodes:', error);
-      showErrorMessage('Failed to load episodes. Please try again later.');
+      showErrorMessage('Failed to load episodes. Please try again later.', document.querySelector('.episodes-header'));
     });
 }
 
@@ -128,36 +129,4 @@ function displayEpisodes(episodes) {
     
     episodesContainer.appendChild(episodeCard);
   });
-}
-
-function setBackdropBackground(backdropPath) {
-  window.tvBackdropPath = backdropPath;
-  
-  const episodesHeader = document.querySelector('.episodes-header');
-  if (episodesHeader && backdropPath) {
-    const backdropUrl = `${API_LINKS.BACKDROP_PATH}${backdropPath}`;
-    episodesHeader.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.8), rgba(19, 23, 32, 0.9)), url('${backdropUrl}')`;
-    episodesHeader.style.backgroundSize = 'cover';
-    episodesHeader.style.backgroundPosition = 'center';
-    episodesHeader.style.backgroundRepeat = 'no-repeat';
-  } else if (episodesHeader) {
-    episodesHeader.style.background = `linear-gradient(rgba(19, 23, 32, 0.4), rgba(19, 23, 32, 0.5)), url('${'../images/no-image-backdrop.jpg'}')`;
-    episodesHeader.style.backgroundSize = 'cover';
-    episodesHeader.style.backgroundPosition = 'center';
-    episodesHeader.style.backgroundRepeat = 'no-repeat';
-  }
-}
-
-function showErrorMessage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message-red';
-  errorDiv.textContent = message;
-  const episodesHeader = document.querySelector('.episodes-header');
-  episodesHeader.parentNode.insertBefore(errorDiv, episodesHeader.nextSibling);
-
-  setTimeout(() => {
-    if (errorDiv.parentNode) {
-      errorDiv.remove();
-    }
-  }, 5000);
 }

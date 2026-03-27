@@ -24,15 +24,7 @@ let hasMoreReviews = true;
 let isLoading = false;
 let allMovieReviews = [];
 
-searchForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const searchTerm = searchInput.value.trim();
-
-  if (searchTerm) {
-    window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
-  }
-});
+initSearchRedirect(searchForm, searchInput);
 
 returnMovieDetails(API_LINKS.MOVIE_DETAILS);
 
@@ -45,7 +37,12 @@ function returnMovieDetails(url) {
       return res.json();
     })
     .then(function(movieData) {     
-      setBackdropBackground(movieData.backdrop_path);
+      setBackdropBackground(
+          document.querySelector('.current-movie-container'),
+          movieData.backdrop_path,
+          API_LINKS.BACKDROP_PATH,
+          '../images/no-image-backdrop.jpg'
+      );
       
       if (movieData.poster_path) {
         moviePosterElement.src = API_LINKS.IMG_PATH + movieData.poster_path;
@@ -76,7 +73,7 @@ function returnMovieDetails(url) {
       console.error('Error fetching movie details:', error);
       movieTitleElement.innerHTML = movieTitle || '';
       moviePosterElement.src = '../images/no-image.jpg';
-      showErrorMessage('Failed to load movie details. Please try again later.');
+      showErrorMessage('Failed to load movie details. Please try again later.', document.querySelector('.current-movie-container'));
     });
 }
 
@@ -140,22 +137,6 @@ function createMovieDetailsSection(movieData) {
       </a>
     </div>` : ''}
   `;
-}
-
-function setBackdropBackground(backdropPath) {
-  const mediaContainer = document.querySelector('.current-movie-container');
-  if (mediaContainer && backdropPath) {
-    const backdropUrl = `${API_LINKS.BACKDROP_PATH}${backdropPath}`;
-    mediaContainer.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.7), rgba(19, 23, 32, 0.8)), url('${backdropUrl}')`;
-    mediaContainer.style.backgroundSize = 'cover';
-    mediaContainer.style.backgroundPosition = 'center';
-    mediaContainer.style.backgroundRepeat = 'no-repeat';
-  } else {
-    mediaContainer.style.background = `linear-gradient(rgba(19, 23, 32, 0.4), rgba(19, 23, 32, 0.5)), url('${'../images/no-image-backdrop.jpg'}')`;
-    mediaContainer.style.backgroundSize = 'cover';
-    mediaContainer.style.backgroundPosition = 'center';
-    mediaContainer.style.backgroundRepeat = 'no-repeat';
-  }
 }
 
 function returnMovieCredits(url) {
@@ -256,62 +237,7 @@ function updateCreditsSection(creditsData) {
   
   creditsSection.innerHTML = creditsHTML;
 
-  displayCast(creditsData);
-
-  const castTitle = document.querySelector('.cast-title');
-  if (castTitle) {
-      castTitle.addEventListener('click', viewFullCast);
-  }
-}
-
-function displayCast(creditsData) {
-  const castContainer = document.getElementById('cast-container');
-  if (!castContainer) return;
-  
-  const cast = creditsData.cast.slice(0, 10);
-  
-  if (cast.length === 0) {
-    castContainer.innerHTML = '<div class="cast-loading">No cast information available</div>';
-    return;
-  }
-  
-  castContainer.innerHTML = '';
-  
-  cast.forEach(member => {
-    const castMember = document.createElement('div');
-    castMember.className = 'cast-member';
-    
-    const photoUrl = member.profile_path 
-      ? `${API_LINKS.IMG_PATH}${member.profile_path}`
-      : '../images/no-image-cast.jpg';
-    
-    castMember.innerHTML = `
-      <img class="cast-photo" src="${photoUrl}" alt="${member.name}" onerror="this.src='../images/no-image-cast.jpg'">
-      <div class="cast-name">${member.name}</div>
-      <div class="cast-character">${member.character || 'Unknown Role'}</div>
-    `;
-
-    castMember.addEventListener('click', () => {
-      window.location.href = `../people/castMember.html?id=${member.id}&name=${encodeURIComponent(member.name)}`;
-    });
-    
-    castContainer.appendChild(castMember);
-  });
-
-  const fullCastButton = document.createElement('div');
-  fullCastButton.className = 'full-cast-button';
-  fullCastButton.innerHTML = `
-    <button class="full-cast-btn" onclick="viewFullCast()">Full Cast →</button>
-  `;
-  castContainer.appendChild(fullCastButton);
-}
-
-function viewFullCast() {
-    const mediaType = window.location.pathname.includes('tv') ? 'tv' : 'movie';
-    const mediaTitle = document.getElementById('tv-title') || document.getElementById('movie-title');
-    const title = mediaTitle ? mediaTitle.textContent : '';
-    
-    window.location.href = `../people/castList.html?id=${movieId}&type=${mediaType}&title=${encodeURIComponent(title)}`;
+  displayTopCast(creditsData, movieId, API_LINKS.IMG_PATH);
 }
 
 const newReviewForm = document.createElement('div');
@@ -465,12 +391,6 @@ function updateReviewsTitle(reviewsData) {
   }
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
 function editReview(reviewId) {
   const reviewElement = document.getElementById(reviewId);
   
@@ -487,11 +407,7 @@ function editReview(reviewId) {
   const userInputId = "user-edit-" + reviewId;
   const ratingInputId = "rating-edit-" + reviewId;
   
-  let ratingOptions = '';
-  for (let i = 0; i <= 10; i++) {
-    const selected = i == originalRating ? 'selected' : '';
-    ratingOptions += `<option value="${i}" ${selected}>${i}</option>`;
-  }
+  const ratingOptions = generateRatingOptions(originalRating);
   
   reviewElement.innerHTML = `
     <div class="user-line">
@@ -534,7 +450,7 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
     })
     .catch(error => {
       console.error('Error saving review:', error);
-      showErrorMessage('Failed to save review. Please try again.');
+      showErrorMessage('Failed to save review. Please try again.', document.querySelector('.current-movie-container'));
     });
   } else {
       fetch(API_LINKS.REVIEWS + "new", {
@@ -550,7 +466,7 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
     })
     .catch(error => {
       console.error('Error saving review:', error);
-      showErrorMessage('Failed to save review. Please try again.');
+      showErrorMessage('Failed to save review. Please try again.', document.querySelector('.current-movie-container'));
     });
   }
 }
@@ -564,20 +480,6 @@ function deleteReview(reviewId) {
   })
   .catch(error => {
     console.error('Error deleting review:', error);
-    showErrorMessage('Failed to delete review. Please try again.');
+      showErrorMessage('Failed to delete review. Please try again.', document.querySelector('.current-movie-container'));
   });
-}
-
-function showErrorMessage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message-red';
-  errorDiv.textContent = message;
-  const mediaContainer = document.querySelector('.current-movie-container');
-  mediaContainer.parentNode.insertBefore(errorDiv, mediaContainer.nextSibling);
-
-  setTimeout(() => {
-      if (errorDiv.parentNode) {
-          errorDiv.remove();
-      }
-  }, 5000);
 }

@@ -17,15 +17,7 @@ const knownForContainer = document.getElementById("known-for-container");
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
-searchForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const searchTerm = searchInput.value.trim();
-
-  if (searchTerm) {
-    window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
-  }
-});
+initSearchRedirect(searchForm, searchInput);
 
 returnCastDetails(API_LINKS.CAST_DETAILS);
 
@@ -66,7 +58,7 @@ function returnCastDetails(url) {
       castMemberNameElement.innerHTML = castName || 'Unknown Name';
       castMemberPhotoElement.src = '../images/no-image-cast.jpg';
       biographyTextElement.innerHTML = 'Biography unavailable.';
-      showErrorMessage('Failed to load cast member details. Please try again later.');
+      showErrorMessage('Failed to load cast member details. Please try again later.', document.querySelector('.cast-member-container'));
     });
 }
 
@@ -159,18 +151,4 @@ function displayKnownFor(creditsData) {
     
     knownForContainer.appendChild(knownForItem);
   });
-}
-
-function showErrorMessage(message) {
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message-red';
-  errorDiv.textContent = message;
-  const castMemberContainer = document.querySelector('.cast-member-container');
-  castMemberContainer.parentNode.insertBefore(errorDiv, castMemberContainer.nextSibling);
-
-  setTimeout(() => {
-      if (errorDiv.parentNode) {
-          errorDiv.remove();
-      }
-  }, 5000);
 }

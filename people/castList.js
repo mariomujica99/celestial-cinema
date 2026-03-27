@@ -21,13 +21,7 @@ const searchInput = document.getElementById("search-query");
 const castSearchInput = document.getElementById("cast-search-input");
 let allCastAndCrew = {};
 
-searchForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const searchTerm = searchInput.value.trim();
-    if (searchTerm) {
-        window.location.href = `../index.html?search=${encodeURIComponent(searchTerm)}`;
-    }
-});
+initSearchRedirect(searchForm, searchInput);
 
 castSearchInput.addEventListener("input", (e) => {
     const searchTerm = e.target.value.trim().toLowerCase();
@@ -366,28 +360,24 @@ function loadMediaDetails() {
             return res.json();
         })
         .then(function(mediaData) {
-            setBackdropBackground(mediaData.backdrop_path);
+            setBackdropBackground(
+                document.querySelector('.cast-list-header'),
+                mediaData.backdrop_path,
+                API_LINKS.BACKDROP_PATH,
+                '../images/no-image-backdrop.jpg',
+                [0.8, 0.9]
+            );
         })
         .catch(error => {
             console.error('Error fetching media details:', error);
-            setBackdropBackground(null);
+            setBackdropBackground(
+                document.querySelector('.cast-list-header'),
+                null,
+                API_LINKS.BACKDROP_PATH,
+                '../images/no-image-backdrop.jpg',
+                [0.8, 0.9]
+            );
         });
-}
-
-function setBackdropBackground(backdropPath) {
-    const castListHeader = document.querySelector('.cast-list-header');
-    if (castListHeader && backdropPath) {
-        const backdropUrl = `${API_LINKS.BACKDROP_PATH}${backdropPath}`;
-        castListHeader.style.backgroundImage = `linear-gradient(rgba(19, 23, 32, 0.8), rgba(19, 23, 32, 0.9)), url('${backdropUrl}')`;
-        castListHeader.style.backgroundSize = 'cover';
-        castListHeader.style.backgroundPosition = 'center';
-        castListHeader.style.backgroundRepeat = 'no-repeat';
-    } else if (castListHeader) {
-        castListHeader.style.background = `linear-gradient(rgba(19, 23, 32, 0.4), rgba(19, 23, 32, 0.5)), url('../images/no-image-backdrop.jpg')`;
-        castListHeader.style.backgroundSize = 'cover';
-        castListHeader.style.backgroundPosition = 'center';
-        castListHeader.style.backgroundRepeat = 'no-image-backdrop.jpg';
-    }
 }
 
 function showErrorMessage(message) {
@@ -396,10 +386,7 @@ function showErrorMessage(message) {
     errorDiv.textContent = message;
     castListContainer.innerHTML = '';
     castListContainer.appendChild(errorDiv);
-    
     setTimeout(() => {
-        if (errorDiv.parentNode) {
-            errorDiv.remove();
-        }
+        if (errorDiv.parentNode) errorDiv.remove();
     }, 5000);
 }
