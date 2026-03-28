@@ -11,7 +11,8 @@
 .media-thumbnail {
   width: 100%;
   border-radius: 20px;
-  object-fit: fill;
+  object-fit: cover;
+  aspect-ratio: 2 / 3;
   text-align: center;
 }
 
@@ -64,6 +65,17 @@
   margin-left: 0;
 }
 
+.person-department-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #CBD5E0;
+  background: rgba(106, 90, 205, 0.2);
+  padding: 3px 10px 1px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 @media (max-width: 400px) {
   #media-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -76,6 +88,11 @@
   .user-score-grid {
     font-size: 0.65rem;
     padding: 2px 8px 2px 8px;
+  }
+
+  .person-department-badge {
+    font-size: 0.55rem;
+    padding: 2px 8px 0 8px;
   }
 }
 
@@ -92,6 +109,11 @@
     font-size: 0.7rem;
     padding: 2px 8px 2px 8px;
   }
+
+  .person-department-badge {
+    font-size: 0.6rem;
+    padding: 2px 8px 0 8px;
+  }
 }
 
 @media (min-width: 651px) and (max-width: 950px) {
@@ -106,6 +128,11 @@
   .user-score-grid {
     font-size: 0.75rem;
     padding: 3px 9px 3px 9px;
+  }
+
+  .person-department-badge {
+    font-size: 0.65rem;
+    padding: 3px 9px 1px 9px;
   }
 }
 
@@ -122,6 +149,11 @@
     font-size: 0.8rem;
     padding: 3px 9px 3px 9px;
   }
+
+  .person-department-badge {
+    font-size: 0.7rem;
+    padding: 3px 9px 1px 9px;
+  }
 }
 
 @media (min-width: 1251px) and (max-width: 1550px) {
@@ -135,6 +167,10 @@
 
   .user-score-grid {
     font-size: 0.85rem;
+  }
+
+  .person-department-badge {
+    font-size: 0.75rem;
   }
 }
 
@@ -151,6 +187,11 @@
     font-size: 1rem;
     padding: 4px 12px 4px 12px;
   }
+
+  .person-department-badge {
+    font-size: 0.9rem;
+    padding: 4px 12px 2px 12px;
+  }
 }
 
 @media (min-width: 1851px) {
@@ -165,5 +206,10 @@
   .user-score-grid {
     font-size: 1.1rem;
     padding: 5px 15px 5px 15px;
+  }
+
+  .person-department-badge {
+    font-size: 1rem;
+    padding: 5px 15px 3px 15px;
   }
 }

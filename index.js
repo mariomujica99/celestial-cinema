@@ -1,13 +1,14 @@
 const API_LINKS = {
-  TRENDING_WEEK: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/week',
-  TRENDING_DAY: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/day',
-  POPULAR: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/popular',
-  NOW_PLAYING: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/now-playing',
-  UPCOMING: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/upcoming',
-  TOP_RATED: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/top-rated',
-  POPULAR_TV: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/popular',
-  SEARCH_MULTI: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
-  IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
+  TRENDING_WEEK:        'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/week',
+  TRENDING_DAY:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/day',
+  POPULAR:              'https://celestial-cinema-backend.onrender.com/api/v1/movies/popular',
+  NOW_PLAYING:          'https://celestial-cinema-backend.onrender.com/api/v1/movies/now-playing',
+  UPCOMING:             'https://celestial-cinema-backend.onrender.com/api/v1/movies/upcoming',
+  TOP_RATED:            'https://celestial-cinema-backend.onrender.com/api/v1/movies/top-rated',
+  POPULAR_TV:           'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/popular',
+  SEARCH_MULTI:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
+  SEARCH_CATEGORIZED:   'https://celestial-cinema-backend.onrender.com/api/v1/movies/search/categorized?query=',
+  IMG_PATH:             'https://image.tmdb.org/t/p/w1280'
 };
 
 const mediaGridContainer = document.getElementById("media-grid");
@@ -29,6 +30,14 @@ const scrollArrowRight = document.getElementById('scroll-arrow-right');
 const loadMoreBtn = document.getElementById("load-more-btn");
 const loadMoreContainer = document.getElementById("load-more-container");
 
+const categoryTabsContainer = document.getElementById('category-tabs');
+const tabMoviesBtn = document.getElementById('tab-movies');
+const tabTvshowsBtn = document.getElementById('tab-tvshows');
+const tabPeopleBtn = document.getElementById('tab-people');
+const countMoviesEl = document.getElementById('count-movies');
+const countTvshowsEl = document.getElementById('count-tvshows');
+const countPeopleEl = document.getElementById('count-people');
+
 loadMoreBtn.addEventListener("click", loadMoreMedia);
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -41,6 +50,9 @@ let hasMoreMedia = true;
 let isLoadingMedia = false;
 let currentSearchTerm = '';
 let currentApiUrl = '';
+let categorizedResults = { movies: [], tvShows: [], people: [] };
+let activeCategoryTab = 'movies';
+let isSearchActive = false;
 
 function setActiveButton(activeButton) {
   const filterButtons = document.querySelectorAll('.filters button');
@@ -52,39 +64,35 @@ function setActiveButton(activeButton) {
 }
 
 function ensureFiltersVisible() {
-  const filtersSection = document.querySelector('.filters');
-  if (filtersSection.style.display === 'none') {
-    filtersSection.style.display = 'flex';
-  }
+  filtersNav.style.display = 'flex';
+  categoryTabsContainer.style.display = 'none';
+  isSearchActive = false;
+  updateScrollArrows();
 }
 
 function hideFiltersForSearch() {
-  const filtersSection = document.querySelector('.filters');
-  filtersSection.style.display = 'none';
-  
+  filtersNav.style.display = 'none';
+  scrollArrowLeft.classList.remove('visible');
+  scrollArrowRight.classList.remove('visible');
+
   const filterButtons = document.querySelectorAll('.filters button');
-  filterButtons.forEach(button => {
-    button.classList.remove('active');
-  });
+  filterButtons.forEach(button => button.classList.remove('active'));
+
+  isSearchActive = true;
 }
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  
   const searchTerm = searchInput.value.trim();
-
   if (searchTerm) {
-    hideFiltersForSearch();
-    currentSearchTerm = searchTerm;
-    returnMedia(API_LINKS.SEARCH_MULTI + searchTerm, 'multi');
+    searchCategorized(searchTerm);
     searchInput.value = "";
   }
 });
 
 if (searchParam) {
-  hideFiltersForSearch();
   searchInput.value = searchParam;
-  returnMedia(API_LINKS.SEARCH_MULTI + searchParam, 'multi');
+  searchCategorized(searchParam);
 } else if (filterParam) {
   ensureFiltersVisible();
   
@@ -170,64 +178,11 @@ function returnMedia(url, contentType = 'movie', append = false) {
     }
     
     validResults.forEach(itemData => {
-      const mediaItemWrapper = document.createElement('div');
-      mediaItemWrapper.setAttribute('class', 'media-item');
-
-      const mediaColumnWrapper = document.createElement('div');
-      mediaColumnWrapper.setAttribute('class', 'media-column');
-
-      const mediaCard = document.createElement('div');
-      mediaCard.setAttribute('class', 'media-card');
-
-      const mediaThumbnail = document.createElement('img');
-      mediaThumbnail.setAttribute('class', 'media-thumbnail');
-      mediaThumbnail.setAttribute('id', 'image');
-
-      if (itemData.poster_path) {
-        mediaThumbnail.src = API_LINKS.IMG_PATH + itemData.poster_path;
-        mediaThumbnail.onerror = function() {
-          this.src = 'images/no-image.jpg';
-        };
-      } else {
-        mediaThumbnail.src = 'images/no-image.jpg';
-      }    
-
-      const mediaTitle = document.createElement('p');
-      mediaTitle.setAttribute('id', 'media-title');
-      const title = itemData.title || itemData.name;
-      mediaTitle.innerHTML = `${title}`;
-
-      mediaCard.appendChild(mediaThumbnail);
-      mediaCard.appendChild(mediaTitle);
-
-      const userScore = document.createElement('div');
-      userScore.setAttribute('class', 'user-score-grid');
-      const scoreValue = itemData.vote_average ? Math.round(itemData.vote_average * 10) : 0;
-      userScore.innerHTML = `${scoreValue}%`;
-
-      mediaCard.appendChild(mediaThumbnail);
-      mediaCard.appendChild(mediaTitle);
-      mediaCard.appendChild(userScore);
-      
-      const reviewsLink = document.createElement('a');
-      
       let itemContentType = contentType;
       if (contentType === 'multi') {
         itemContentType = itemData.media_type;
       }
-      
-      if (itemContentType === 'tv') {
-        reviewsLink.href = `tv reviews/tvReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`;
-      } else {
-        reviewsLink.href = `movie reviews/movieReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`;
-      }
-      reviewsLink.style.textDecoration = "none";
-      reviewsLink.style.color = "inherit";
-      
-      reviewsLink.appendChild(mediaCard);
-      mediaColumnWrapper.appendChild(reviewsLink);
-      mediaItemWrapper.appendChild(mediaColumnWrapper);
-      mediaGridContainer.appendChild(mediaItemWrapper);
+      mediaGridContainer.appendChild(createMediaCard(itemData, itemContentType));
     });
     
     hasMoreMedia = data.total_pages ? currentPage < data.total_pages : validResults.length >= 20;
@@ -252,6 +207,190 @@ function returnMedia(url, contentType = 'movie', append = false) {
     loadMoreBtn.textContent = 'Load More';
     loadMoreBtn.disabled = false;
   });
+}
+
+function searchCategorized(query) {
+  hideFiltersForSearch();
+  mediaGridContainer.innerHTML = '';
+  loadMoreContainer.style.display = 'none';
+  categoryTabsContainer.style.display = 'none';
+  currentSearchTerm = query;
+
+  fetch(API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(query))
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      categorizedResults = {
+        movies:  data.movies  || [],
+        tvShows: data.tvShows || [],
+        people:  data.people  || []
+      };
+
+      const { movieCount = 0, tvCount = 0, peopleCount = 0 } = data;
+
+      if (!movieCount && !tvCount && !peopleCount) {
+        mediaGridContainer.innerHTML = '<div class="no-media">No results found matching your search</div>';
+        return;
+      }
+
+      showCategoryTabs(movieCount, tvCount, peopleCount);
+    })
+    .catch(error => {
+      console.error('Error fetching search results:', error);
+      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load search results. Please try again.</div>';
+    });
+}
+
+function showCategoryTabs(movieCount, tvCount, peopleCount) {
+  countMoviesEl.textContent  = movieCount;
+  countTvshowsEl.textContent = tvCount;
+  countPeopleEl.textContent  = peopleCount;
+
+  tabMoviesBtn.disabled  = movieCount  === 0;
+  tabTvshowsBtn.disabled = tvCount     === 0;
+  tabPeopleBtn.disabled  = peopleCount === 0;
+
+  categoryTabsContainer.style.display = 'flex';
+  setActiveCategoryTab(getBestTab(movieCount, tvCount, peopleCount));
+  updateScrollArrows();
+}
+
+function getBestTab(movieCount, tvCount, peopleCount) {
+  // Highest count wins; tiebreaker priority: movies > tvShows > people
+  if (movieCount >= tvCount && movieCount >= peopleCount) return 'movies';
+  if (tvCount >= peopleCount) return 'tvshows';
+  return 'people';
+}
+
+function setActiveCategoryTab(category) {
+  activeCategoryTab = category;
+
+  [tabMoviesBtn, tabTvshowsBtn, tabPeopleBtn].forEach(btn => btn.classList.remove('active'));
+
+  const tabMap = { movies: tabMoviesBtn, tvshows: tabTvshowsBtn, people: tabPeopleBtn };
+  if (tabMap[category]) tabMap[category].classList.add('active');
+
+  renderCategoryResults(category);
+}
+
+function renderCategoryResults(category) {
+  mediaGridContainer.innerHTML = '';
+
+  const resultMap = {
+    movies:  { data: categorizedResults.movies,  contentType: 'movie' },
+    tvshows: { data: categorizedResults.tvShows, contentType: 'tv'    },
+    people:  { data: categorizedResults.people,  contentType: 'person'}
+  };
+
+  const { data, contentType } = resultMap[category];
+
+  if (!data || data.length === 0) {
+    mediaGridContainer.innerHTML = '<div class="no-media">No results in this category</div>';
+    return;
+  }
+
+  data.forEach(itemData => {
+    const card = contentType === 'person'
+      ? createPersonCard(itemData)
+      : createMediaCard(itemData, contentType);
+    mediaGridContainer.appendChild(card);
+  });
+}
+
+function createMediaCard(itemData, contentType) {
+  const mediaItemWrapper = document.createElement('div');
+  mediaItemWrapper.setAttribute('class', 'media-item');
+
+  const mediaColumnWrapper = document.createElement('div');
+  mediaColumnWrapper.setAttribute('class', 'media-column');
+
+  const mediaCard = document.createElement('div');
+  mediaCard.setAttribute('class', 'media-card');
+
+  const mediaThumbnail = document.createElement('img');
+  mediaThumbnail.setAttribute('class', 'media-thumbnail');
+  mediaThumbnail.setAttribute('id', 'image');
+
+  if (itemData.poster_path) {
+    mediaThumbnail.src = API_LINKS.IMG_PATH + itemData.poster_path;
+    mediaThumbnail.onerror = function() { this.src = 'images/no-image.jpg'; };
+  } else {
+    mediaThumbnail.src = 'images/no-image.jpg';
+  }
+
+  const mediaTitle = document.createElement('p');
+  mediaTitle.setAttribute('id', 'media-title');
+  const title = itemData.title || itemData.name || '';
+  mediaTitle.innerHTML = title;
+
+  const userScore = document.createElement('div');
+  userScore.setAttribute('class', 'user-score-grid');
+  const scoreValue = itemData.vote_average ? Math.round(itemData.vote_average * 10) : 0;
+  userScore.innerHTML = `${scoreValue}%`;
+
+  mediaCard.appendChild(mediaThumbnail);
+  mediaCard.appendChild(mediaTitle);
+  mediaCard.appendChild(userScore);
+
+  const reviewsLink = document.createElement('a');
+  reviewsLink.href = contentType === 'tv'
+    ? `tv reviews/tvReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`
+    : `movie reviews/movieReviews.html?id=${itemData.id}&title=${encodeURIComponent(title)}`;
+  reviewsLink.style.textDecoration = 'none';
+  reviewsLink.style.color = 'inherit';
+
+  reviewsLink.appendChild(mediaCard);
+  mediaColumnWrapper.appendChild(reviewsLink);
+  mediaItemWrapper.appendChild(mediaColumnWrapper);
+
+  return mediaItemWrapper;
+}
+
+function createPersonCard(personData) {
+  const mediaItemWrapper = document.createElement('div');
+  mediaItemWrapper.setAttribute('class', 'media-item');
+
+  const mediaColumnWrapper = document.createElement('div');
+  mediaColumnWrapper.setAttribute('class', 'media-column');
+
+  const mediaCard = document.createElement('div');
+  mediaCard.setAttribute('class', 'media-card');
+
+  const profileThumbnail = document.createElement('img');
+  profileThumbnail.setAttribute('class', 'media-thumbnail');
+
+  if (personData.profile_path) {
+    profileThumbnail.src = API_LINKS.IMG_PATH + personData.profile_path;
+    profileThumbnail.onerror = function() { this.src = 'images/no-image-cast.jpg'; };
+  } else {
+    profileThumbnail.src = 'images/no-image-cast.jpg';
+  }
+
+  const personNameEl = document.createElement('p');
+  personNameEl.setAttribute('id', 'media-title');
+  const name = personData.name || '';
+  personNameEl.textContent = name;
+
+  const departmentEl = document.createElement('div');
+  departmentEl.setAttribute('class', 'person-department-badge');
+  departmentEl.textContent = personData.known_for_department || 'Unknown';
+
+  mediaCard.appendChild(profileThumbnail);
+  mediaCard.appendChild(personNameEl);
+  mediaCard.appendChild(departmentEl);
+
+  const personLink = document.createElement('a');
+  personLink.href = `people/castMember.html?id=${personData.id}&name=${encodeURIComponent(name)}`;
+  personLink.style.textDecoration = 'none';
+  personLink.style.color = 'inherit';
+
+  personLink.appendChild(mediaCard);
+  mediaColumnWrapper.appendChild(personLink);
+  mediaItemWrapper.appendChild(mediaColumnWrapper);
+
+  return mediaItemWrapper;
 }
 
 function storeScrollPosition() {
@@ -342,10 +481,23 @@ reviewsButton.addEventListener("click", () => {
   });
 });
 
+tabMoviesBtn.addEventListener('click', () => {
+  if (!tabMoviesBtn.disabled) setActiveCategoryTab('movies');
+});
+
+tabTvshowsBtn.addEventListener('click', () => {
+  if (!tabTvshowsBtn.disabled) setActiveCategoryTab('tvshows');
+});
+
+tabPeopleBtn.addEventListener('click', () => {
+  if (!tabPeopleBtn.disabled) setActiveCategoryTab('people');
+});
+
 function updateScrollArrows() {
-  const scrollLeft = filtersNav.scrollLeft;
-  const scrollWidth = filtersNav.scrollWidth;
-  const clientWidth = filtersNav.clientWidth;
+  const activeNav = isSearchActive ? categoryTabsContainer : filtersNav;
+  const scrollLeft = activeNav.scrollLeft;
+  const scrollWidth = activeNav.scrollWidth;
+  const clientWidth = activeNav.clientWidth;
   
   if (scrollLeft > 0) {
     scrollArrowLeft.classList.add('visible');
@@ -361,6 +513,7 @@ function updateScrollArrows() {
 }
 
 filtersNav.addEventListener('scroll', updateScrollArrows);
+categoryTabsContainer.addEventListener('scroll', updateScrollArrows);
 window.addEventListener('resize', updateScrollArrows);
 
 updateScrollArrows();

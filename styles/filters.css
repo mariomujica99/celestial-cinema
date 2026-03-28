@@ -77,11 +77,63 @@
   padding-left: 3px;
 }
 
+.category-tabs {
+  gap: 8px;
+  padding: 5px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.category-tab {
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
+  padding: 7px 15px 6px 15px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: white;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.category-tab:hover:not(:disabled) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.category-tab.active {
+  background: linear-gradient(135deg, #0F0C29, #24243e, #302b63, #4a41a7);
+  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
+}
+
+.category-tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tab-badge {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2px 8px 0 8px;
+  margin-bottom: 2px;
+  font-size: 0.8em;
+}
+
 @media (max-width: 650px) {
   .filters button {
     font-size: 0.78rem;
     padding: 7px 12px 5px 12px;
   }
+
   .scroll-arrow {
     position: absolute;
     top: 50%;
@@ -100,5 +152,10 @@
     transition: opacity 0.3s ease;
     color: white;
     font-size: 15px;
+  }
+
+  .category-tab {
+    font-size: 0.78rem;
+    padding: 7px 12px 5px 12px;
   }
 }
