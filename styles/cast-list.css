@@ -242,4 +242,8 @@
   .person-role {
     font-size: 0.7rem;
   }
+
+  .cast-search-filters .filter-input-container {
+    width: 100%;
+  }
 }
