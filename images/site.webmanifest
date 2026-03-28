@@ -1,0 +1,36 @@
+{
+  "name": "Celestial Cinema",
+  "short_name": "CCMDb",
+  "description": "Discover movies and TV shows, view cast info, and leave reviews.",
+  "start_url": "../",
+  "scope": "../",
+  "display": "standalone",
+  "theme_color": "#131720",
+  "background_color": "#131720",
+  "icons": [
+    {
+      "src": "images/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -111,3 +111,16 @@ function initSearchRedirect(formElement, inputElement, indexPath = '../index.htm
         }
     });
 }
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Pages are either at repo root or exactly one level deep.
+    const swPath = location.pathname.split('/').filter(Boolean).length > 2
+      ? '../sw.js'
+      : './sw.js';
+    navigator.serviceWorker.register(swPath).catch((error) => {
+      console.error('Service Worker registration failed:', error);
+    });
+  });
+}
