@@ -1,8 +1,8 @@
 .content-rating {
   background-color: #666;
   color: white;
-  padding: 4px 5px 1px 6px;
-  border-radius: 3px;
+  padding: 4px 5px 1.5px 6px;
+  border-radius: 4px;
   font-size: 1.001rem;
 }
 
@@ -131,6 +131,48 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
+@media (max-width: 650px) {
+  .content-rating {
+    font-size: 0.7001rem;
+  }
+
+  .release-date,
+  .genres,
+  .runtime {
+    font-size: 0.7rem;
+  }
+
+  .user-score-label {
+    font-size: 0.8rem;
+  }
+
+  .user-score {
+    font-size: 1rem;
+    padding: 4px 14px 3px 14px;
+  }
+
+  .overview-title {
+    font-size: 0.9rem;
+  }
+
+  .overview-text {
+    font-size: 0.8rem;
+  }
+
+  .person-name {
+    font-size: 0.7rem;
+  }
+
+  .person-job {
+    font-size: 0.6rem;
+  }
+
+  .imdb-link {
+    font-size: 0.8rem;
+    padding: 8px 16px 6px 16px;
+  }
 }
 
 @media (max-width: 1111px) {

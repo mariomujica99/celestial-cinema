@@ -64,3 +64,15 @@
     text-align: center;
   }
 }
+
+@media (max-width: 650px) {
+  .current-movie-container {
+    padding: 25px 15px 15px 15px;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .movie-title {
+    font-size: 1.2rem;
+  }
+}

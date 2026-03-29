@@ -24,8 +24,6 @@ const reviewsButton = document.querySelector(".reviews-button");
 const sortFilterInput = document.getElementById("sort-filter");
 
 const filtersNav = document.getElementById('filters-nav');
-const scrollArrowLeft = document.getElementById('scroll-arrow-left');
-const scrollArrowRight = document.getElementById('scroll-arrow-right');
 
 let currentPage = 1;
 let hasMoreReviews = true;
@@ -656,29 +654,6 @@ function deleteReview(reviewId) {
   });
 }
 
-function updateScrollArrows() {
-  const scrollLeft = filtersNav.scrollLeft;
-  const scrollWidth = filtersNav.scrollWidth;
-  const clientWidth = filtersNav.clientWidth;
-  
-  if (scrollLeft > 0) {
-    scrollArrowLeft.classList.add('visible');
-  } else {
-    scrollArrowLeft.classList.remove('visible');
-  }
-  
-  if (scrollLeft < scrollWidth - clientWidth - 1) {
-    scrollArrowRight.classList.add('visible');
-  } else {
-    scrollArrowRight.classList.remove('visible');
-  }
-}
-
-filtersNav.addEventListener('scroll', updateScrollArrows);
-window.addEventListener('resize', updateScrollArrows);
-
-updateScrollArrows();
-
 function restoreScrollPosition() {
   const savedPosition = sessionStorage.getItem('filtersScrollPosition');
   if (savedPosition !== null) {
@@ -686,11 +661,8 @@ function restoreScrollPosition() {
     if (filtersNav) {
       requestAnimationFrame(() => {
         filtersNav.scrollLeft = parseInt(savedPosition);
-        updateScrollArrows();
         sessionStorage.removeItem('filtersScrollPosition');
       });
     }
   }
 }
-
-window.addEventListener('load', restoreScrollPosition);

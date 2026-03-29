@@ -24,8 +24,6 @@ const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
 
 const filtersNav = document.getElementById('filters-nav');
-const scrollArrowLeft = document.getElementById('scroll-arrow-left');
-const scrollArrowRight = document.getElementById('scroll-arrow-right');
 
 const loadMoreBtn = document.getElementById("load-more-btn");
 const loadMoreContainer = document.getElementById("load-more-container");
@@ -53,6 +51,8 @@ let currentApiUrl = '';
 let categorizedResults = { movies: [], tvShows: [], people: [] };
 let activeCategoryTab = 'movies';
 let isSearchActive = false;
+let currentSearchPage = 1;
+let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
 
 function setActiveButton(activeButton) {
   const filterButtons = document.querySelectorAll('.filters button');
@@ -67,13 +67,10 @@ function ensureFiltersVisible() {
   filtersNav.style.display = 'flex';
   categoryTabsContainer.style.display = 'none';
   isSearchActive = false;
-  updateScrollArrows();
 }
 
 function hideFiltersForSearch() {
   filtersNav.style.display = 'none';
-  scrollArrowLeft.classList.remove('visible');
-  scrollArrowRight.classList.remove('visible');
 
   const filterButtons = document.querySelectorAll('.filters button');
   filterButtons.forEach(button => button.classList.remove('active'));
@@ -212,6 +209,7 @@ function returnMedia(url, contentType = 'movie', append = false) {
 function searchCategorized(query) {
   hideFiltersForSearch();
   mediaGridContainer.innerHTML = '';
+  currentSearchPage = 1;
   loadMoreContainer.style.display = 'none';
   categoryTabsContainer.style.display = 'none';
   currentSearchTerm = query;
@@ -247,6 +245,7 @@ function showCategoryTabs(movieCount, tvCount, peopleCount) {
   countMoviesEl.textContent  = movieCount;
   countTvshowsEl.textContent = tvCount;
   countPeopleEl.textContent  = peopleCount;
+  searchTotalCounts = { movies: movieCount, tvshows: tvCount, people: peopleCount };
 
   tabMoviesBtn.disabled  = movieCount  === 0;
   tabTvshowsBtn.disabled = tvCount     === 0;
@@ -254,7 +253,6 @@ function showCategoryTabs(movieCount, tvCount, peopleCount) {
 
   categoryTabsContainer.style.display = 'flex';
   setActiveCategoryTab(getBestTab(movieCount, tvCount, peopleCount));
-  updateScrollArrows();
 }
 
 function getBestTab(movieCount, tvCount, peopleCount) {
@@ -297,6 +295,15 @@ function renderCategoryResults(category) {
       : createMediaCard(itemData, contentType);
     mediaGridContainer.appendChild(card);
   });
+
+  const total = searchTotalCounts[category];
+  if (data.length < total) {
+    loadMoreContainer.style.display = 'flex';
+    loadMoreBtn.textContent = 'Load More';
+    loadMoreBtn.disabled = false;
+  } else {
+    loadMoreContainer.style.display = 'none';
+  }
 }
 
 function createMediaCard(itemData, contentType) {
@@ -407,7 +414,6 @@ function restoreScrollPosition() {
     if (filtersNav) {
       requestAnimationFrame(() => {
         filtersNav.scrollLeft = parseInt(savedPosition);
-        updateScrollArrows();
         sessionStorage.removeItem('filtersScrollPosition');
       });
     }
@@ -417,10 +423,72 @@ function restoreScrollPosition() {
 window.addEventListener('load', restoreScrollPosition);
 
 function loadMoreMedia() {
+  if (isSearchActive) {
+    loadMoreSearchResults();
+    return;
+  }
   if (isLoadingMedia || !hasMoreMedia) return;
-  
   currentPage++;
   returnMedia(currentApiUrl, currentContentType, true);
+}
+
+function loadMoreSearchResults() {
+  if (isLoadingMedia) return;
+  isLoadingMedia = true;
+  currentSearchPage++;
+  loadMoreBtn.textContent = 'Loading';
+  loadMoreBtn.disabled = true;
+
+  fetch(API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(currentSearchTerm) + `&page=${currentSearchPage}`)
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      categorizedResults.movies  = [...categorizedResults.movies,  ...(data.movies  || [])];
+      categorizedResults.tvShows = [...categorizedResults.tvShows, ...(data.tvShows || [])];
+      categorizedResults.people  = [...categorizedResults.people,  ...(data.people  || [])];
+
+      const newItemsMap = {
+        movies:  data.movies  || [],
+        tvshows: data.tvShows || [],
+        people:  data.people  || []
+      };
+      const contentTypeMap = { movies: 'movie', tvshows: 'tv', people: 'person' };
+      const newItems = newItemsMap[activeCategoryTab];
+      const contentType = contentTypeMap[activeCategoryTab];
+
+      newItems.forEach(itemData => {
+        const card = contentType === 'person'
+          ? createPersonCard(itemData)
+          : createMediaCard(itemData, contentType);
+        mediaGridContainer.appendChild(card);
+      });
+
+      const accumulatedMap = {
+        movies:  categorizedResults.movies.length,
+        tvshows: categorizedResults.tvShows.length,
+        people:  categorizedResults.people.length
+      };
+      const accumulatedCount = accumulatedMap[activeCategoryTab];
+      const total = searchTotalCounts[activeCategoryTab];
+
+      if (accumulatedCount < total) {
+        loadMoreContainer.style.display = 'flex';
+        loadMoreBtn.textContent = 'Load More';
+        loadMoreBtn.disabled = false;
+      } else {
+        loadMoreContainer.style.display = 'none';
+      }
+
+      isLoadingMedia = false;
+    })
+    .catch(error => {
+      console.error('Error loading more search results:', error);
+      isLoadingMedia = false;
+      loadMoreBtn.textContent = 'Load More';
+      loadMoreBtn.disabled = false;
+    });
 }
 
 trendingTodayButton.addEventListener("click", () => {
@@ -492,28 +560,3 @@ tabTvshowsBtn.addEventListener('click', () => {
 tabPeopleBtn.addEventListener('click', () => {
   if (!tabPeopleBtn.disabled) setActiveCategoryTab('people');
 });
-
-function updateScrollArrows() {
-  const activeNav = isSearchActive ? categoryTabsContainer : filtersNav;
-  const scrollLeft = activeNav.scrollLeft;
-  const scrollWidth = activeNav.scrollWidth;
-  const clientWidth = activeNav.clientWidth;
-  
-  if (scrollLeft > 0) {
-    scrollArrowLeft.classList.add('visible');
-  } else {
-    scrollArrowLeft.classList.remove('visible');
-  }
-  
-  if (scrollLeft < scrollWidth - clientWidth - 1) {
-    scrollArrowRight.classList.add('visible');
-  } else {
-    scrollArrowRight.classList.remove('visible');
-  }
-}
-
-filtersNav.addEventListener('scroll', updateScrollArrows);
-categoryTabsContainer.addEventListener('scroll', updateScrollArrows);
-window.addEventListener('resize', updateScrollArrows);
-
-updateScrollArrows();

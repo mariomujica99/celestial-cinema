@@ -24,7 +24,7 @@
   box-shadow: 0 0 0 1px transparent;
 }
 
-.filters button:hover {
+.filters button:hover:not(.active) {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   cursor: pointer;
 }
@@ -41,40 +41,6 @@
 
 .filters {
   margin: 0;
-}
-
-.scroll-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #19263b;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  color: white;
-  font-size: 15px;
-}
-
-.scroll-arrow.visible {
-  opacity: 1;
-}
-
-.scroll-arrow-left {
-  left: -15px;
-  padding-right: 1px;
-}
-
-.scroll-arrow-right {
-  right: -15px;
-  padding-left: 3px;
 }
 
 .category-tabs {
@@ -106,8 +72,9 @@
   box-shadow: 0 0 0 1px transparent;
 }
 
-.category-tab:hover:not(:disabled) {
+.category-tab:hover:not(:disabled):not(.active) {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
 }
 
 .category-tab.active {
@@ -132,26 +99,6 @@
   .filters button {
     font-size: 0.78rem;
     padding: 7px 12px 5px 12px;
-  }
-
-  .scroll-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #19263b;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    color: white;
-    font-size: 15px;
   }
 
   .category-tab {
