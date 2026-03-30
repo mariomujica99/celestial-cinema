@@ -47,11 +47,18 @@
   transition: all 0.2s ease;
 }
 
-.name-preset-btn:hover,
 .name-preset-btn.selected {
   background: linear-gradient(135deg, #6A5ACD, #4C44C1);
   border-color: transparent;
   color: white;
+}
+
+@media (hover: hover) {
+  .name-preset-btn:hover {
+    background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+    border-color: transparent;
+    color: white;
+  }
 }
 
 .name-modal-input {

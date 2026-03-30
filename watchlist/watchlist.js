@@ -164,9 +164,7 @@ function createWatchlistItem(item) {
   posterWrapper.appendChild(posterImg);
   posterWrapper.appendChild(removeBtn);
 
-  const displayName = item.username
-    ? item.username.charAt(0).toUpperCase() + item.username.slice(1)
-    : '';
+  const displayName = item.username || '';
 
   const details = document.createElement('div');
   details.className = 'watchlist-item-details';

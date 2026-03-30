@@ -144,7 +144,7 @@
 .watchlist-item-added-by {
   font-size: 0.65rem;
   color: #9d8ff0;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
   margin: 0;
 }

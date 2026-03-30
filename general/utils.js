@@ -193,7 +193,7 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
 
   const modal = overlay.querySelector('.name-modal');
   modal.style.pointerEvents = 'none';
-  setTimeout(() => { modal.style.pointerEvents = ''; }, 350);
+  setTimeout(() => { modal.style.pointerEvents = ''; }, 500);
 
   const input = overlay.querySelector('#name-modal-input');
 
