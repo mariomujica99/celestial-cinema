@@ -40,9 +40,9 @@
   color: #CBD5E0;
   padding: 10px 15px 8px 15px;
   font-size: 0.9rem;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
+  text-transform: none;
   transition: all 0.2s ease;
 }
 
@@ -62,7 +62,6 @@
   color: white;
   font-size: 0.9rem;
   font-family: "Rollbox", "Montserrat", sans-serif, arial;
-  text-transform: uppercase;
   box-sizing: border-box;
 }
 

@@ -77,18 +77,18 @@
 
 .watchlist-remove-btn {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 0;
+  left: 0;
   background: linear-gradient(135deg, rgba(106, 90, 205, 0.92), rgba(76, 68, 193, 0.92));
   border: none;
-  border-radius: 6px;
+  border-radius: 10px 0 6px 0;
   padding: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   z-index: 10;
   transition: all 0.2s ease;
 }
@@ -99,8 +99,8 @@
 }
 
 .watchlist-remove-icon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   filter: brightness(0) invert(1);
   display: block;
 }
@@ -151,12 +151,16 @@
 
 .watchlist-empty {
   text-align: center;
-  padding: 60px 20px 58px 20px;
-  font-size: 1.1rem;
+  padding: 20px 10px 18px 10px;
+  font-size: 0.8rem;
   color: #CBD5E0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(45, 27, 61, 0.2),
+    rgba(25, 38, 59, 0.2)
+  );
   border-radius: 15px;
   border: 1px solid rgba(106, 90, 205, 0.2);
 }

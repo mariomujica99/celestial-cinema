@@ -2,14 +2,18 @@
 .no-reviews,
 .error-message {
   text-align: center;
-  padding: 40px 20px 38px 20px;
-  font-size: 1.1rem;
+  padding: 20px 10px 18px 10px;
+  font-size: 0.8rem;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: "Rollbox", "Montserrat", sans-serif, arial;
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(45, 27, 61, 0.2),
+    rgba(25, 38, 59, 0.2)
+  );
   border-radius: 15px;
   border: 1px solid rgba(106, 90, 205, 0.2);
   color: #CBD5E0;

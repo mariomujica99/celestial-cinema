@@ -165,10 +165,10 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
   overlay.innerHTML = `
     <div class="name-modal">
       <p class="name-modal-title">${title}</p>
-      <button class="name-preset-btn" data-name="mario">Mario</button>
-      <button class="name-preset-btn" data-name="monse">Monse</button>
+      <button class="name-preset-btn" data-name="mario">mario</button>
+      <button class="name-preset-btn" data-name="monse">monse</button>
       <input type="text" class="name-modal-input" id="name-modal-input"
-          placeholder="Other name...">
+          placeholder="name">
       <div class="name-modal-actions">
         <button class="name-modal-cancel">Cancel</button>
         <button class="name-modal-confirm">${confirmText}</button>
@@ -177,6 +177,12 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
   `;
 
   document.body.appendChild(overlay);
+
+  const modalButtons = overlay.querySelectorAll('button, input');
+  modalButtons.forEach(el => { el.style.pointerEvents = 'none'; });
+  setTimeout(() => {
+    modalButtons.forEach(el => { el.style.pointerEvents = ''; });
+  }, 350);
 
   const input = overlay.querySelector('#name-modal-input');
 
