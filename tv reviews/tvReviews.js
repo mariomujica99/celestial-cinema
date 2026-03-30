@@ -130,6 +130,13 @@ function createTVDetailsSection(tvData) {
       <span class="user-score-label">User Score</span>
       <span class="user-score">${userScore}%</span>
     </div>
+
+    <div class="watchlist-detail-section">
+      <button class="watchlist-detail-btn" id="watchlist-detail-btn">
+        <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
+        Add to Watchlist
+      </button>
+    </div>
     
     <div class="overview-section">
       <p class="overview-title">Overview</p>
@@ -146,6 +153,77 @@ function createTVDetailsSection(tvData) {
       </a>
     </div>` : ''}
   `;
+
+  initWatchlistDetailBtn({
+      id: String(tvId),
+      title: tvData.name || '',
+      year: tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '',
+      mediaType: 'tv',
+      posterPath: tvData.poster_path || ''
+    });
+}
+
+function initWatchlistDetailBtn(item) {
+  const btn = document.getElementById('watchlist-detail-btn');
+  if (!btn) return;
+
+  const updateBtnState = (inList) => {
+    btn.classList.toggle('in-watchlist', inList);
+    btn.innerHTML = `<img src="../images/${inList ? 'watchlist-saved' : 'watchlist-add'}.svg" class="watchlist-detail-icon" alt=""> ${inList ? 'Added to Watchlist' : 'Add to Watchlist'}`;
+  };
+
+  const cachedName = localStorage.getItem('ccLastName');
+  if (cachedName) {
+    checkWatchlistAPI(cachedName, item.id)
+      .then(data => updateBtnState(data.inWatchlist))
+      .catch(() => updateBtnState(false));
+  } else {
+    updateBtnState(false);
+  }
+
+  btn.addEventListener('click', () => {
+    const isInList = btn.classList.contains('in-watchlist');
+
+    if (isInList) {
+      const cachedName = localStorage.getItem('ccLastName');
+      if (cachedName) {
+        toggleWatchlistAPI(cachedName, item)
+          .then(status => updateBtnState(status === 'added'))
+          .catch(e => {
+            console.error('Watchlist toggle failed:', e);
+            showErrorMessage('Failed to update watchlist. Please try again.', document.querySelector('.current-tv-container'));
+          });
+      } else {
+        showNameModal({
+          title: 'Remove from Watchlist',
+          confirmText: 'Remove',
+          onConfirm: async (username) => {
+            try {
+              const status = await toggleWatchlistAPI(username, item);
+              updateBtnState(status === 'added');
+            } catch (e) {
+              console.error('Watchlist toggle failed:', e);
+              showErrorMessage('Failed to update watchlist. Please try again.', document.querySelector('.current-tv-container'));
+            }
+          }
+        });
+      }
+    } else {
+      showNameModal({
+        title: 'Save to Watchlist',
+        confirmText: 'Save',
+        onConfirm: async (username) => {
+          try {
+            const status = await toggleWatchlistAPI(username, item);
+            updateBtnState(status === 'added');
+          } catch (e) {
+            console.error('Watchlist toggle failed:', e);
+            showErrorMessage('Failed to update watchlist. Please try again.', document.querySelector('.current-tv-container'));
+          }
+        }
+      });
+    }
+  });
 }
 
 function displaySeasons(tvData) {
@@ -314,6 +392,17 @@ newReviewForm.innerHTML = `
 
 reviewsContainer.appendChild(newReviewForm);
 
+const newUserInput = document.getElementById('new-user-input');
+newUserInput.readOnly = true;
+newUserInput.style.cursor = 'pointer';
+newUserInput.addEventListener('click', () => {
+  showNameModal({
+    title: 'Sign Your Review',
+    confirmText: 'Confirm',
+    onConfirm: (name) => { newUserInput.value = name; }
+  });
+});
+
 loadMoreBtn.addEventListener('click', loadMoreFilteredReviews);
 fetchSeasonsForDropdown();
 
@@ -430,6 +519,17 @@ function editReview(reviewId) {
       <button type="button" onclick="location.reload()">Cancel</button>
     </div>
   `;
+
+  const editUserInput = document.getElementById(userInputId);
+  editUserInput.readOnly = true;
+  editUserInput.style.cursor = 'pointer';
+  editUserInput.addEventListener('click', () => {
+    showNameModal({
+      title: 'Sign Your Review',
+      confirmText: 'Confirm',
+      onConfirm: (name) => { editUserInput.value = name; }
+    });
+  });
   
   populateSeasonDropdown();
   setTimeout(() => {

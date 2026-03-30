@@ -21,6 +21,9 @@ const nowPlayingButton = document.querySelector(".now-playing-button");
 const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
+const watchlistButton = document.querySelector(".watchlist-button");
+const reviewsActionButton = document.querySelector(".reviews-action-button");
+const watchlistActionButton = document.querySelector(".watchlist-action-button");
 const reviewsButton = document.querySelector(".reviews-button");
 
 const filtersNav = document.getElementById('filters-nav');
@@ -53,13 +56,25 @@ let activeCategoryTab = 'movies';
 let isSearchActive = false;
 let currentSearchPage = 1;
 let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
+let savedMediaIds = new Set();
+
+async function loadSavedMediaIds() {
+  try {
+    const res = await fetch('https://celestial-cinema-backend.onrender.com/api/v1/watchlist');
+    if (!res.ok) return;
+    const data = await res.json();
+    savedMediaIds = new Set(
+      (data.items || []).map(item => String(item.mediaId))
+    );
+  } catch (e) {
+    console.error('Failed to load saved media ids:', e);
+  }
+}
 
 function setActiveButton(activeButton) {
-  const filterButtons = document.querySelectorAll('.filters button');
-  filterButtons.forEach(button => {
-    button.classList.remove('active');
+  document.querySelectorAll('.filters button, .action-row button').forEach(btn => {
+    btn.classList.remove('active');
   });
-  
   activeButton.classList.add('active');
 }
 
@@ -87,44 +102,45 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-if (searchParam) {
-  searchInput.value = searchParam;
-  searchCategorized(searchParam);
-} else if (filterParam) {
-  ensureFiltersVisible();
-  
-  switch (filterParam) {
-    case 'trending':
-      setActiveButton(trendingTodayButton);
-      returnMedia(API_LINKS.TRENDING_DAY, 'movie');
-      break;
-    case 'popular':
-      setActiveButton(popularButton);
-      returnMedia(API_LINKS.POPULAR, 'movie');
-      break;
-    case 'now-playing':
-      setActiveButton(nowPlayingButton);
-      returnMedia(API_LINKS.NOW_PLAYING, 'movie');
-      break;
-    case 'upcoming':
-      setActiveButton(upcomingButton);
-      returnMedia(API_LINKS.UPCOMING, 'movie');
-      break;
-    case 'top-rated':
-      setActiveButton(topRatedButton);
-      returnMedia(API_LINKS.TOP_RATED, 'movie');
-      break;
-    case 'shows':
-      setActiveButton(showsButton);
-      returnMedia(API_LINKS.POPULAR_TV, 'tv');
-      break;
-    default:
-      returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
+loadSavedMediaIds().then(() => {
+  if (searchParam) {
+    searchInput.value = searchParam;
+    searchCategorized(searchParam);
+  } else if (filterParam) {
+    ensureFiltersVisible();
+    switch (filterParam) {
+      case 'trending':
+        setActiveButton(trendingTodayButton);
+        returnMedia(API_LINKS.TRENDING_DAY, 'movie');
+        break;
+      case 'popular':
+        setActiveButton(popularButton);
+        returnMedia(API_LINKS.POPULAR, 'movie');
+        break;
+      case 'now-playing':
+        setActiveButton(nowPlayingButton);
+        returnMedia(API_LINKS.NOW_PLAYING, 'movie');
+        break;
+      case 'upcoming':
+        setActiveButton(upcomingButton);
+        returnMedia(API_LINKS.UPCOMING, 'movie');
+        break;
+      case 'top-rated':
+        setActiveButton(topRatedButton);
+        returnMedia(API_LINKS.TOP_RATED, 'movie');
+        break;
+      case 'shows':
+        setActiveButton(showsButton);
+        returnMedia(API_LINKS.POPULAR_TV, 'tv');
+        break;
+      default:
+        returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
+    }
+  } else {
+    ensureFiltersVisible();
+    returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
   }
-} else {
-  ensureFiltersVisible();
-  returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
-}
+});
 
 function returnMedia(url, contentType = 'movie', append = false) {
   if (!append) {
@@ -350,6 +366,88 @@ function createMediaCard(itemData, contentType) {
 
   reviewsLink.appendChild(mediaCard);
   mediaColumnWrapper.appendChild(reviewsLink);
+
+  if (contentType !== 'person') {
+    const watchlistItem = {
+      id: String(itemData.id),
+      title: title,
+      year: itemData.release_date
+        ? new Date(itemData.release_date).getFullYear()
+        : (itemData.first_air_date ? new Date(itemData.first_air_date).getFullYear() : ''),
+      mediaType: contentType === 'tv' ? 'tv' : 'movie',
+      posterPath: itemData.poster_path || ''
+    };
+
+    const watchlistBtn = document.createElement('button');
+    watchlistBtn.className = 'watchlist-card-btn';
+
+    const updateWatchlistCardBtn = (inList) => {
+      watchlistBtn.innerHTML = `<img src="images/${inList ? 'watchlist-saved' : 'watchlist-add'}.svg" class="watchlist-icon" alt="${inList ? 'Remove from watchlist' : 'Add to watchlist'}">`;
+      watchlistBtn.setAttribute('aria-label', inList ? 'Remove from watchlist' : 'Add to watchlist');
+    };
+
+    updateWatchlistCardBtn(savedMediaIds.has(String(itemData.id)));
+
+    watchlistBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isInList = savedMediaIds.has(String(watchlistItem.id));
+
+      if (isInList) {
+        const cachedName = localStorage.getItem('ccLastName');
+        if (cachedName) {
+          toggleWatchlistAPI(cachedName, watchlistItem)
+            .then(status => {
+              const nowInList = status === 'added';
+              if (nowInList) savedMediaIds.add(String(watchlistItem.id));
+              else savedMediaIds.delete(String(watchlistItem.id));
+              updateWatchlistCardBtn(nowInList);
+            })
+            .catch(err => {
+              console.error('Watchlist toggle failed:', err);
+              showErrorMessage('Failed to update watchlist. Please try again.');
+            });
+        } else {
+          showNameModal({
+            title: 'Remove from Watchlist',
+            confirmText: 'Remove',
+            onConfirm: async (username) => {
+              try {
+                const status = await toggleWatchlistAPI(username, watchlistItem);
+                const nowInList = status === 'added';
+                if (nowInList) savedMediaIds.add(String(watchlistItem.id));
+                else savedMediaIds.delete(String(watchlistItem.id));
+                updateWatchlistCardBtn(nowInList);
+              } catch (err) {
+                console.error('Watchlist toggle failed:', err);
+                showErrorMessage('Failed to update watchlist. Please try again.');
+              }
+            }
+          });
+        }
+      } else {
+        showNameModal({
+          title: 'Save to Watchlist',
+          confirmText: 'Save',
+          onConfirm: async (username) => {
+            try {
+              const status = await toggleWatchlistAPI(username, watchlistItem);
+              const nowInList = status === 'added';
+              if (nowInList) savedMediaIds.add(String(watchlistItem.id));
+              else savedMediaIds.delete(String(watchlistItem.id));
+              updateWatchlistCardBtn(nowInList);
+            } catch (err) {
+              console.error('Watchlist toggle failed:', err);
+              showErrorMessage('Failed to update watchlist. Please try again.');
+            }
+          }
+        });
+      }
+    });
+
+    mediaColumnWrapper.appendChild(watchlistBtn);
+  }
   mediaItemWrapper.appendChild(mediaColumnWrapper);
 
   return mediaItemWrapper;
@@ -547,6 +645,21 @@ reviewsButton.addEventListener("click", () => {
   requestAnimationFrame(() => {
     window.location.href = `all reviews/allReviews.html`;
   });
+});
+
+watchlistButton.addEventListener("click", () => {
+  storeScrollPosition();
+  window.location.href = "watchlist/watchlist.html";
+});
+
+reviewsActionButton.addEventListener("click", () => {
+  storeScrollPosition();
+  window.location.href = "all reviews/allReviews.html";
+});
+
+watchlistActionButton.addEventListener("click", () => {
+  storeScrollPosition();
+  window.location.href = "watchlist/watchlist.html";
 });
 
 tabMoviesBtn.addEventListener('click', () => {

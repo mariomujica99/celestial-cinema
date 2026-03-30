@@ -112,6 +112,116 @@ function initSearchRedirect(formElement, inputElement, indexPath = '../index.htm
     });
 }
 
+const WATCHLIST_API = 'https://celestial-cinema-backend.onrender.com/api/v1/watchlist';
+
+async function toggleWatchlistAPI(username, item) {
+  try {
+    const res = await fetch(`${WATCHLIST_API}/toggle`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        mediaId: String(item.id),
+        title: item.title || '',
+        year: item.year || '',
+        mediaType: item.mediaType || 'movie',
+        posterPath: item.posterPath || ''
+      })
+    });
+    const data = await res.json();
+    return data.status; // 'added' | 'removed'
+  } catch (e) {
+    console.error('Watchlist toggle failed:', e);
+    return null;
+  }
+}
+
+async function checkWatchlistAPI(username, mediaId) {
+  try {
+    const res = await fetch(`${WATCHLIST_API}/check?username=${encodeURIComponent(username)}&mediaId=${mediaId}`);
+    return await res.json(); // { inWatchlist: bool, id: string|null }
+  } catch (e) {
+    console.error('Watchlist check failed:', e);
+    return { inWatchlist: false, id: null };
+  }
+}
+
+/**
+ * Shows the shared name-picker modal.
+ * @param {object} options
+ * @param {string} options.title       - Modal heading text
+ * @param {string} [options.confirmText] - Confirm button label (default 'Confirm')
+ * @param {function} options.onConfirm - Called with the chosen name string
+ * @param {function} [options.onCancel]
+ */
+function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) {
+  const existing = document.getElementById('name-modal-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'name-modal-overlay';
+  overlay.className = 'name-modal-overlay';
+
+  overlay.innerHTML = `
+    <div class="name-modal">
+      <p class="name-modal-title">${title}</p>
+      <button class="name-preset-btn" data-name="mario">Mario</button>
+      <button class="name-preset-btn" data-name="monse">Monse</button>
+      <input type="text" class="name-modal-input" id="name-modal-input"
+          placeholder="Other name...">
+      <div class="name-modal-actions">
+        <button class="name-modal-cancel">Cancel</button>
+        <button class="name-modal-confirm">${confirmText}</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const input = overlay.querySelector('#name-modal-input');
+
+  overlay.querySelectorAll('.name-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      localStorage.setItem('ccLastName', btn.dataset.name);
+      overlay.remove();
+      onConfirm(btn.dataset.name);
+  });
+});
+
+  const confirmBtn = overlay.querySelector('.name-modal-confirm');
+  const cancelBtn = overlay.querySelector('.name-modal-cancel');
+
+  confirmBtn.addEventListener('click', () => {
+    const name = input.value.trim();
+    if (!name) {
+      input.focus();
+      return;
+    }
+    localStorage.setItem('ccLastName', name);
+    overlay.remove();
+    onConfirm(name);
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    overlay.remove();
+    if (onCancel) onCancel();
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      if (onCancel) onCancel();
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') confirmBtn.click();
+    if (e.key === 'Escape') cancelBtn.click();
+  });
+
+  requestAnimationFrame(() => input.focus());
+}
+
 // Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

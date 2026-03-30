@@ -10,27 +10,27 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
-    <link rel="shortcut icon" href="images/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="CCMDb" />
-    <link rel="manifest" href="images/site.webmanifest" />
+    <link rel="manifest" href="../images/site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/topnav.css">
-    <link rel="stylesheet" href="styles/media-grid.css">
-    <link rel="stylesheet" href="styles/filters.css">
-    <link rel="stylesheet" href="styles/status-messages.css">
-    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="../styles/general.css">
+    <link rel="stylesheet" href="../styles/topnav.css">
+    <link rel="stylesheet" href="../styles/filters.css">
+    <link rel="stylesheet" href="../styles/status-messages.css">
+    <link rel="stylesheet" href="../styles/watchlist.css">
+    <link rel="stylesheet" href="../styles/modal.css">
   </head>
   <body>
     <nav class="topnav">
-      <a class="active" href="index.html">Celestial Cinema</a>
+      <a class="active" href="../index.html">Celestial Cinema</a>
 
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
@@ -54,26 +54,15 @@
         <button class="reviews-action-button action-row-btn">Reviews</button>
         <button class="watchlist-action-button action-row-btn">Watchlist</button>
       </div>
-      <div class="category-tabs" id="category-tabs" style="display: none;">
-        <button class="category-tab" id="tab-movies" data-category="movies">
-          Movies <span class="tab-badge" id="count-movies">0</span>
-        </button>
-        <button class="category-tab" id="tab-tvshows" data-category="tvshows">
-          TV Shows <span class="tab-badge" id="count-tvshows">0</span>
-        </button>
-        <button class="category-tab" id="tab-people" data-category="people">
-          People <span class="tab-badge" id="count-people">0</span>
-        </button>
-      </div>
     </div>
 
-    <section id="media-grid"></section>
+    <p class="watchlist-page-title">Watchlist</p>
 
-    <div class="load-more-container" id="load-more-container" style="display: none;">
-      <button class="load-more-btn" id="load-more-btn">Load More</button>
-    </div>
+    <section id="watchlist-container">
+      <div class="reviews-loading">Loading</div>
+    </section>
 
-    <script src="general/utils.js"></script>
-    <script src="index.js"></script>
+    <script src="../general/utils.js"></script>
+    <script src="watchlist.js"></script>
   </body>
 </html>

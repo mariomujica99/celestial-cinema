@@ -133,6 +133,46 @@
   box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
 }
 
+.watchlist-detail-section {
+  margin-top: 15px;
+}
+
+.watchlist-detail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
+  color: white;
+  border: none;
+  padding: 10px 20px 8px 20px;
+  border-radius: 25px;
+  font-size: 1.001rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  transition: all 0.3s ease;
+}
+
+.watchlist-detail-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
+.watchlist-detail-btn.in-watchlist {
+  background: linear-gradient(135deg, #2d1b3d, #1a2332);
+  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
+}
+
+.watchlist-detail-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
 @media (max-width: 650px) {
   .content-rating {
     font-size: 0.7001rem;
@@ -172,6 +212,15 @@
   .imdb-link {
     font-size: 0.8rem;
     padding: 8px 16px 6px 16px;
+  }
+
+  .watchlist-detail-btn {
+    font-size: 0.8rem;
+    padding: 8px 16px 6px 16px;
+  }
+  .watchlist-detail-icon {
+    width: 15px;
+    height: 15px;
   }
 }
 

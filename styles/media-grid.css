@@ -76,6 +76,36 @@
   letter-spacing: 0.5px;
 }
 
+.watchlist-card-btn {
+  position: absolute;
+  top: 10px;
+  left: 5px;
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.92), rgba(76, 68, 193, 0.92));
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.watchlist-card-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scale(1.1);
+}
+
+.watchlist-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+  display: block;
+}
+
 @media (max-width: 400px) {
   #media-grid {
     grid-template-columns: repeat(2, 1fr);

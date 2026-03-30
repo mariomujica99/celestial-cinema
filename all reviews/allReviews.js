@@ -21,6 +21,9 @@ const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
 const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
+const watchlistButton = document.querySelector(".watchlist-button");
+const reviewsActionButton = document.querySelector(".reviews-action-button");
+const watchlistActionButton = document.querySelector(".watchlist-action-button");
 const sortFilterInput = document.getElementById("sort-filter");
 
 const filtersNav = document.getElementById('filters-nav');
@@ -85,14 +88,14 @@ loadMoreBtn.addEventListener("click", () => {
 });
 
 function setActiveButton(activeButton) {
-  const filterButtons = document.querySelectorAll('.filters button');
-  filterButtons.forEach(button => {
-    button.classList.remove('active');
+  document.querySelectorAll('.filters button, .action-row button').forEach(btn => {
+    btn.classList.remove('active');
   });
   activeButton.classList.add('active');
 }
 
 setActiveButton(reviewsButton);
+reviewsActionButton.classList.add('active');
 
 trendingTodayButton.addEventListener("click", () => {
     storeScrollPosition();
@@ -127,9 +130,27 @@ showsButton.addEventListener("click", () => {
 reviewsButton.addEventListener("click", (e) => {
     e.preventDefault();
     setActiveButton(reviewsButton);
+    reviewsActionButton.classList.add('active');
     requestAnimationFrame(() => {
         location.reload();
     });
+});
+
+watchlistButton.addEventListener("click", () => {
+  storeScrollPosition();
+  window.location.href = "../watchlist/watchlist.html";
+});
+
+reviewsActionButton.addEventListener("click", () => {
+  storeScrollPosition();
+  requestAnimationFrame(() => {
+    location.reload();
+  });
+});
+
+watchlistActionButton.addEventListener("click", () => {
+  storeScrollPosition();
+  window.location.href = "../watchlist/watchlist.html";
 });
 
 function storeScrollPosition() {
@@ -613,6 +634,17 @@ function editReview(reviewId) {
       <button type="button" onclick="location.reload()">Cancel</button>
     </div>
   `;
+
+  const editUserInput = document.getElementById(userInputId);
+  editUserInput.readOnly = true;
+  editUserInput.style.cursor = 'pointer';
+  editUserInput.addEventListener('click', () => {
+    showNameModal({
+      title: 'Sign Your Review',
+      confirmText: 'Confirm',
+      onConfirm: (name) => { editUserInput.value = name; }
+    });
+  });
 }
 
 function saveReview(reviewInputId, userInputId, reviewId, ratingInputId) {
