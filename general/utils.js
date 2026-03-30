@@ -178,11 +178,10 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
 
   document.body.appendChild(overlay);
 
-  const modalButtons = overlay.querySelectorAll('button, input');
-  modalButtons.forEach(el => { el.style.pointerEvents = 'none'; });
-  setTimeout(() => {
-    modalButtons.forEach(el => { el.style.pointerEvents = ''; });
-  }, 350);
+  const blocker = document.createElement('div');
+  blocker.style.cssText = 'position:absolute;inset:0;z-index:10;border-radius:20px;';
+  overlay.querySelector('.name-modal').appendChild(blocker);
+  setTimeout(() => blocker.remove(), 350);
 
   const input = overlay.querySelector('#name-modal-input');
 
