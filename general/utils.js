@@ -146,6 +146,19 @@ async function checkWatchlistAPI(username, mediaId) {
   }
 }
 
+function suppressNextClick() {
+  const handler = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    document.removeEventListener('click', handler, true);
+    clearTimeout(timeout);
+  };
+  const timeout = setTimeout(() => {
+    document.removeEventListener('click', handler, true);
+  }, 600);
+  document.addEventListener('click', handler, true);
+}
+
 /**
  * Shows the shared name-picker modal.
  * @param {object} options
@@ -178,20 +191,20 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
 
   document.body.appendChild(overlay);
 
-  const blocker = document.createElement('div');
-  blocker.style.cssText = 'position:absolute;inset:0;z-index:10;border-radius:20px;';
-  overlay.querySelector('.name-modal').appendChild(blocker);
-  setTimeout(() => blocker.remove(), 350);
+  const modal = overlay.querySelector('.name-modal');
+  modal.style.pointerEvents = 'none';
+  setTimeout(() => { modal.style.pointerEvents = ''; }, 350);
 
   const input = overlay.querySelector('#name-modal-input');
 
   overlay.querySelectorAll('.name-preset-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       localStorage.setItem('ccLastName', btn.dataset.name);
+      suppressNextClick();
       overlay.remove();
       onConfirm(btn.dataset.name);
+    });
   });
-});
 
   const confirmBtn = overlay.querySelector('.name-modal-confirm');
   const cancelBtn = overlay.querySelector('.name-modal-cancel');
@@ -203,17 +216,20 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
       return;
     }
     localStorage.setItem('ccLastName', name);
+    suppressNextClick();
     overlay.remove();
     onConfirm(name);
   });
 
   cancelBtn.addEventListener('click', () => {
+    suppressNextClick();
     overlay.remove();
     if (onCancel) onCancel();
   });
 
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) {
+      suppressNextClick();
       overlay.remove();
       if (onCancel) onCancel();
     }
