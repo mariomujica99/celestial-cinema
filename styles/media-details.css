@@ -122,7 +122,6 @@
   padding: 10px 20px 8px 20px;
   border-radius: 25px;
   font-size: 1.001rem;
-  text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
 }
@@ -134,7 +133,7 @@
 }
 
 .watchlist-detail-section {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 .watchlist-detail-btn {

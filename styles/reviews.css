@@ -220,7 +220,7 @@
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 6px 12px;
+  padding: 6px 12px 4px 12px;
   border-radius: 6px;
   background: linear-gradient(135deg, #b34b9eb4, #333399c0);
   transition: all 0.3s ease;
@@ -302,6 +302,73 @@
 @media (max-width: 650px) {
   #reviews-container {
     grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 30px 25px;
+  }
+
+  .reviews-title {
+    padding-right: 100px;
+  }
+
+  .reviews-title,
+  .rating-info {
+    font-size: 1.2rem;
+    margin: 0 25px 0 25px;
+    letter-spacing: 0.5px;
+  }
+
+  .reviews-title {
+    margin: 0 25px 0 25px;
+  }
+
+  .rating-info {
+    font-size: 1rem;
+  }
+
+  .review-card {
+    padding: 18px;
+    min-height: 280px;
+  }
+
+  .new-review {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .user-review {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .review-review {
+    font-size: 0.9rem;
+    max-height: 150px;
+  }
+
+  .review-input,
+  .user-input,
+  .rating-select {
+    font-size: 0.85rem;
+    padding: 9px 13px;
+  }
+
+  .review-card button {
+    font-size: 0.8rem;
+    padding: 6px 11px 4px 11px;
+  }
+
+  .review-actions button {
+    font-size: 0.8rem;
+    padding: 7px 14px;
+  }
+
+  .timestamp {
+    font-size: 0.75rem;
+  }
+
+  .star-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -311,13 +378,13 @@
   }
 }
 
-@media (min-width: 1001px) and (max-width: 1350px){
+@media (min-width: 1001px) and (max-width: 1350px) {
   #reviews-container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (min-width: 1351px) and (max-width: 1650px){
+@media (min-width: 1351px) and (max-width: 1650px) {
   #reviews-container {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -326,5 +393,107 @@
 @media (min-width: 1651px) {
   #reviews-container {
     grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  #reviews-container {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 20px 15px;
+  }
+
+  .reviews-title {
+    padding-top: 2px;
+    padding-right: 30px;
+  }
+
+  .reviews-title,
+  .rating-info {
+    font-size: 1rem;
+    margin: 0 15px 0 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .rating-info {
+    font-size: 0.9rem;
+    gap: 4px;
+  }
+
+  .reviews-left {
+    gap: 3px;
+  }
+
+  .review-card {
+    padding: 15px;
+    min-height: 270px;
+    border-radius: 15px;
+  }
+
+  .new-review {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .user-review {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+
+  .rating-display {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .star-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .rating-score {
+    font-size: 0.95rem;
+  }
+
+  .review-review {
+    font-size: 0.85rem;
+    max-height: 140px;
+    line-height: 1.4;
+  }
+
+  .user-line {
+    gap: 45px;
+  }
+
+  .review-text,
+  .user-text,
+  .rating-text {
+    font-size: 0.8rem;
+  }
+
+  .rating-line {
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .review-input,
+  .user-input,
+  .rating-select {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+
+  .review-actions {
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .review-actions button {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+
+  .timestamp {
+    font-size: 0.7rem;
   }
 }

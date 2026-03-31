@@ -140,7 +140,7 @@ function createMovieDetailsSection(movieData) {
     
     ${movieData.imdb_id ? `<div class="imdb-link-container">
       <a href="https://www.imdb.com/title/${movieData.imdb_id}/" target="_blank" class="imdb-link">
-        View on IMDB
+        VIEW ON IMDb
       </a>
     </div>` : ''}
   `;

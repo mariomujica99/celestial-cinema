@@ -239,8 +239,6 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
     if (e.key === 'Enter') confirmBtn.click();
     if (e.key === 'Escape') cancelBtn.click();
   });
-
-  requestAnimationFrame(() => input.focus());
 }
 
 // Register Service Worker

@@ -108,6 +108,11 @@ async function loadWatchlist() {
 
 function renderWatchlist(items) {
   watchlistContainer.innerHTML = '';
+  
+  const countElement = document.getElementById('watchlist-count');
+  if (countElement) {
+    countElement.textContent = items.length > 0 ? ` | ${items.length}` : '';
+  }
 
   if (items.length === 0) {
     watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and TV shows!</div>';
@@ -147,18 +152,26 @@ function createWatchlistItem(item) {
   removeBtn.innerHTML = `<img src="../images/watchlist-saved.svg" class="watchlist-remove-icon" alt="Remove from watchlist">`;
 
   removeBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    try {
-      const res = await fetch(`${API_LINKS.WATCHLIST}/${item._id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-      wrapper.remove();
-      if (watchlistContainer.children.length === 0) {
-        watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and TV shows!</div>';
+      e.stopPropagation();
+      try {
+        const res = await fetch(`${API_LINKS.WATCHLIST}/${item._id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        
+        wrapper.remove();
+        
+        const remainingItems = document.querySelectorAll('.watchlist-item').length;
+        const countElement = document.getElementById('watchlist-count');
+        if (countElement) {
+          countElement.textContent = remainingItems > 0 ? ` | ${remainingItems}` : '';
+        }
+
+        if (remainingItems === 0) {
+          watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and TV shows!</div>';
+        }
+      } catch (e) {
+        console.error('Failed to remove watchlist item:', e);
+        showErrorMessage('Failed to remove item. Please try again.');
       }
-    } catch (e) {
-      console.error('Failed to remove watchlist item:', e);
-      showErrorMessage('Failed to remove item. Please try again.');
-    }
   });
 
   posterWrapper.appendChild(posterImg);

@@ -80,12 +80,14 @@ function setActiveButton(activeButton) {
 
 function ensureFiltersVisible() {
   filtersNav.style.display = 'flex';
+  document.getElementById('action-row').style.removeProperty('display');
   categoryTabsContainer.style.display = 'none';
   isSearchActive = false;
 }
 
 function hideFiltersForSearch() {
   filtersNav.style.display = 'none';
+  document.getElementById('action-row').style.display = 'none';
 
   const filterButtons = document.querySelectorAll('.filters button');
   filterButtons.forEach(button => button.classList.remove('active'));
@@ -266,6 +268,14 @@ function showCategoryTabs(movieCount, tvCount, peopleCount) {
   tabMoviesBtn.disabled  = movieCount  === 0;
   tabTvshowsBtn.disabled = tvCount     === 0;
   tabPeopleBtn.disabled  = peopleCount === 0;
+
+  const tabsByCount = [
+    { btn: tabMoviesBtn,  count: movieCount  },
+    { btn: tabTvshowsBtn, count: tvCount     },
+    { btn: tabPeopleBtn,  count: peopleCount }
+  ].sort((a, b) => b.count - a.count);
+
+  tabsByCount.forEach(({ btn }) => categoryTabsContainer.appendChild(btn));
 
   categoryTabsContainer.style.display = 'flex';
   setActiveCategoryTab(getBestTab(movieCount, tvCount, peopleCount));
@@ -453,6 +463,16 @@ function createMediaCard(itemData, contentType) {
   return mediaItemWrapper;
 }
 
+function getTopKnownForTitle(personData) {
+  if (!personData.known_for || personData.known_for.length === 0) {
+    return '';
+  }
+
+  const top = personData.known_for[0];
+
+  return top.title || top.name || '';
+}
+
 function createPersonCard(personData) {
   const mediaItemWrapper = document.createElement('div');
   mediaItemWrapper.setAttribute('class', 'media-item');
@@ -480,7 +500,13 @@ function createPersonCard(personData) {
 
   const departmentEl = document.createElement('div');
   departmentEl.setAttribute('class', 'person-department-badge');
-  departmentEl.textContent = personData.known_for_department || 'Unknown';
+  const department = personData.known_for_department || 'Unknown';
+  const topKnownFor = getTopKnownForTitle(personData);
+
+  departmentEl.innerHTML = `
+    <span class="person-department-main">${department}</span>
+    ${topKnownFor ? `<span class="person-knownfor">${topKnownFor}</span>` : ''}
+  `;
 
   mediaCard.appendChild(profileThumbnail);
   mediaCard.appendChild(personNameEl);
@@ -488,11 +514,18 @@ function createPersonCard(personData) {
 
   const personLink = document.createElement('a');
   personLink.href = `people/castMember.html?id=${personData.id}&name=${encodeURIComponent(name)}`;
+
+  personLink.style.display = 'block'; 
+  personLink.style.width = '100%';
+
   personLink.style.textDecoration = 'none';
   personLink.style.color = 'inherit';
 
   personLink.appendChild(mediaCard);
   mediaColumnWrapper.appendChild(personLink);
+
+  mediaColumnWrapper.style.overflow = 'hidden';
+  mediaColumnWrapper.style.width = '100%';
   mediaItemWrapper.appendChild(mediaColumnWrapper);
 
   return mediaItemWrapper;

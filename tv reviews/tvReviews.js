@@ -149,7 +149,7 @@ function createTVDetailsSection(tvData) {
 
     ${tvData.external_ids && tvData.external_ids.imdb_id ? `<div class="imdb-link-container">
       <a href="https://www.imdb.com/title/${tvData.external_ids.imdb_id}/" target="_blank" class="imdb-link">
-          View on IMDB
+          VIEW ON IMDb
       </a>
     </div>` : ''}
   `;
@@ -236,7 +236,7 @@ function displaySeasons(tvData) {
   if (seasonsTitleElement && tvData.number_of_seasons && tvData.number_of_episodes) {
     const numberOfSeasons = tvData.number_of_seasons;
     const numberOfEpisodes = tvData.number_of_episodes;
-    seasonsTitleElement.textContent = `Seasons (${numberOfSeasons} Season${numberOfSeasons > 1 ? 's' : ''} | ${numberOfEpisodes} Episode${numberOfEpisodes > 1 ? 's' : ''})`;
+    seasonsTitleElement.innerHTML = `Seasons<br><span class="seasons-subtitle">(${numberOfSeasons} Season${numberOfSeasons > 1 ? 's' : ''} | ${numberOfEpisodes} Episode${numberOfEpisodes > 1 ? 's' : ''})</span>`;
   }
   
   const filteredSeasons = seasons.filter(season => season.season_number > 0).sort((a, b) => a.season_number - b.season_number);
@@ -357,7 +357,7 @@ newReviewForm.innerHTML = `
           <div class="episode-line">
             <p class="episode-text"></p>
             <select class="episode-select" id="new-episode-input" disabled>
-              <option value="all">All Episodes (Season Review)</option>
+              <option value="all">Season Review</option>
             </select>
           </div>
         </div>
@@ -496,7 +496,7 @@ function editReview(reviewId) {
       <div class="episode-line">
         <p class="episode-text"></p>
         <select class="episode-select" id="${episodeInputId}" disabled>
-          <option value="all">All Episodes (Season Review)</option>
+          <option value="all">Season Review</option>
         </select>
       </div>
     </div>
@@ -705,7 +705,7 @@ function populateSeasonDropdown() {
 function populateEpisodeDropdown(seasonNumber) {
     const episodeSelects = document.querySelectorAll('.episode-select');
     episodeSelects.forEach(select => {
-        select.innerHTML = '<option value="all">All Episodes (Season Review)</option>';
+        select.innerHTML = '<option value="all">Season Review</option>';
         
         if (episodesData[seasonNumber]) {
             episodesData[seasonNumber].forEach(episode => {
@@ -727,7 +727,7 @@ function handleSeasonChange(seasonSelect) {
         fetchEpisodesForSeason(seasonNumber);
     } else {
         episodeSelect.disabled = true;
-        episodeSelect.innerHTML = '<option value="all">All Episodes (Season Review)</option>';
+        episodeSelect.innerHTML = '<option value="all">Season Review</option>';
     }
 }
 

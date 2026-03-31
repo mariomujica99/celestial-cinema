@@ -1,6 +1,5 @@
 /**
- * Renders the top-cast scrollable strip and "Full Cast" button.
- * Attaches the click handler to the static .cast-title element on the page.
+ * Renders the top-cast scrollable strip
  *
  * @param {object} creditsData - TMDB credits response ({ cast, crew })
  * @param {string} mediaId     - ID passed through to viewFullCast
@@ -41,16 +40,9 @@ function displayTopCast(creditsData, mediaId, imgPath) {
         castContainer.appendChild(castMember);
     });
 
-    const fullCastButton = document.createElement('div');
-    fullCastButton.className = 'full-cast-button';
-    fullCastButton.innerHTML = `
-        <button class="full-cast-btn" onclick="viewFullCast('${mediaId}')">Full Cast →</button>
-    `;
-    castContainer.appendChild(fullCastButton);
-
-    const castTitle = document.querySelector('.cast-title');
-    if (castTitle) {
-        castTitle.addEventListener('click', () => viewFullCast(mediaId));
+    const fullCastBtn = document.querySelector('.full-cast-btn');
+    if (fullCastBtn) {
+        fullCastBtn.addEventListener('click', () => viewFullCast(mediaId));
     }
 }
 

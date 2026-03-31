@@ -163,7 +163,7 @@ function storeScrollPosition() {
 loadInitialReviews();
 
 function updateReviewCount(count) {
-  reviewCountSpan.textContent = `(${count})`;
+  reviewCountSpan.textContent = `| ${count}`;
 }
 
 function loadInitialReviews() {
