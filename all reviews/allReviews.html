@@ -63,33 +63,38 @@
       </div>
     </div>
 
-    <div class="search-filters">
-      <div class="filter-input-container">
-        <label for="user-filter">User</label>
-        <input type="text" id="user-filter" placeholder="Search User Name" class="filter-input">
-      </div>
+    <div class="search-filters" id="search-filters">
+      <button class="search-filters-toggle" id="search-filters-toggle">
+        Filter Reviews <span class="toggle-chevron">▾</span>
+      </button>
+      <div class="search-filters-body" id="search-filters-body">
+        <div class="filter-input-container">
+          <label for="user-filter">User</label>
+          <input type="text" id="user-filter" placeholder="Search User Name" class="filter-input">
+        </div>
 
-      <div class="filter-input-container">
-        <label for="media-filter">Media</label>
-        <input type="text" id="media-filter" placeholder="Search Movie / TV Show" class="filter-input">
-      </div>
+        <div class="filter-input-container">
+          <label for="media-filter">Media</label>
+          <input type="text" id="media-filter" placeholder="Search Movie / TV Show" class="filter-input">
+        </div>
 
-      <div class="filter-input-container">
-        <label for="sort-filter">Sort By</label>
-        <select id="sort-filter" class="filter-input">
-          <option value="date-newest">Date (Newest First)</option>
-          <option value="date-oldest">Date (Oldest First)</option>
-          <option value="rating-highest">Rating (Highest First)</option>
-          <option value="rating-lowest">Rating (Lowest First)</option>
-        </select>
+        <div class="filter-input-container">
+          <label for="sort-filter">Sort By</label>
+          <select id="sort-filter" class="filter-input">
+            <option value="date-newest">Date (Newest First)</option>
+            <option value="date-oldest">Date (Oldest First)</option>
+            <option value="rating-highest">Rating (Highest First)</option>
+            <option value="rating-lowest">Rating (Lowest First)</option>
+          </select>
+        </div>
+        <button id="search-filters-btn" class="search-filters-btn">Filter</button>
+        <button id="clear-filters" class="clear-filters-btn">Clear</button>
       </div>
-      <button id="clear-filters" class="clear-filters-btn">Clear</button>
     </div>
 
-    <p class="reviews-title">All Reviews <span id="review-count"></span></p>
+    <p class="reviews-title">Reviews <span id="review-count"></span></p>
 
     <section id="reviews-container">
-      <div class="reviews-loading">Loading reviews...</div>
     </section>
 
     <div class="load-more-container">

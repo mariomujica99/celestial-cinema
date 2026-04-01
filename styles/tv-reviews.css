@@ -1,7 +1,6 @@
 .reviews-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
 }
 
 .reviews-right {
@@ -109,12 +108,20 @@
     padding: 8px 12px;
     font-size: 0.8rem;
     min-width: 128px;
-    margin-right: 15px;
   }
 
   .season-select,
   .episode-select {
     padding: 8px 12px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .season-filter-dropdown {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    min-width: 128px;
+    margin-right: 15px;
   }
 }

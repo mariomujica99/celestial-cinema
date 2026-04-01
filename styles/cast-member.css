@@ -159,12 +159,6 @@
   padding: 20px;
 }
 
-@media (max-width: 650px) {
-  .cast-member-photo {
-    height: 440px;
-  }
-}
-
 @media (max-width: 1111px) {
   .cast-member-container {
     flex-direction: column;
@@ -184,5 +178,64 @@
   
   .biography-section {
     text-align: left;
+  }
+}
+
+@media (max-width: 650px) {
+  .cast-member-container {
+    padding: 10px 25px 0 25px;
+    margin-bottom: 15px;
+  }
+
+  .cast-member-name {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .biography-title {
+    font-size: 1rem;
+  }
+
+  .biography-text {
+    font-size: 0.9rem;
+  }
+
+  .known-for-section {
+    margin: 0px 25px 0 25px;
+    padding: 25px 0 0 0;
+  }
+
+  .known-for-title {
+    font-size: 1.2rem;
+    margin: 0 0 15px 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .cast-member-container {
+    padding: 10px 15px 0 15px;
+    margin-bottom: 15px;
+  }
+  .cast-member-name {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .biography-title {
+    font-size: 0.9rem;
+  }
+
+  .biography-text {
+    font-size: 0.8rem;
+  }
+
+  .known-for-section {
+    margin: 0px 15px 0 15px;
+    padding: 25px 0 0 0;
+  }
+
+  .known-for-title {
+    font-size: 1.2rem;
+    margin: 0 0 15px 0;
   }
 }

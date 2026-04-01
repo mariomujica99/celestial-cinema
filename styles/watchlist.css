@@ -1,11 +1,11 @@
 .watchlist-page-title {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: bold;
   text-transform: uppercase;
   color: white;
   max-width: 1200px;
-  margin: 20px auto 0 auto;
-  padding: 0 22px 10px 22px;
+  margin: 10px auto 0 auto;
+  padding: 0 25px 15px 25px;
   letter-spacing: 1.5px;
   position: relative;
 }
@@ -14,8 +14,8 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 22px;
-  right: 22px;
+  left: 25px;
+  right: 25px;
   height: 2px;
   background: #6A5ACD;
 }
@@ -170,7 +170,8 @@
 
 @media (max-width: 650px) {
   .watchlist-page-title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
   }
 
   .watchlist-item-title {
@@ -184,5 +185,23 @@
   .watchlist-empty {
     padding: 20px 5px 18px 5px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .watchlist-page-title {
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    padding: 0 15px 15px 15px;
+  }
+
+  .watchlist-page-title::after {
+    left: 15px;
+    right: 15px;
+    height: 2px;
+  }
+
+  #watchlist-container {
+    padding: 0 15px 35px 15px;
   }
 }

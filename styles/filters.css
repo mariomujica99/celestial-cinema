@@ -16,9 +16,9 @@
 
 .filters button {
   border: none;
-  border-radius: 30px;
+  border-radius: 5px;
   background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
-  padding: 7px 15px 6px 15px;
+  padding: 8px 15px 6px 15px;
   flex-shrink: 0;
   white-space: nowrap;
   box-shadow: 0 0 0 1px transparent;
@@ -57,9 +57,9 @@
 
 .category-tab {
   border: none;
-  border-radius: 30px;
+  border-radius: 5px;
   background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
-  padding: 7px 15px 6px 15px;
+  padding: 5px 15px 3px 15px;
   flex-shrink: 0;
   white-space: nowrap;
   color: white;
@@ -89,8 +89,8 @@
 
 .tab-badge {
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 2px 8px 0 8px;
+  border-radius: 5px;
+  padding: 4px 8px 2px 8px;
   margin-bottom: 2px;
   font-size: 0.8em;
 }
@@ -161,12 +161,44 @@
   }
 
   .category-tab {
+    flex: 1;
+    flex-shrink: 1;
+    min-width: 0;
     font-size: 0.78rem;
-    padding: 7px 12px 5px 12px;
+    padding: 4px 6px 2px 6px;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .tab-badge {
+    padding: 4px 4px 2px 4px;
+    margin-bottom: 3px;
+    font-size: 0.58rem;
   }
 
   .action-row-btn {
     font-size: 0.78rem;
     padding: 7px 12px 5px 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .filters-container {
+    margin: 0px 12px 0px 12px;
+  }
+
+  .action-row {
+    padding: 0 0px 8px 0px;
+  }
+
+  .category-tabs {
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  .category-tab {
+    gap: 3px;
+    justify-content: center;
+    padding: 4px 4px 2px 6px;
   }
 }

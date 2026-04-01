@@ -260,9 +260,9 @@ function searchCategorized(query) {
 }
 
 function showCategoryTabs(movieCount, tvCount, peopleCount) {
-  countMoviesEl.textContent  = movieCount;
-  countTvshowsEl.textContent = tvCount;
-  countPeopleEl.textContent  = peopleCount;
+  countMoviesEl.textContent  = Math.min(movieCount,  999);
+  countTvshowsEl.textContent = Math.min(tvCount,     999);
+  countPeopleEl.textContent  = Math.min(peopleCount, 999);
   searchTotalCounts = { movies: movieCount, tvshows: tvCount, people: peopleCount };
 
   tabMoviesBtn.disabled  = movieCount  === 0;

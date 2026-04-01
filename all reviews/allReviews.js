@@ -10,6 +10,9 @@ const loadMoreBtn = document.getElementById("load-more-btn");
 const userFilterInput = document.getElementById("user-filter");
 const mediaFilterInput = document.getElementById("media-filter");
 const clearFiltersBtn = document.getElementById("clear-filters");
+const searchFiltersBtn = document.getElementById("search-filters-btn");
+const searchFiltersEl = document.getElementById("search-filters");
+const searchFiltersToggleBtn = document.getElementById("search-filters-toggle");
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 const reviewCountSpan = document.getElementById("review-count");
@@ -47,18 +50,25 @@ let isFiltering = false;
 
 initSearchRedirect(searchForm, searchInput);
 
-userFilterInput.addEventListener("input", debounce(() => {
-  currentFilters.user = userFilterInput.value.trim();
-  applyFilters();
-}, 300));
+userFilterInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") triggerSearch();
+});
 
-mediaFilterInput.addEventListener("input", debounce(() => {
-  currentFilters.media = mediaFilterInput.value.trim();
-  applyFilters();
-}, 300));
+mediaFilterInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") triggerSearch();
+});
+
+searchFiltersBtn.addEventListener("click", triggerSearch);
+
+searchFiltersToggleBtn.addEventListener("click", () => {
+  searchFiltersEl.classList.toggle("is-open");
+});
 
 sortFilterInput.addEventListener("change", () => {
+  currentFilters.user = userFilterInput.value.trim();
+  currentFilters.media = mediaFilterInput.value.trim();
   currentFilters.sort = sortFilterInput.value;
+  clearReviewCount();
   applyFilters();
 });
 
@@ -166,6 +176,10 @@ function updateReviewCount(count) {
   reviewCountSpan.textContent = `| ${count}`;
 }
 
+function clearReviewCount() {
+  reviewCountSpan.textContent = '';
+}
+
 function loadInitialReviews() {
   currentPage = 1;
   hasMoreReviews = true;
@@ -175,7 +189,6 @@ function loadInitialReviews() {
     media: '',
     sort: 'date-newest'
   };
-  reviewsContainer.innerHTML = '<div class="reviews-loading">Loading</div>';
   loadMoreBtn.style.display = 'none';
   
   requestAnimationFrame(() => {
@@ -288,10 +301,6 @@ function loadFilteredReviews(append = false) {
           allReviews = append ? [...allReviews, ...displayData] : displayData;
           await displayReviews(displayData, append);
           
-          if (!append || !currentFilters.media.trim()) {
-            updateReviewCount(filteredReviewCount);
-          }
-          
           const serverHasMore = data.hasMore === true;
           
           if (currentFilters.media.trim()) {
@@ -335,7 +344,6 @@ function loadFilteredReviews(append = false) {
           } else {
             if (!append) {
               reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found matching your filters</div>';
-              updateReviewCount(0);
             }
             hasMoreReviews = false;
             loadMoreBtn.style.display = 'none';
@@ -344,7 +352,6 @@ function loadFilteredReviews(append = false) {
       } else {
         if (!append) {
           reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found matching your filters</div>';
-          updateReviewCount(0);
         }
         hasMoreReviews = false;
         loadMoreBtn.style.display = 'none';
@@ -395,7 +402,6 @@ function returnReviews(url, append = false) {
     } else {
       if (!append) {
         reviewsContainer.innerHTML = '<div class="no-reviews">No reviews found</div>';
-        updateReviewCount(0);
       }
       hasMoreReviews = false;
       loadMoreBtn.style.display = 'none';
@@ -569,6 +575,14 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
   }
 }
 
+function triggerSearch() {
+  currentFilters.user = userFilterInput.value.trim();
+  currentFilters.media = mediaFilterInput.value.trim();
+  currentFilters.sort = sortFilterInput.value;
+  clearReviewCount();
+  applyFilters();
+}
+
 function applyFilters() {
   const hasUserFilter = currentFilters.user.trim() !== '';
   const hasMediaFilter = currentFilters.media.trim() !== '';
@@ -582,7 +596,6 @@ function applyFilters() {
   remainingFilteredResults = [];
   mediaCache = {};
   
-  reviewsContainer.innerHTML = '<div class="reviews-loading">Loading</div>';
   loadMoreBtn.style.display = 'none';
   
   if (!isFiltering) {
