@@ -39,6 +39,7 @@
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
 
+      <!-- HAMBURGER MENU: insert <button id="hamburger-btn"> here -->
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
           <input class="search-input" type="search" id="search-query" name="q" placeholder="Search Media" autocomplete="off">
@@ -48,11 +49,13 @@
 
     <div class="filters-container">
       <nav class="filters" id="filters-nav">
-        <button class="shows-button">TV Shows</button>
+        <div class="media-toggle" id="media-toggle">
+          <button class="toggle-option" id="toggle-movies">Movies</button>
+          <button class="toggle-option" id="toggle-tv">Shows</button>
+        </div>
         <button class="trending-today-button">Trending</button>
         <button class="popular-button">Popular</button>
         <button class="now-playing-button">Now Playing</button>
-        <button class="upcoming-button">Upcoming</button>
         <button class="top-rated-button">Top Rated</button>
         <button class="reviews-button secondary-nav-btn special-btn">Reviews</button>
         <button class="watchlist-button secondary-nav-btn special-btn">Watchlist</button>

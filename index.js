@@ -3,9 +3,11 @@ const API_LINKS = {
   TRENDING_DAY:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/day',
   POPULAR:              'https://celestial-cinema-backend.onrender.com/api/v1/movies/popular',
   NOW_PLAYING:          'https://celestial-cinema-backend.onrender.com/api/v1/movies/now-playing',
-  UPCOMING:             'https://celestial-cinema-backend.onrender.com/api/v1/movies/upcoming',
   TOP_RATED:            'https://celestial-cinema-backend.onrender.com/api/v1/movies/top-rated',
   POPULAR_TV:           'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/popular',
+  TRENDING_TV_WEEK:     'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/tv/week',
+  TV_AIRING_TODAY:      'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/airing-today',
+  TV_TOP_RATED:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/top-rated',
   SEARCH_MULTI:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
   SEARCH_CATEGORIZED:   'https://celestial-cinema-backend.onrender.com/api/v1/movies/search/categorized?query=',
   IMG_PATH:             'https://image.tmdb.org/t/p/w1280'
@@ -18,9 +20,9 @@ const searchInput = document.getElementById("search-query");
 const trendingTodayButton = document.querySelector(".trending-today-button");
 const popularButton = document.querySelector(".popular-button");
 const nowPlayingButton = document.querySelector(".now-playing-button");
-const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
-const showsButton = document.querySelector(".shows-button");
+const moviesToggleBtn = document.getElementById('toggle-movies');
+const tvToggleBtn = document.getElementById('toggle-tv');
 const watchlistButton = document.querySelector(".watchlist-button");
 const reviewsActionButton = document.querySelector(".reviews-action-button");
 const watchlistActionButton = document.querySelector(".watchlist-action-button");
@@ -57,6 +59,7 @@ let isSearchActive = false;
 let currentSearchPage = 1;
 let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
 let savedMediaIds = new Set();
+let currentMediaToggle = localStorage.getItem('ccMediaToggle') || 'movie';
 
 async function loadSavedMediaIds() {
   try {
@@ -72,10 +75,45 @@ async function loadSavedMediaIds() {
 }
 
 function setActiveButton(activeButton) {
-  document.querySelectorAll('.filters button, .action-row button').forEach(btn => {
+  document.querySelectorAll('.filters button:not(.toggle-option), .action-row button').forEach(btn => {
     btn.classList.remove('active');
   });
   activeButton.classList.add('active');
+}
+
+const FILTER_LABELS = {
+  movie: { nowPlaying: 'Now Playing' },
+  tv:    { nowPlaying: 'Airing Today' }
+};
+
+const FILTER_CONFIGS = {
+  movie: {
+    trending:   { url: () => API_LINKS.TRENDING_WEEK,    contentType: 'movie' },
+    popular:    { url: () => API_LINKS.POPULAR,          contentType: 'movie' },
+    nowPlaying: { url: () => API_LINKS.NOW_PLAYING,      contentType: 'movie' },
+    topRated:   { url: () => API_LINKS.TOP_RATED,        contentType: 'movie' }
+  },
+  tv: {
+    trending:   { url: () => API_LINKS.TRENDING_TV_WEEK, contentType: 'tv' },
+    popular:    { url: () => API_LINKS.POPULAR_TV,       contentType: 'tv' },
+    nowPlaying: { url: () => API_LINKS.TV_AIRING_TODAY,  contentType: 'tv' },
+    topRated:   { url: () => API_LINKS.TV_TOP_RATED,     contentType: 'tv' }
+  }
+};
+
+function getFilterConfig(filterName) {
+  const cfg = FILTER_CONFIGS[currentMediaToggle][filterName];
+  return { url: cfg.url(), contentType: cfg.contentType };
+}
+
+function updateFilterButtonLabels() {
+  nowPlayingButton.textContent = FILTER_LABELS[currentMediaToggle].nowPlaying;
+}
+
+function updateToggleUI() {
+  moviesToggleBtn.classList.toggle('active', currentMediaToggle === 'movie');
+  tvToggleBtn.classList.toggle('active', currentMediaToggle === 'tv');
+  updateFilterButtonLabels();
 }
 
 function ensureFiltersVisible() {
@@ -105,6 +143,12 @@ searchForm.addEventListener("submit", (e) => {
 });
 
 loadSavedMediaIds().then(() => {
+  if (filterParam === 'shows') {
+    currentMediaToggle = 'tv';
+    localStorage.setItem('ccMediaToggle', 'tv');
+  }
+  updateToggleUI();
+
   if (searchParam) {
     searchInput.value = searchParam;
     searchCategorized(searchParam);
@@ -113,34 +157,36 @@ loadSavedMediaIds().then(() => {
     switch (filterParam) {
       case 'trending':
         setActiveButton(trendingTodayButton);
-        returnMedia(API_LINKS.TRENDING_DAY, 'movie');
         break;
       case 'popular':
         setActiveButton(popularButton);
-        returnMedia(API_LINKS.POPULAR, 'movie');
         break;
       case 'now-playing':
         setActiveButton(nowPlayingButton);
-        returnMedia(API_LINKS.NOW_PLAYING, 'movie');
-        break;
-      case 'upcoming':
-        setActiveButton(upcomingButton);
-        returnMedia(API_LINKS.UPCOMING, 'movie');
         break;
       case 'top-rated':
         setActiveButton(topRatedButton);
-        returnMedia(API_LINKS.TOP_RATED, 'movie');
         break;
       case 'shows':
-        setActiveButton(showsButton);
-        returnMedia(API_LINKS.POPULAR_TV, 'tv');
+        setActiveButton(trendingTodayButton);
         break;
       default:
-        returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
+        break;
     }
+    const filterMap = {
+      'trending':   'trending',
+      'popular':    'popular',
+      'now-playing':'nowPlaying',
+      'top-rated':  'topRated',
+      'shows':      'trending'
+    };
+    const key = filterMap[filterParam] || 'trending';
+    const { url, contentType } = getFilterConfig(key);
+    returnMedia(url, contentType);
   } else {
     ensureFiltersVisible();
-    returnMedia(API_LINKS.TRENDING_WEEK, 'movie');
+    const { url, contentType } = getFilterConfig('trending');
+    returnMedia(url, contentType);
   }
 });
 
@@ -622,12 +668,37 @@ function loadMoreSearchResults() {
     });
 }
 
+moviesToggleBtn.addEventListener('click', () => {
+  if (currentMediaToggle === 'movie') return;
+  currentMediaToggle = 'movie';
+  localStorage.setItem('ccMediaToggle', 'movie');
+  updateToggleUI();
+  ensureFiltersVisible();
+  setActiveButton(trendingTodayButton);
+  loadMoreContainer.style.display = 'none';
+  const { url, contentType } = getFilterConfig('trending');
+  returnMedia(url, contentType);
+});
+
+tvToggleBtn.addEventListener('click', () => {
+  if (currentMediaToggle === 'tv') return;
+  currentMediaToggle = 'tv';
+  localStorage.setItem('ccMediaToggle', 'tv');
+  updateToggleUI();
+  ensureFiltersVisible();
+  setActiveButton(trendingTodayButton);
+  loadMoreContainer.style.display = 'none';
+  const { url, contentType } = getFilterConfig('trending');
+  returnMedia(url, contentType);
+});
+
 trendingTodayButton.addEventListener("click", () => {
   storeScrollPosition();
   ensureFiltersVisible();
   setActiveButton(trendingTodayButton);
   loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.TRENDING_DAY, 'movie');
+  const { url, contentType } = getFilterConfig('trending');
+  returnMedia(url, contentType);
 });
 
 popularButton.addEventListener("click", () => {
@@ -635,7 +706,8 @@ popularButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(popularButton);
   loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.POPULAR, 'movie');
+  const { url, contentType } = getFilterConfig('popular');
+  returnMedia(url, contentType);
 });
 
 nowPlayingButton.addEventListener("click", () => {
@@ -643,15 +715,8 @@ nowPlayingButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(nowPlayingButton);
   loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.NOW_PLAYING, 'movie');
-});
-
-upcomingButton.addEventListener("click", () => {
-  storeScrollPosition();
-  ensureFiltersVisible();
-  setActiveButton(upcomingButton);
-  loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.UPCOMING, 'movie');
+  const { url, contentType } = getFilterConfig('nowPlaying');
+  returnMedia(url, contentType);
 });
 
 topRatedButton.addEventListener("click", () => {
@@ -659,15 +724,8 @@ topRatedButton.addEventListener("click", () => {
   ensureFiltersVisible();
   setActiveButton(topRatedButton);
   loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.TOP_RATED, 'movie');
-});
-
-showsButton.addEventListener("click", () => {
-  storeScrollPosition();
-  ensureFiltersVisible();
-  setActiveButton(showsButton);
-  loadMoreContainer.style.display = 'none';
-  returnMedia(API_LINKS.POPULAR_TV, 'tv');
+  const { url, contentType } = getFilterConfig('topRated');
+  returnMedia(url, contentType);
 });
 
 reviewsButton.addEventListener("click", () => {

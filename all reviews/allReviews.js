@@ -20,16 +20,15 @@ const reviewCountSpan = document.getElementById("review-count");
 const trendingTodayButton = document.querySelector(".trending-today-button");
 const popularButton = document.querySelector(".popular-button");
 const nowPlayingButton = document.querySelector(".now-playing-button");
-const upcomingButton = document.querySelector(".upcoming-button");
 const topRatedButton = document.querySelector(".top-rated-button");
-const showsButton = document.querySelector(".shows-button");
 const reviewsButton = document.querySelector(".reviews-button");
 const watchlistButton = document.querySelector(".watchlist-button");
 const reviewsActionButton = document.querySelector(".reviews-action-button");
 const watchlistActionButton = document.querySelector(".watchlist-action-button");
 const sortFilterInput = document.getElementById("sort-filter");
-
 const filtersNav = document.getElementById('filters-nav');
+const moviesToggleBtn = document.getElementById('toggle-movies');
+const tvToggleBtn = document.getElementById('toggle-tv');
 
 let currentPage = 1;
 let hasMoreReviews = true;
@@ -98,11 +97,28 @@ loadMoreBtn.addEventListener("click", () => {
 });
 
 function setActiveButton(activeButton) {
-  document.querySelectorAll('.filters button, .action-row button').forEach(btn => {
+  document.querySelectorAll('.filters button:not(.toggle-option), .action-row button').forEach(btn => {
     btn.classList.remove('active');
   });
   activeButton.classList.add('active');
 }
+
+function updateToggleUI() {
+  const currentToggle = localStorage.getItem('ccMediaToggle') || 'movie';
+  moviesToggleBtn.classList.toggle('active', currentToggle === 'movie');
+  tvToggleBtn.classList.toggle('active', currentToggle === 'tv');
+}
+updateToggleUI();
+
+moviesToggleBtn.addEventListener('click', () => {
+  localStorage.setItem('ccMediaToggle', 'movie');
+  window.location.href = '../index.html?filter=trending';
+});
+
+tvToggleBtn.addEventListener('click', () => {
+  localStorage.setItem('ccMediaToggle', 'tv');
+  window.location.href = '../index.html?filter=shows';
+});
 
 setActiveButton(reviewsButton);
 reviewsActionButton.classList.add('active');
@@ -122,19 +138,9 @@ nowPlayingButton.addEventListener("click", () => {
     window.location.href = "../index.html?filter=now-playing";
 });
 
-upcomingButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=upcoming";
-});
-
 topRatedButton.addEventListener("click", () => {
     storeScrollPosition();
     window.location.href = "../index.html?filter=top-rated";
-});
-
-showsButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=shows";
 });
 
 reviewsButton.addEventListener("click", (e) => {

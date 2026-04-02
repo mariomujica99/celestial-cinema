@@ -137,6 +137,37 @@
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.5);
 }
 
+.media-toggle {
+  display: inline-flex;
+  background: rgba(19, 23, 32, 0.6);
+  border-radius: 5px;
+  border: 1px solid rgba(106, 90, 205, 0.35);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.filters .toggle-option {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 8px 13px 6px 13px;
+  cursor: pointer;
+  box-shadow: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.filters .toggle-option.active {
+  background: linear-gradient(135deg, #2f3445, #252a38);
+  color: white;
+  box-shadow: none;
+}
+
+.filters .toggle-option:hover:not(.active) {
+  background: linear-gradient(135deg, #3a3f55, #2e3447);
+  color: white;
+}
+
 @media (max-width: 840px) {
   .filters-container {
     position: relative;
@@ -179,6 +210,11 @@
   .action-row-btn {
     font-size: 0.78rem;
     padding: 7px 12px 5px 12px;
+  }
+
+  .filters .toggle-option {
+    font-size: 0.78rem;
+    padding: 7px 10px 5px 10px;
   }
 }
 
