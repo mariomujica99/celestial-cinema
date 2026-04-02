@@ -139,7 +139,7 @@
 
 .media-toggle {
   display: inline-flex;
-  background: rgba(19, 23, 32, 0.6);
+  background: #656565;
   border-radius: 5px;
   border: 1px solid rgba(106, 90, 205, 0.35);
   flex-shrink: 0;
@@ -150,7 +150,7 @@
   background: transparent;
   border: none;
   border-radius: 0;
-  color: rgba(255, 255, 255, 0.5);
+  color: white;
   padding: 8px 13px 6px 13px;
   cursor: pointer;
   box-shadow: none;
@@ -158,13 +158,12 @@
 }
 
 .filters .toggle-option.active {
-  background: linear-gradient(135deg, #2f3445, #252a38);
-  color: white;
+  background:#13172099;
   box-shadow: none;
 }
 
 .filters .toggle-option:hover:not(.active) {
-  background: linear-gradient(135deg, #3a3f55, #2e3447);
+  background: #57575799;
   color: white;
 }
 

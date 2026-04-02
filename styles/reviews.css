@@ -87,6 +87,7 @@
 }
 
 .rating-display {
+  font-weight: bold;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

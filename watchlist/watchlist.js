@@ -116,8 +116,14 @@ function renderWatchlist(items) {
   watchlistContainer.innerHTML = '';
   
   const countElement = document.getElementById('watchlist-count');
+  const titleElement = document.querySelector('.watchlist-page-title');
+
   if (countElement) {
     countElement.textContent = items.length > 0 ? ` | ${items.length}` : '';
+  }
+
+  if (titleElement) {
+    titleElement.style.display = 'block';
   }
 
   if (items.length === 0) {

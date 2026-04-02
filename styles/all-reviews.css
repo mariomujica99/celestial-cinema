@@ -96,7 +96,7 @@
 }
 
 #review-count:empty {
-  margin-top: 29px;
+  margin-top: 30px;
 }
 
 .review-item .review-card {
@@ -174,8 +174,6 @@
   margin: 0;
 }
 
-/* ── max-width (largest → smallest) ─────────────────────── */
-
 @media (max-width: 1095px) {
   .search-filters {
     flex-direction: column;
@@ -192,7 +190,7 @@
     background: transparent;
     border: none;
     color: white;
-    font-size: 1rem;
+    font-size: 1.001rem;
     font-family: "Rollbox", "Montserrat", sans-serif, arial;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -275,10 +273,9 @@
 
   #review-count:empty {
     margin-top: 20px;
+    margin-bottom: 5px;
   }
 }
-
-/* ── min-width ranges (smallest → largest) ───────────────── */
 
 @media (min-width: 651px) and (max-width: 1095px) {
   #reviews-container {

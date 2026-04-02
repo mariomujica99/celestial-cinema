@@ -88,7 +88,7 @@
 }
 
 .season-episode-info {
-  color: #6A5ACD;
+  color: #574aaa;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -97,6 +97,7 @@
   background: rgba(106, 90, 205, 0.1);
   border-radius: 6px;
   display: inline-block;
+  font-weight: bold;
 }
 
 @media (max-width: 650px) {
