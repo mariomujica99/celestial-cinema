@@ -44,6 +44,11 @@
   padding: 8px 10px 5px 20px;
   font-family: "Rollbox", sans-serif, arial;
 }
+@media (max-width: 800px) {
+  .search-container {
+    max-width: 278px;
+  }
+}
 
 @media (max-width: 650px) {
   .search-container {

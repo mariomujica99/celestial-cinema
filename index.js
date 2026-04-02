@@ -8,6 +8,8 @@ const API_LINKS = {
   TRENDING_TV_WEEK:     'https://celestial-cinema-backend.onrender.com/api/v1/movies/trending/tv/week',
   TV_AIRING_TODAY:      'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/airing-today',
   TV_TOP_RATED:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/top-rated',
+  MOVIE_GENRE:          'https://celestial-cinema-backend.onrender.com/api/v1/movies/genre/',
+  TV_GENRE:             'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/genre/',
   SEARCH_MULTI:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
   SEARCH_CATEGORIZED:   'https://celestial-cinema-backend.onrender.com/api/v1/movies/search/categorized?query=',
   IMG_PATH:             'https://image.tmdb.org/t/p/w1280'
@@ -32,6 +34,7 @@ const filtersNav = document.getElementById('filters-nav');
 
 const loadMoreBtn = document.getElementById("load-more-btn");
 const loadMoreContainer = document.getElementById("load-more-container");
+const genrePageTitle = document.getElementById('genre-page-title');
 
 const categoryTabsContainer = document.getElementById('category-tabs');
 const tabMoviesBtn = document.getElementById('tab-movies');
@@ -46,6 +49,9 @@ loadMoreBtn.addEventListener("click", loadMoreMedia);
 const urlParams = new URLSearchParams(window.location.search);
 const searchParam = urlParams.get("search");
 const filterParam = urlParams.get("filter");
+const genreParam  = urlParams.get("genre");
+const genreType   = urlParams.get("type") || 'movie';
+const genreName   = urlParams.get("name") || '';
 
 let currentContentType = 'movie';
 let currentPage = 1;
@@ -60,6 +66,11 @@ let currentSearchPage = 1;
 let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
 let savedMediaIds = new Set();
 let currentMediaToggle = localStorage.getItem('ccMediaToggle') || 'movie';
+
+if (genreParam) {
+  hideFiltersForGenre();
+  showGenreTitle(genreName, genreType);
+}
 
 async function loadSavedMediaIds() {
   try {
@@ -121,6 +132,7 @@ function ensureFiltersVisible() {
   document.getElementById('action-row').style.removeProperty('display');
   categoryTabsContainer.style.display = 'none';
   isSearchActive = false;
+  hideGenreTitle();
 }
 
 function hideFiltersForSearch() {
@@ -131,6 +143,26 @@ function hideFiltersForSearch() {
   filterButtons.forEach(button => button.classList.remove('active'));
 
   isSearchActive = true;
+}
+
+function hideFiltersForGenre() {
+  filtersNav.style.display = 'none';
+  document.getElementById('action-row').style.display = 'none';
+  categoryTabsContainer.style.display = 'none';
+  document.querySelectorAll('.filters button').forEach(btn => btn.classList.remove('active'));
+  isSearchActive = false;
+}
+
+function showGenreTitle(name, type) {
+  if (!genrePageTitle) return;
+  const typeLabel = type === 'tv' ? 'TV Shows' : 'Movies';
+  genrePageTitle.textContent = `${name} ${typeLabel}`;
+  genrePageTitle.style.display = 'block';
+}
+
+function hideGenreTitle() {
+  if (!genrePageTitle) return;
+  genrePageTitle.style.display = 'none';
 }
 
 searchForm.addEventListener("submit", (e) => {
@@ -152,6 +184,13 @@ loadSavedMediaIds().then(() => {
   if (searchParam) {
     searchInput.value = searchParam;
     searchCategorized(searchParam);
+  } else if (genreParam) {
+    hideFiltersForGenre();
+    showGenreTitle(genreName, genreType);
+    const genreApiUrl = genreType === 'tv'
+      ? `${API_LINKS.TV_GENRE}${genreParam}`
+      : `${API_LINKS.MOVIE_GENRE}${genreParam}`;
+    returnMedia(genreApiUrl, genreType);
   } else if (filterParam) {
     ensureFiltersVisible();
     switch (filterParam) {

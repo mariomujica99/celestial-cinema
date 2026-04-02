@@ -27,12 +27,12 @@
     <link rel="stylesheet" href="styles/filters.css">
     <link rel="stylesheet" href="styles/status-messages.css">
     <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/side-menu.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="index.html">Celestial Cinema</a>
 
-      <!-- HAMBURGER MENU: insert <button id="hamburger-btn"> here -->
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
           <input class="search-input" type="search" id="search-query" name="q" placeholder="Search Media" autocomplete="off">
@@ -70,12 +70,15 @@
       </div>
     </div>
 
+    <p id="genre-page-title" class="genre-page-title" style="display: none;"></p>
+
     <section id="media-grid"></section>
 
     <div class="load-more-container" id="load-more-container" style="display: none;">
       <button class="load-more-btn" id="load-more-btn">Load More</button>
     </div>
-
+    
+    <script src="general/sideMenu.js"></script>
     <script src="general/utils.js"></script>
     <script src="index.js"></script>
   </body>

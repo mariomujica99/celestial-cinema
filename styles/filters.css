@@ -167,6 +167,27 @@
   color: white;
 }
 
+.genre-page-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  margin: 10px 25px 0 25px;
+  padding: 0 0 15px 0;
+  letter-spacing: 1.5px;
+  position: relative;
+}
+
+.genre-page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #6A5ACD;
+}
+
 @media (max-width: 840px) {
   .filters-container {
     position: relative;
@@ -215,6 +236,11 @@
     font-size: 0.78rem;
     padding: 7px 10px 5px 10px;
   }
+
+  .genre-page-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+  }
 }
 
 @media (max-width: 400px) {
@@ -235,5 +261,11 @@
     gap: 3px;
     justify-content: center;
     padding: 4px 4px 2px 6px;
+  }
+
+  .genre-page-title {
+    font-size: 1rem;
+    margin: 10px 15px 0 15px;
+    letter-spacing: 0.5px;
   }
 }

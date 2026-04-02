@@ -24,19 +24,13 @@
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
     <link rel="stylesheet" href="../styles/media-grid.css">
-    <link rel="stylesheet" href="../styles/reviews.css">
-    <link rel="stylesheet" href="../styles/movie-details.css">
-    <link rel="stylesheet" href="../styles/tv-details.css">
-    <link rel="stylesheet" href="../styles/media-details.css">
-    <link rel="stylesheet" href="../styles/top-cast.css">
+    <link rel="stylesheet" href="../styles/filters.css">
     <link rel="stylesheet" href="../styles/status-messages.css">
-    <link rel="stylesheet" href="../styles/modal.css">
     <link rel="stylesheet" href="../styles/side-menu.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
-
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
           <input class="search-input" type="search" id="search-query" name="q" placeholder="Search Media" autocomplete="off">
@@ -44,38 +38,16 @@
       </div>
     </nav>
 
-    <div class="current-movie-container">
-      <div class="current-movie-image">
-        <img class="movie-poster" id="movie-poster" src="#">
-      </div>
-      <div class="current-movie-details">
-        <p class="movie-title" id="movie-title"></p>
-      </div>
+    <p class="genre-page-title">Popular People</p>
+
+    <section id="media-grid"></section>
+
+    <div class="load-more-container" id="load-more-container" style="display: none;">
+      <button class="load-more-btn" id="load-more-btn">Load More</button>
     </div>
 
-    <div class="cast-section">
-      <div class="cast-header">
-        <p class="cast-title">Top Cast</p>
-        <button class="full-cast-btn">Full Cast</button>
-      </div>
-
-      <div class="cast-container" id="cast-container">
-        <div class="cast-loading"></div>
-      </div>
-    </div>
-
-    <div class="reviews-left">
-      <p class="reviews-title">Reviews</p>
-    </div>
-    <section id="reviews-container"></section>
-
-    <div class="load-more-container">
-      <button id="load-more-btn" class="load-more-btn" style="display: none;">Load More Reviews</button>
-    </div>
-    
-    <script src="../general/sideMenu.js"></script>
     <script src="../general/utils.js"></script>
-    <script src="../general/cast.js"></script>
-    <script src="movieReviews.js"></script>
+    <script src="../general/sideMenu.js"></script>
+    <script src="popularPeople.js"></script>
   </body>
 </html>
