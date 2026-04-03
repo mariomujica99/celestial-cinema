@@ -5,7 +5,7 @@ const tvTitle = url.searchParams.get("title")
 const API_LINKS = {
   REVIEWS: 'https://celestial-cinema-backend.onrender.com/api/v1/reviews/',
   TV_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${tvId}`,
-  TV_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/credits/${tvId}`,
+  TV_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/aggregate_credits/${tvId}`,
   TV_SEASONS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/seasons/${tvId}`,
   TV_EPISODES: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/season/${tvId}/`,
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
@@ -298,42 +298,49 @@ function returnTVCredits(url) {
     });
 }
 
+// REPLACE the entire updateCreditsSection function
 function updateCreditsSection(creditsData) {
   const creditsSection = document.getElementById('tv-credits-section');
   if (!creditsSection) return;
-  
-  const creators = creditsData.crew.filter(person => person.job === 'Creator' || person.job === 'Executive Producer');
-  const writers = creditsData.crew.filter(person => person.job === 'Writer' || person.job === 'Screenplay');
-  const directors = creditsData.crew.filter(person => person.job === 'Director');
-  
-  let creditsHTML = '<div class="credits-grid">';
-  
-  creditsHTML += '<div class="credits-row">';
-  
+
+  const getJob = (person) => person.jobs?.[0]?.job || person.job || '';
+
+  const creators  = creditsData.crew.filter(p =>
+    p.jobs?.some(j => j.job === 'Creator' || j.job === 'Executive Producer') ||
+    p.job === 'Creator' || p.job === 'Executive Producer'
+  );
+  const writers   = creditsData.crew.filter(p =>
+    p.jobs?.some(j => j.job === 'Writer' || j.job === 'Screenplay') ||
+    p.job === 'Writer' || p.job === 'Screenplay'
+  );
+  const directors = creditsData.crew.filter(p =>
+    p.jobs?.some(j => j.job === 'Director') || p.job === 'Director'
+  );
+
+  let creditsHTML = '<div class="credits-grid"><div class="credits-row">';
+
   if (creators.length > 0) {
-    creditsHTML += '<div class="credits-person">';
-    creditsHTML += `<div class="person-name">${creators[0].name}</div>`;
-    creditsHTML += `<div class="person-job">${creators[0].job}</div>`;
-    creditsHTML += '</div>';
+    creditsHTML += `<div class="credits-person">
+      <div class="person-name">${creators[0].name}</div>
+      <div class="person-job">${getJob(creators[0])}</div>
+    </div>`;
   }
-  
+
   if (writers.length > 0) {
-    creditsHTML += '<div class="credits-person">';
-    creditsHTML += `<div class="person-name">${writers[0].name}</div>`;
-    creditsHTML += `<div class="person-job">${writers[0].job}</div>`;
-    creditsHTML += '</div>';
+    creditsHTML += `<div class="credits-person">
+      <div class="person-name">${writers[0].name}</div>
+      <div class="person-job">${getJob(writers[0])}</div>
+    </div>`;
   }
-  
+
   if (directors.length > 0) {
-    creditsHTML += '<div class="credits-person">';
-    creditsHTML += `<div class="person-name">${directors[0].name}</div>`;
-    creditsHTML += `<div class="person-job">${directors[0].job}</div>`;
-    creditsHTML += '</div>';
+    creditsHTML += `<div class="credits-person">
+      <div class="person-name">${directors[0].name}</div>
+      <div class="person-job">${getJob(directors[0])}</div>
+    </div>`;
   }
-  
-  creditsHTML += '</div>';
-  creditsHTML += '</div>';
-  
+
+  creditsHTML += '</div></div>';
   creditsSection.innerHTML = creditsHTML;
 
   displayTopCast(creditsData, tvId, API_LINKS.IMG_PATH);
@@ -693,7 +700,7 @@ function populateSeasonDropdown() {
     const seasonSelects = document.querySelectorAll('.season-select');
     seasonSelects.forEach(select => {
         select.innerHTML = '<option value="">Select Season</option>';
-        seasonsData.forEach(season => {
+        seasonsData.filter(season => season.season_number > 0).forEach(season => {
             const option = document.createElement('option');
             option.value = season.season_number;
             option.textContent = `Season ${season.season_number}`;

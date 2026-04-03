@@ -9,27 +9,33 @@
   const prefix = scriptSrc.startsWith('../') ? '../' : '';
 
   // ── Genre data ───────────────────────────────────────────────
-  const MOVIE_GENRES = [
-    { name: 'Action',          id: 28    },
-    { name: 'Animation',       id: 16    },
-    { name: 'Comedy',          id: 35    },
-    { name: 'Drama',           id: 18    },
-    { name: 'Horror',          id: 27    },
-    { name: 'Mystery',         id: 9648  },
-    { name: 'Romance',         id: 10749 },
-    { name: 'Science Fiction', id: 878   },
-  ];
+const MOVIE_GENRES = [
+  { name: 'Action',          id: 28    },
+  { name: 'Animation',       id: 16    },
+  { name: 'Comedy',          id: 35    },
+  { name: 'Crime',           id: 80    },
+  { name: 'Documentary',     id: 99    },
+  { name: 'Drama',           id: 18    },
+  { name: 'Family',          id: 10751 },
+  { name: 'Horror',          id: 27    },
+  { name: 'Mystery',         id: 9648  },
+  { name: 'Romance',         id: 10749 },
+  { name: 'Science Fiction', id: 878   },
+];
 
-  const TV_GENRES = [
-    { name: 'Action',          id: 10759 },
-    { name: 'Animation',       id: 16    },
-    { name: 'Comedy',          id: 35    },
-    { name: 'Drama',           id: 18    },
-    { name: 'Horror',          id: 27    },
-    { name: 'Mystery',         id: 9648  },
-    { name: 'Romance',         id: 10749 },
-    { name: 'Science Fiction', id: 10765 },
-  ];
+const TV_GENRES = [
+  { name: 'Action',          id: 10759 },
+  { name: 'Animation',       id: 16    },
+  { name: 'Comedy',          id: 35    },
+  { name: 'Crime',           id: 80    },
+  { name: 'Documentary',     id: 99    },
+  { name: 'Drama',           id: 18    },
+  { name: 'Family',          id: 10751 },
+  { name: 'Mystery',         id: 9648  },
+  { name: 'Reality',         id: 10764 },
+  { name: 'Romance',         id: 10749 },
+  { name: 'Science Fiction', id: 10765 },
+];
 
   // ── DOM builders ─────────────────────────────────────────────
   function buildHamburgerBtn() {

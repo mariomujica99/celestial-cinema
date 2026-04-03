@@ -176,10 +176,10 @@
 
 @media (max-width: 650px) {
   .cast-list-header {
-    padding: 10px 15px 20px 15px;
+    padding: 10px 25px 20px 25px;
   }
   .cast-search-filters {
-    padding: 0 15px 25px 15px;
+    padding: 0 25px 25px 25px;
   }
 
   .cast-search-filters .filter-input-container {
@@ -200,7 +200,7 @@
   }
   
   .cast-list-section {
-    padding: 0 15px 25px 15px;
+    padding: 0 25px 25px 25px;
   }
   
   .department-title {
@@ -226,12 +226,31 @@
 }
 
 @media (max-width: 400px) {
+  .cast-list-header {
+    padding: 5px 15px 20px 15px;
+  }
+
+  .cast-list-section {
+    padding: 0 15px 25px 15px;
+  }
+
+  .back-button {
+    padding: 6px 14px 5px 14px;
+    font-size: 0.7rem;
+  }
+
+  .department-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
   .cast-list-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   
   .department-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-bottom: 15px;
   }
   
   .person-name {
@@ -244,5 +263,10 @@
 
   .cast-search-filters .filter-input-container {
     width: 100%;
+
+  }
+
+  .cast-search-filters {
+    padding: 0px 15px 20px 15px;
   }
 }

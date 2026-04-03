@@ -62,13 +62,6 @@
   transition: all 0.3s ease;
 }
 
-.episode-card:hover {
-  background: linear-gradient(135deg, rgba(45, 27, 61, 0.5), rgba(25, 38, 59, 0.5));
-  border-color: rgba(106, 90, 205, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(106, 90, 205, 0.15);
-}
-
 .episode-image {
   flex-shrink: 0;
   width: 300px;
@@ -155,9 +148,31 @@
   letter-spacing: 1px;
 }
 
+@media (max-width: 850px) {
+  .season-title {
+    font-size: 1.6rem;
+  }
+  
+  .episode-title {
+    font-size: 1.2rem;
+  }
+  
+  .episode-number {
+    font-size: 1.2rem;
+  }
+  
+  .episode-info-line {
+    font-size: 0.8rem;
+  }
+  
+  .episode-overview {
+    font-size: 0.8rem;
+  }
+}
+
 @media (max-width: 650px) {
   .episodes-header {
-    padding: 10px 15px 20px 15px;
+    padding: 10px 25px 20px 25px;
   }
 
   .back-button {
@@ -166,11 +181,11 @@
   }
   
   .season-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
   
   .episodes-section {
-    padding: 0 15px 25px 15px;
+    padding: 0 25px 25px 25px;
   }
   
   .episode-card {
@@ -188,11 +203,11 @@
   }
   
   .episode-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .episode-number {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .episode-info-line {
@@ -202,12 +217,29 @@
 }
 
 @media (max-width: 400px) {
+  .episodes-header {
+    padding: 5px 15px 20px 15px;
+  }
+
+  .episodes-section {
+    padding: 0 15px 25px 15px;
+  }
+
+  .back-button {
+    padding: 6px 14px 5px 14px;
+    font-size: 0.7rem;
+  }
+
   .season-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .episode-still {
+    height: 180px;
   }
   
   .episode-title {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
   
   .episode-number {
@@ -215,10 +247,15 @@
   }
   
   .episode-info-line {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
   
   .episode-overview {
+    font-size: 0.8rem;
+  }
+
+  .episode-score {
+    padding: 3px 11px;
     font-size: 0.8rem;
   }
 }

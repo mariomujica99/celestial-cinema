@@ -1,3 +1,27 @@
+.cast-member-back {
+  padding: 10px 25px 0 25px;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
 .cast-member-container {
   display: flex;
   padding: 25px;
@@ -182,6 +206,15 @@
 }
 
 @media (max-width: 650px) {
+  .cast-member-back {
+    padding: 5px 25px 5px 25px;
+  }
+
+  .back-button {
+    padding: 7px 15px 6px 15px;
+    font-size: 0.8rem;
+  }
+
   .cast-member-container {
     padding: 10px 25px 0 25px;
     margin-bottom: 15px;
@@ -212,6 +245,15 @@
 }
 
 @media (max-width: 400px) {
+  .cast-member-back {
+    padding: 5px 15px 5px 15px;
+  }
+
+  .back-button {
+    padding: 6px 14px 5px 14px;
+    font-size: 0.7rem;
+  }
+
   .cast-member-container {
     padding: 10px 15px 0 15px;
     margin-bottom: 15px;

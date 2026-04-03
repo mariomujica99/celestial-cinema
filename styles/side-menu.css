@@ -207,4 +207,9 @@
   .side-menu-close-btn {
     padding: calc(env(safe-area-inset-top) + 20px) 20px 2px 4px;
   }
+
+  .side-menu-section {
+    padding: 0 0 4px 0;
+    margin-bottom: 8px;
+  }
 }

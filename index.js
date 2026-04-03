@@ -228,6 +228,7 @@ loadSavedMediaIds().then(() => {
     returnMedia(url, contentType);
   } else {
     ensureFiltersVisible();
+    setActiveButton(trendingTodayButton);
     const { url, contentType } = getFilterConfig('trending');
     returnMedia(url, contentType);
   }
