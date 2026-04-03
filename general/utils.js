@@ -48,6 +48,11 @@ function generateRatingOptions(selectedRating) {
     return options;
 }
 
+function formatScore(voteAverage) {
+  if (!voteAverage) return 'NR';
+  return `${Math.round(voteAverage * 10)}%`;
+}
+
 /**
  * @param {HTMLElement|null} anchorElement - Insert after this element. If null, appends to body.
  */

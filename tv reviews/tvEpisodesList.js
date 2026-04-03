@@ -103,7 +103,7 @@ function displayEpisodes(episodes) {
       day: 'numeric'
     }) : '';
     
-    const userScore = episode.vote_average ? Math.round(episode.vote_average * 10) : 0;
+    const userScore = formatScore(episode.vote_average);
     const runtime = episode.runtime ? `${episode.runtime}m` : '';
     
     episodeCard.innerHTML = `
@@ -117,7 +117,7 @@ function displayEpisodes(episodes) {
           <span class="episode-title">${episode.name || 'Untitled'}</span>
         </div>
         <div class="episode-info-line">
-          <span class="episode-score">${userScore}%</span>
+          <span class="episode-score">${userScore}</span>
           <span class="episode-date">${airDate}</span>
           ${runtime ? `<span class="episode-runtime">${runtime}</span>` : ''}
         </div>

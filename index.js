@@ -449,8 +449,7 @@ function createMediaCard(itemData, contentType) {
 
   const userScore = document.createElement('div');
   userScore.setAttribute('class', 'user-score-grid');
-  const scoreValue = itemData.vote_average ? Math.round(itemData.vote_average * 10) : 0;
-  userScore.innerHTML = `${scoreValue}%`;
+  userScore.innerHTML = formatScore(itemData.vote_average);
 
   mediaCard.appendChild(mediaThumbnail);
   mediaCard.appendChild(mediaTitle);

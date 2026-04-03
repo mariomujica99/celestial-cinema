@@ -100,7 +100,7 @@ function createTVDetailsSection(tvData) {
   
   const genres = tvData.genres ? tvData.genres.map(genre => genre.name).join(', ') : '';
   
-  const userScore = tvData.vote_average ? Math.round(tvData.vote_average * 10) : 0;
+  const userScore = formatScore(tvData.vote_average);
   
   let contentRating = '';
   if (tvData.content_ratings && tvData.content_ratings.results) {
@@ -128,7 +128,7 @@ function createTVDetailsSection(tvData) {
     
     <div class="user-score-container">
       <span class="user-score-label">User Score</span>
-      <span class="user-score">${userScore}%</span>
+      <span class="user-score">${userScore}</span>
     </div>
 
     <div class="watchlist-detail-section">

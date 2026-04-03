@@ -94,7 +94,7 @@ function createMovieDetailsSection(movieData) {
   
   const genres = movieData.genres ? movieData.genres.map(genre => genre.name).join(', ') : '';
   
-  const userScore = movieData.vote_average ? Math.round(movieData.vote_average * 10) : 0;
+  const userScore = formatScore(movieData.vote_average);
   
   let contentRating = '';
   if (movieData.release_dates && movieData.release_dates.results) {
@@ -119,7 +119,7 @@ function createMovieDetailsSection(movieData) {
     
     <div class="user-score-container">
       <span class="user-score-label">User Score</span>
-      <span class="user-score">${userScore}%</span>
+      <span class="user-score">${userScore}</span>
     </div>
 
     <div class="watchlist-detail-section">
