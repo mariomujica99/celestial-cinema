@@ -162,6 +162,11 @@
   box-shadow: none;
 }
 
+html.media-toggle-movie #toggle-movies,
+html.media-toggle-tv #toggle-tv {
+  background: #13172099;
+}
+
 .filters .toggle-option:hover:not(.active) {
   background: #57575799;
   color: white;

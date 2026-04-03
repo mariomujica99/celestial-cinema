@@ -32,7 +32,10 @@ function updateToggleUI() {
   const currentToggle = localStorage.getItem('ccMediaToggle') || 'movie';
   moviesToggleBtn.classList.toggle('active', currentToggle === 'movie');
   tvToggleBtn.classList.toggle('active', currentToggle === 'tv');
+  document.documentElement.classList.toggle('media-toggle-movie', currentToggle === 'movie');
+  document.documentElement.classList.toggle('media-toggle-tv', currentToggle === 'tv');
 }
+
 updateToggleUI();
 
 moviesToggleBtn.addEventListener('click', () => {

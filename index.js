@@ -112,6 +112,8 @@ const FILTER_CONFIGS = {
   }
 };
 
+updateToggleUI();
+
 function getFilterConfig(filterName) {
   const cfg = FILTER_CONFIGS[currentMediaToggle][filterName];
   return { url: cfg.url(), contentType: cfg.contentType };
@@ -124,6 +126,8 @@ function updateFilterButtonLabels() {
 function updateToggleUI() {
   moviesToggleBtn.classList.toggle('active', currentMediaToggle === 'movie');
   tvToggleBtn.classList.toggle('active', currentMediaToggle === 'tv');
+  document.documentElement.classList.toggle('media-toggle-movie', currentMediaToggle === 'movie');
+  document.documentElement.classList.toggle('media-toggle-tv', currentMediaToggle === 'tv');
   updateFilterButtonLabels();
 }
 
