@@ -373,7 +373,7 @@ function loadFilteredReviews(append = false) {
     .catch(error => {
       console.error('Error fetching filtered reviews:', error);
       if (!append) {
-        reviewsContainer.innerHTML = '<div class="error-message">Failed to load reviews. Please try again later.</div>';
+        reviewsContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
       }
       isLoading = false;
       loadMoreBtn.textContent = 'Load More Reviews';
@@ -423,7 +423,7 @@ function returnReviews(url, append = false) {
   .catch(error => {
     console.error('Error fetching reviews:', error);
     if (!append) {
-      reviewsContainer.innerHTML = '<div class="error-message">Failed to load reviews. Please try again later.</div>';
+      reviewsContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     }
     isLoading = false;
     loadMoreBtn.textContent = 'Load More Reviews';

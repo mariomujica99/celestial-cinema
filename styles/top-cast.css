@@ -136,13 +136,21 @@
     padding-bottom: 10px;
   }
 
+  .cast-member {
+    flex: 0 0 100px;
+  }
+
+  .cast-photo {
+    height: 143px;
+  }
+
   .cast-name {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
     margin-bottom: 3px;
   }
 
   .cast-character {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
   }
 
   .full-cast-btn {

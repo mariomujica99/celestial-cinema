@@ -111,7 +111,7 @@ async function loadWatchlist() {
     renderWatchlist(data.items || []);
   } catch (e) {
     console.error('Failed to load watchlist:', e);
-    watchlistContainer.innerHTML = '<div class="watchlist-empty">Failed to load watchlist. Please try again.</div>';
+    watchlistContainer.innerHTML = '<div class="watchlist-empty">Failed to load | Please try again later</div>';
   }
 }
 

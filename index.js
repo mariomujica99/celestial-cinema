@@ -305,7 +305,7 @@ function returnMedia(url, contentType = 'movie', append = false) {
   }).catch(error => {
     console.error('Error fetching content:', error);
     if (!append) {
-      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load content. Please try again later.</div>';
+      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     }
     loadMoreContainer.style.display = 'none';
     isLoadingMedia = false;
@@ -345,7 +345,7 @@ function searchCategorized(query) {
     })
     .catch(error => {
       console.error('Error fetching search results:', error);
-      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load search results. Please try again.</div>';
+      mediaGridContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     });
 }
 

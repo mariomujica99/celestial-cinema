@@ -55,7 +55,7 @@ async function loadPeople(append = false) {
   } catch (error) {
     console.error('Error fetching popular people:', error);
     if (!append) {
-      mediaGrid.innerHTML = '<div class="error-message">Failed to load people. Please try again.</div>';
+      mediaGrid.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     }
     loadMoreContainer.style.display = 'none';
   } finally {

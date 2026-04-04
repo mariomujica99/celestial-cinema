@@ -51,7 +51,7 @@ function fetchCredits(url) {
         })
         .catch(error => {
             console.error('Error fetching credits:', error);
-            showErrorMessage('Failed to load cast and crew information. Please try again later.');
+            showErrorMessage('Failed to load | Please try again later');
         });
 }
 

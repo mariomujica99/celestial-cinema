@@ -81,7 +81,7 @@ function returnTVDetails(url) {
       console.error('Error fetching TV details:', error);
       tvTitleElement.innerHTML = tvTitle || '';
       tvPosterElement.src = '../images/no-image.jpg';
-      showErrorMessage('Failed to load TV show details. Please try again later.', document.querySelector('.current-tv-container'));
+      showErrorMessage('Failed to load | Please try again later', document.querySelector('.current-tv-container'));
     });
 }
 
@@ -431,7 +431,7 @@ function returnReviews(url) {
     }
   }).catch(error => {
     console.error('Error fetching reviews:', error);
-    showErrorMessage('Failed to load reviews. Please check your connection.');
+    showErrorMessage('Failed to load | Please try again later');
   });
 }
 

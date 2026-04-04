@@ -73,7 +73,7 @@ function returnMovieDetails(url) {
       console.error('Error fetching movie details:', error);
       movieTitleElement.innerHTML = movieTitle || '';
       moviePosterElement.src = '../images/no-image.jpg';
-      showErrorMessage('Failed to load movie details. Please try again later.', document.querySelector('.current-movie-container'));
+      showErrorMessage('Failed to load | Please try again later', document.querySelector('.current-movie-container'));
     });
 }
 
@@ -384,7 +384,7 @@ function returnReviews(url) {
     }
   }).catch(error => {
     console.error('Error fetching reviews:', error);
-    showErrorMessage('Failed to load reviews. Please check your connection.');
+    showErrorMessage('Failed to load | Please try again later');
   });
 }
 

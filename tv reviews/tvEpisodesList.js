@@ -68,7 +68,7 @@ function loadEpisodes() {
     })
     .catch(error => {
       console.error('Error fetching episodes:', error);
-      showErrorMessage('Failed to load episodes. Please try again later.', document.querySelector('.episodes-header'));
+      showErrorMessage('Failed to load | Please try again later', document.querySelector('.episodes-header'));
     });
 }
 
