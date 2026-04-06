@@ -61,7 +61,7 @@
 }
 
 .user-score-grid {
-  margin-top: 5px;
+  margin-top: 6px;
   letter-spacing: 1px;
   font-size: 0.85rem;
   color: rgb(224, 224, 224);
@@ -104,7 +104,6 @@
 
 .person-department-main {
   color: rgb(200, 200, 200);
-  margin-top: 1px;
   letter-spacing: 0.75px;
   font-weight: bold;
   font-size: 0.7rem;
@@ -158,6 +157,7 @@
 
   .media-card p{
     font-size: 0.7rem;
+    margin-top: 0px;
   }
 
   .user-score-grid {

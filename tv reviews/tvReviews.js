@@ -389,7 +389,7 @@ newReviewForm.innerHTML = `
           </select>
         </div>
         <p class="review-text"> 
-          <textarea class="review-input" id="new-review-input" placeholder="Write your review"></textarea>
+          <textarea class="review-input" id="new-review-input" placeholder="Write a review"></textarea>
         </p>
       </div>
     </div>

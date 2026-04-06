@@ -5,7 +5,7 @@
   color: white;
   max-width: 1200px;
   margin: 10px auto 0 auto;
-  padding: 0 25px 15px 25px;
+  padding: 0 25px 5px 25px;
   letter-spacing: 1.5px;
   position: relative;
   display: none;
@@ -119,8 +119,8 @@
 .watchlist-item-title {
   font-size: 1.001rem;
   font-weight: bold;
-  color: white;
-  text-transform: uppercase;
+  color: rgb(224, 224, 224);
+  text-transform: none;
   letter-spacing: 0.5px;
   margin: 0;
 }
@@ -134,7 +134,7 @@
 
 .watchlist-item-type {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   background: rgba(106, 90, 205, 0.2);
   color: #9d8ff0;
   padding: 3px 10px 3px 10px;
@@ -188,7 +188,7 @@
   .watchlist-page-title {
     font-size: 1rem;
     letter-spacing: 0.5px;
-    padding: 0 15px 15px 15px;
+    padding: 0 15px 5px 15px;
   }
 
   .watchlist-page-title::after {
@@ -204,5 +204,12 @@
   .watchlist-empty {
     padding: 15px 10px 13px 10px;
     font-size: 0.6rem;
+  }
+  .watchlist-item-type {
+    margin: 3px 0 3px 0;
+  }
+
+  .watchlist-item-details {
+    gap: 0px; 
   }
 }
