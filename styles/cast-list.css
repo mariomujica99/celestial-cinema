@@ -38,6 +38,7 @@
   margin: 0;
   letter-spacing: 2px;
   text-align: center;
+  line-height: 1.2;
 }
 
 .cast-list-section {
@@ -110,21 +111,21 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0px;
 }
 
 .person-name {
   font-size: 1.1rem;
   font-weight: bold;
   color: white;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
 }
 
 .person-role {
   font-size: 0.9rem;
   color: #CBD5E0;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.3px;
 }
 
@@ -153,13 +154,13 @@
 }
 
 .cast-search-filters .filter-input {
-  padding: 13px 15px 10px 15px;
+  padding: 10px 15px 10px 15px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 8px;
   background: rgba(25, 38, 59, 0.8);
   color: white;
   font-size: 0.9rem;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Montserrat", sans-serif, arial;
 }
 
 .cast-search-filters .filter-input:focus {
@@ -191,7 +192,7 @@
   }
 
   .back-button {
-    padding: 7px 15px 6px 15px;
+    padding: 7px 15px 7px 15px;
     font-size: 0.8rem;
   }
   
@@ -235,7 +236,7 @@
   }
 
   .back-button {
-    padding: 6px 14px 5px 14px;
+    padding: 6px 14px 6px 14px;
     font-size: 0.7rem;
   }
 

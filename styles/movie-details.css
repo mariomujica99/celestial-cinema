@@ -24,12 +24,12 @@
   display: flex;
   flex-direction: column;
   color: white;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
 }
 
 .movie-title {
   font-size: 1.8rem;
-  text-transform: uppercase;
+  text-transform: none;
   color: white;
   margin-top: 0;
   margin-bottom: 15px;

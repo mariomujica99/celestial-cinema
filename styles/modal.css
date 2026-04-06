@@ -13,7 +13,7 @@
   background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
   border: 1px solid rgba(106, 90, 205, 0.35);
   border-radius: 20px;
-  padding: 28px 24px 24px 24px;
+  padding: 28px 24px 28px 24px;
   width: 100%;
   max-width: 320px;
   display: flex;
@@ -39,7 +39,7 @@
   border-radius: 10px;
   background: rgba(106, 90, 205, 0.1);
   color: #CBD5E0;
-  padding: 10px 15px 8px 15px;
+  padding: 10px 15px 10px 15px;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -63,13 +63,13 @@
 
 .name-modal-input {
   width: 100%;
-  padding: 10px 15px 8px 15px;
+  padding: 10px 15px 10px 15px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 10px;
   background: rgba(25, 38, 59, 0.8);
   color: white;
   font-size: 0.9rem;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   box-sizing: border-box;
 }
 
@@ -94,11 +94,11 @@
 .name-modal-cancel,
 .name-modal-confirm {
   flex: 1;
-  padding: 10px 15px 8px 15px;
+  padding: 10px 15px 10px 15px;
   border: none;
   border-radius: 10px;
   font-size: 0.9rem;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;

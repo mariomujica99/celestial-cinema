@@ -37,14 +37,14 @@ function returnCastDetails(url) {
         castData.name || castName || 'Unknown Name';
 
       biographyTextElement.innerHTML =
-        castData.biography || 'No biography available.';
+        castData.biography || 'No biography available';
 
       returnCastCredits(API_LINKS.CAST_CREDITS);
     })
     .catch(() => {
       castMemberNameElement.innerHTML = castName || 'Unknown Name';
       castMemberPhotoElement.src = '../images/no-image-cast.jpg';
-      biographyTextElement.innerHTML = 'Biography unavailable.';
+      biographyTextElement.innerHTML = 'Biography unavailable';
     });
 }
 

@@ -122,7 +122,7 @@ function displayEpisodes(episodes) {
           ${runtime ? `<span class="episode-runtime">${runtime}</span>` : ''}
         </div>
         <div class="episode-overview">
-          ${episode.overview || 'No description available.'}
+          ${episode.overview || 'No description available'}
         </div>
       </div>
     `;

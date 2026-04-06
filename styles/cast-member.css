@@ -55,12 +55,12 @@
   display: flex;
   flex-direction: column;
   color: white;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
 }
 
 .cast-member-name {
   font-size: 1.8rem;
-  text-transform: uppercase;
+  text-transform: none;
   color: white;
   margin-top: 0;
   margin-bottom: 25px;
@@ -161,7 +161,7 @@
   font-weight: bold;
   color: white;
   margin: 0 0 5px 0;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
   line-height: 1.2;
 }
@@ -196,7 +196,7 @@
   }
   
   .cast-member-name {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     text-align: center;
   }
   
@@ -211,7 +211,7 @@
   }
 
   .back-button {
-    padding: 7px 15px 6px 15px;
+    padding: 7px 15px 7px 15px;
     font-size: 0.8rem;
   }
 
@@ -221,7 +221,7 @@
   }
 
   .cast-member-name {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-align: center;
   }
   
@@ -250,17 +250,19 @@
   }
 
   .back-button {
-    padding: 6px 14px 5px 14px;
+    padding: 6px 14px 6px 14px;
     font-size: 0.7rem;
   }
 
   .cast-member-container {
     padding: 10px 15px 0 15px;
     margin-bottom: 15px;
+    gap: 15px;
   }
   .cast-member-name {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-align: center;
+    margin-bottom: 0px;
   }
   
   .biography-title {
@@ -274,6 +276,10 @@
   .known-for-section {
     margin: 0px 15px 0 15px;
     padding: 25px 0 0 0;
+  }
+
+  .known-for-container {
+    gap: 5px;
   }
 
   .known-for-title {

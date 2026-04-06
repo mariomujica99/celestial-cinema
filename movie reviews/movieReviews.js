@@ -113,8 +113,8 @@ function createMovieDetailsSection(movieData) {
     <div class="movie-info-line">
       ${contentRating ? `<span class="content-rating">${contentRating}</span>` : ''}
       ${releaseDate ? `<span class="release-date">${releaseDate} (US)</span>` : ''}
-      ${genres ? `<span class="genres">${genres}</span>` : ''}
       ${runtime ? `<span class="runtime">${runtime}</span>` : ''}
+      ${genres ? `<span class="genres">${genres}</span>` : ''}
     </div>
     
     <div class="user-score-container">
@@ -130,8 +130,7 @@ function createMovieDetailsSection(movieData) {
     </div>
     
     <div class="overview-section">
-      <p class="overview-title">Overview</p>
-      <p class="overview-text">${movieData.overview || 'No overview available.'}</p>
+      <p class="overview-text">${movieData.overview || 'No overview available'}</p>
     </div>
     
     <div class="credits-section" id="movie-credits-section">
@@ -328,7 +327,7 @@ newReviewForm.innerHTML = `
         </p>
         <div class="user-line">
           <p class="user-text">User</p>
-          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
+          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Name">
         </div>
         <div class="rating-line">
           <p class="rating-text">Rating</p>

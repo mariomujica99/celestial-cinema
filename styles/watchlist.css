@@ -137,11 +137,11 @@
   font-size: 0.7rem;
   background: rgba(106, 90, 205, 0.2);
   color: #9d8ff0;
-  padding: 3px 10px 1px 10px;
+  padding: 3px 10px 3px 10px;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   align-self: flex-start;
 }
 
@@ -155,7 +155,7 @@
 
 .watchlist-empty {
   text-align: center;
-  padding: 20px 10px 18px 10px;
+  padding: 20px 10px 20px 10px;
   font-size: 0.8rem;
   color: white;
   text-transform: uppercase;

@@ -12,7 +12,7 @@
   width: 100%;
   border-radius: 20px;
   object-fit: cover;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 2 / 3.2;
   text-align: center;
 }
 
@@ -47,7 +47,9 @@
 
 .media-card p {
   font-size: 0.9rem;
+  margin: 2px 0 0 0;
   color: rgb(224, 224, 224);
+  text-transform: none;
   font-weight: bold;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -56,10 +58,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
-  margin-bottom: 5px;
 }
 
 .user-score-grid {
+  margin-top: 5px;
   letter-spacing: 1px;
   font-size: 0.85rem;
   color: rgb(224, 224, 224);
@@ -95,7 +97,15 @@
   text-overflow: ellipsis;
 }
 
+.person-knownfor {
+  text-transform: none;
+  font-weight: normal;
+}
+
 .person-department-main {
+  color: rgb(200, 200, 200);
+  margin-top: 1px;
+  letter-spacing: 0.75px;
   font-weight: bold;
   font-size: 0.7rem;
 }
@@ -147,7 +157,7 @@
   }
 
   .media-card p{
-    font-size: 0.55rem;
+    font-size: 0.7rem;
   }
 
   .user-score-grid {
@@ -166,11 +176,11 @@
   }
 
   .person-knownfor {
-    font-size: 0.48rem;
+    font-size: 0.6rem;
   }
 
   .person-department-main {
-    font-size: 0.5rem;
+    font-size: 0.55rem;
   }
 }
 
@@ -185,7 +195,7 @@
   }
 
   .user-score-grid {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     padding: 2px 8px 2px 8px;
   }
 
@@ -204,7 +214,7 @@
   }
 
   .person-department-main {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
   }
 }
 
@@ -232,7 +242,7 @@
   }
 
   .person-department-main {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 }
 
@@ -260,7 +270,7 @@
   }
 
   .person-department-main {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -283,11 +293,11 @@
   }
 
   .person-knownfor {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .person-department-main {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -312,11 +322,11 @@
   }
 
   .person-knownfor {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .person-department-main {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -340,10 +350,10 @@
   }
 
   .person-knownfor {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .person-department-main {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }

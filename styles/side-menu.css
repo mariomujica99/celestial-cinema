@@ -155,7 +155,7 @@
   color: #CBD5E0;
   letter-spacing: 0.5px;
   margin: 0;
-  padding: 9px 24px 7px 36px;
+  padding: 9px 24px 9px 36px;
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
 }
@@ -175,7 +175,7 @@
 
   .side-menu-item {
     font-size: 0.78rem;
-    padding: 9px 24px 7px 36px;
+    padding: 9px 24px 9px 36px;
   }
 
   .side-menu-close-btn {
@@ -195,11 +195,11 @@
 
   .side-menu-item {
     font-size: 0.7rem;
-    padding: 9px 26px 7px 26px;
+    padding: 9px 26px 9px 26px;
   }
 
   .side-menu-panel {
-    width: 225px;
+    width: 215px;
     max-width: 85vw;
     padding: 0 0 calc(40px + env(safe-area-inset-bottom)) 0;
   }

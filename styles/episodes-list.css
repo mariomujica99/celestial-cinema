@@ -34,6 +34,7 @@
   font-size: 2.2rem;
   font-weight: bold;
   text-transform: uppercase;
+  line-height: 1.2;
   color: white;
   margin: 0;
   letter-spacing: 2px;
@@ -100,7 +101,7 @@
   font-size: 1.4rem;
   font-weight: bold;
   color: white;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 1px;
 }
 
@@ -176,7 +177,7 @@
   }
 
   .back-button {
-    padding: 7px 15px 6px 15px;
+    padding: 7px 15px 7px 15px;
     font-size: 0.8rem;
   }
   
@@ -226,8 +227,12 @@
   }
 
   .back-button {
-    padding: 6px 14px 5px 14px;
+    padding: 6px 14px 6px 14px;
     font-size: 0.7rem;
+  }
+
+  .episode-details {
+    gap: 6px;
   }
 
   .season-title {
@@ -247,7 +252,7 @@
   }
   
   .episode-info-line {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
   
   .episode-overview {

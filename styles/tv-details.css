@@ -24,17 +24,18 @@
   display: flex;
   flex-direction: column;
   color: white;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
 }
 
 .tv-title {
   font-size: 1.8rem;
-  text-transform: uppercase;
+  text-transform: none;
   color: white;
   margin-top: 0;
   margin-bottom: 15px;
   letter-spacing: 2px;
   font-weight: bold;
+  line-height: 1.2;
 }
 
 .tv-info-line {
@@ -66,8 +67,8 @@
   display: block;
   font-size: 0.7em;
   font-weight: normal;
-  margin-top: 5px;
   letter-spacing: 0.3px;
+  color: #CBD5E0;
 }
 
 .seasons-container {
@@ -111,20 +112,20 @@
 }
 
 .season-title {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: bold;
   color: white;
   margin: 0 0 5px 0;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
   line-height: 1.2;
 }
 
 .season-info {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: #CBD5E0;
   margin: 0;
-  text-transform: uppercase;
+  text-transform: none;
   line-height: 1.2;
 }
 
@@ -163,7 +164,7 @@
   }
 
   .tv-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 }
 
@@ -184,12 +185,12 @@
   }
 
   .season-title {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     margin-bottom: 3px;
   }
 
   .season-info {
-    font-size: 0.55rem;
+    font-size: 0.6rem;
   }
 
   .seasons-loading {

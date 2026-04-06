@@ -1,7 +1,7 @@
 .content-rating {
   background-color: #666;
   color: white;
-  padding: 4px 5px 1.5px 6px;
+  padding: 4px 6px 4px 6px;
   border-radius: 4px;
   font-size: 1.001rem;
 }
@@ -22,7 +22,6 @@
 }
 
 .user-score-label {
-  margin-top: 5px;
   font-size: 1.1rem;
   text-transform: uppercase;
   color: white;
@@ -33,7 +32,7 @@
   font-size: 1.345rem;
   color: white;
   background: linear-gradient(135deg, #b34b9e, #333399);
-  padding: 6px 18px 4px 18px;
+  padding: 6px 18px 6px 18px;
   border-radius: 40px;
   font-weight: bold;
 }
@@ -41,15 +40,7 @@
 .overview-section {
   margin-bottom: 25px;
   max-width: 890px;
-}
-
-.overview-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: white;
-  margin: 15px 0 5px 0;
-  letter-spacing: 1px;
+  margin: 15px 0 15px 0;
 }
 
 .overview-text {
@@ -119,7 +110,7 @@
   background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
   color: white;
   text-decoration: none;
-  padding: 10px 20px 8px 20px;
+  padding: 10px 20px 10px 20px;
   border-radius: 25px;
   font-size: 1.001rem;
   letter-spacing: 1px;
@@ -143,13 +134,13 @@
   background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
   color: white;
   border: none;
-  padding: 10px 20px 8px 20px;
+  padding: 10px 20px 10px 20px;
   border-radius: 25px;
   font-size: 1.001rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   transition: all 0.3s ease;
 }
 
@@ -189,7 +180,7 @@
 
   .user-score {
     font-size: 1rem;
-    padding: 4px 14px 3px 14px;
+    padding: 4px 14px 4px 14px;
   }
 
   .overview-title {
@@ -210,12 +201,12 @@
 
   .imdb-link {
     font-size: 0.8rem;
-    padding: 8px 16px 6px 16px;
+    padding: 8px 16px 8px 16px;
   }
 
   .watchlist-detail-btn {
     font-size: 0.8rem;
-    padding: 8px 16px 6px 16px;
+    padding: 8px 16px 8px 16px;
   }
   .watchlist-detail-icon {
     width: 15px;

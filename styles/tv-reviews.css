@@ -9,7 +9,6 @@
 }
 
 .season-filter-dropdown {
-  font-family: "Montserrat", sans-serif, arial;
   padding: 10px 14px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 8px;
@@ -59,7 +58,6 @@
 
 .season-select,
 .episode-select {
-  font-family: "Montserrat", sans-serif, arial;
   padding: 10px 14px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 8px;

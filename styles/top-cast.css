@@ -66,20 +66,19 @@
 }
 
 .cast-name {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: bold;
   color: white;
   margin: 0 0 5px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
   line-height: 1.2;
 }
 
 .cast-character {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   color: #CBD5E0;
   margin: 0;
-  text-transform: uppercase;
+  text-transform: none;
   line-height: 1.2;
 }
 
@@ -94,7 +93,7 @@
   background: linear-gradient(135deg, #2f3445, #252a38);
   color: white;
   border: none;
-  padding: 8px 18px 6px 18px;
+  padding: 8px 18px 8px 18px;
   border-radius: 5px;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -104,7 +103,6 @@
   white-space: nowrap;
   flex-shrink: 0;
   width: auto;
-  margin-bottom: 2px;
 }
 
 .full-cast-btn:hover {
@@ -115,7 +113,7 @@
 
 @media (max-width: 650px) {
   .full-cast-btn {
-    padding: 8px 15px 7px 15px;
+    padding: 8px 15px 8px 15px;
     font-size: 0.7rem;
   }
 }
@@ -145,16 +143,16 @@
   }
 
   .cast-name {
-    font-size: 0.55rem;
+    font-size: 0.7rem;
     margin-bottom: 3px;
   }
 
   .cast-character {
-    font-size: 0.55rem;
+    font-size: 0.65rem;
   }
 
   .full-cast-btn {
-    padding: 6px 12px 5px 12px;
+    padding: 6px 12px 6px 12px;
     font-size: 0.7rem;
     letter-spacing: 0.3px;
   }

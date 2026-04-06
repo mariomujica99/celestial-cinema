@@ -139,8 +139,7 @@ function createTVDetailsSection(tvData) {
     </div>
     
     <div class="overview-section">
-      <p class="overview-title">Overview</p>
-      <p class="overview-text">${tvData.overview || 'No overview available.'}</p>
+      <p class="overview-text">${tvData.overview || 'No overview available'}</p>
     </div>
     
     <div class="credits-section" id="tv-credits-section">
@@ -370,7 +369,7 @@ newReviewForm.innerHTML = `
         </div>
         <div class="user-line">
           <p class="user-text">User</p>
-          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Enter your name">
+          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Name">
         </div>
         <div class="rating-line">
           <p class="rating-text">Rating</p>

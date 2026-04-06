@@ -26,7 +26,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Science+Gothic:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
@@ -49,7 +49,7 @@
 
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
-          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search Media" autocomplete="off">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search movies | shows | people" autocomplete="off">
         </form>
       </div>
     </nav>
@@ -80,21 +80,21 @@
       <div class="search-filters-body" id="search-filters-body">
         <div class="filter-input-container">
           <label for="user-filter">User</label>
-          <input type="text" id="user-filter" placeholder="Search User Name" class="filter-input">
+          <input type="text" id="user-filter" placeholder="Search name" class="filter-input">
         </div>
 
         <div class="filter-input-container">
           <label for="media-filter">Media</label>
-          <input type="text" id="media-filter" placeholder="Search Movie / TV Show" class="filter-input">
+          <input type="text" id="media-filter" placeholder="Search movie | show" class="filter-input">
         </div>
 
         <div class="filter-input-container">
           <label for="sort-filter">Sort By</label>
           <select id="sort-filter" class="filter-input">
-            <option value="date-newest">Date (Newest First)</option>
-            <option value="date-oldest">Date (Oldest First)</option>
-            <option value="rating-highest">Rating (Highest First)</option>
-            <option value="rating-lowest">Rating (Lowest First)</option>
+            <option value="date-newest">Date | newest first</option>
+            <option value="date-oldest">Date | oldest first</option>
+            <option value="rating-highest">Rating | highest first</option>
+            <option value="rating-lowest">Rating | lowest first</option>
           </select>
         </div>
         <button id="search-filters-btn" class="search-filters-btn">Filter</button>

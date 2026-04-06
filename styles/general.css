@@ -32,7 +32,7 @@
 
 body {
   background-color: #131720;
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   margin: 0px;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
@@ -47,7 +47,7 @@ p {
 }
 
 button {
-  font-family: "Rollbox", "Montserrat", sans-serif, arial;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   text-transform: uppercase;
   color: white;
 }

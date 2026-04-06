@@ -1,8 +1,7 @@
 .topnav {
   overflow: hidden;
   background-color: #131720;
-  padding-top: 24px;
-  padding-bottom: 16px;
+  padding: 24px 0 14px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,9 +11,7 @@
   display: block;
   color: white;
   text-align: center;
-  width: 263px;
-  min-width: 223px;;
-  margin: 6px 12px 0 24px;
+  margin: 12px 0 12px 0;
   text-decoration: none;
   font-size: 1.30rem;
   text-transform: uppercase;
@@ -23,7 +20,7 @@
 .search-container {
   margin-right: 24px;
   width: 100%;
-  max-width: 283px;
+  max-width: 300px;
 }
 
 .search-form {
@@ -41,13 +38,9 @@
   color: #fff;
   height: 100%;
   width: 100%;
-  padding: 8px 10px 5px 20px;
-  font-family: "Rollbox", sans-serif, arial;
-}
-@media (max-width: 800px) {
-  .search-container {
-    max-width: 278px;
-  }
+  padding: 8px 10px 8px 20px;
+  text-transform: none;
+  font-family: 'Montserrat';
 }
 
 @media (max-width: 650px) {
@@ -65,18 +58,21 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    padding: 15px 24px;
+    padding: 14px 24px 12px 24px;
   }
 
   .topnav a {
-    width: 223px;
     font-size: 1.1rem;
-    margin: 5px 0 0 0;
+    margin: 0 0 0 0;
   }
 }
 
 @media (max-width: 400px) {
   .topnav {
-    padding: 12px 12px;
+    padding: 12px 12px 10px 12px;
+  }
+
+  .search-input {
+    font-size: 0.8rem;
   }
 }
