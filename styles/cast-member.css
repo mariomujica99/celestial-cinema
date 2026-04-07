@@ -197,28 +197,6 @@
   padding: 20px;
 }
 
-.expand-collapse-btn {
-  display: none;
-  width: 100%;
-  background: linear-gradient(135deg, #6A5ACD, #4C44C1);
-  color: white;
-  border: none;
-  padding: 7px;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  font-family: "Science Gothic", "Montserrat", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.expand-collapse-btn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
-}
-
 @media (max-width: 1111px) {
   .cast-member-container {
     flex-direction: column;
@@ -314,7 +292,7 @@
     margin: 0 0 15px 0;
   }
 
-  .expand-collapse-btn {
+  .cast-member-container .expand-collapse-btn {
     display: block;
   }
 

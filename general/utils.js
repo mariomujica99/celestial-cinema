@@ -259,7 +259,16 @@ function initMediaCompactToggle() {
 
   expandBtn.addEventListener('click', () => {
     const isExpanded = container.classList.toggle('is-expanded');
+
     expandBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
+
+    // If collapsing, scroll to top
+    if (!isExpanded) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
   });
 }
 
