@@ -63,9 +63,27 @@ function renderCastMemberMeta(birthday, department, gender) {
 
 function initCompactToggle() {
   if (!expandCollapseBtn || !castMemberContainer) return;
-  expandCollapseBtn.addEventListener('click', () => {
+
+  expandCollapseBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     const isExpanded = castMemberContainer.classList.toggle('is-expanded');
+
     expandCollapseBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
+
+    // If collapsing, scroll to top
+    if (!isExpanded) {
+      // wait for layout to reflow before scrolling
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      });
+    }
   });
 }
 

@@ -257,16 +257,24 @@ function initMediaCompactToggle() {
     || document.querySelector('.current-tv-container');
   if (!expandBtn || !container) return;
 
-  expandBtn.addEventListener('click', () => {
+  expandBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     const isExpanded = container.classList.toggle('is-expanded');
 
     expandBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
 
     // If collapsing, scroll to top
     if (!isExpanded) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+      // wait for layout to reflow before scrolling
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
       });
     }
   });
