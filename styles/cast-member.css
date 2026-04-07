@@ -63,7 +63,24 @@
   text-transform: none;
   color: white;
   margin-top: 0;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.cast-member-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 880px;
+  font-size: 0.9rem;
+  color: rgb(225, 225, 225);
+  text-transform: none;
+}
+
+.meta-department,
+.meta-born strong {
+  color: white;
   font-weight: bold;
 }
 
@@ -73,11 +90,11 @@
 }
 
 .biography-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
   color: white;
-  margin: 15px 0 5px 0;
+  margin: 5px 0 5px 0;
 }
 
 .biography-text {
@@ -200,6 +217,11 @@
   .biography-section {
     text-align: left;
   }
+
+  .cast-member-meta {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 650px) {
@@ -223,7 +245,7 @@
   }
   
   .biography-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .biography-text {
@@ -238,6 +260,10 @@
   .known-for-title {
     font-size: 1.2rem;
     margin: 0 0 15px 0;
+  }
+
+  .cast-member-meta {
+    font-size: 0.8rem;
   }
 }
 
@@ -263,7 +289,7 @@
   }
   
   .biography-title {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .biography-text {
@@ -282,5 +308,9 @@
   .known-for-title {
     font-size: 1.2rem;
     margin: 0 0 15px 0;
+  }
+
+  .cast-member-meta {
+    font-size: 0.75rem;
   }
 }

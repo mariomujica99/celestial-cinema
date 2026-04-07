@@ -21,6 +21,42 @@ initSearchRedirect(
 
 returnCastDetails(API_LINKS.CAST_DETAILS);
 
+function renderCastMemberMeta(birthday, department, gender) {
+  const existing = document.getElementById('cast-member-meta');
+  if (existing) existing.remove();
+
+  const formattedDate = birthday
+    ? (() => {
+        const [year, month, day] = birthday.split('-').map(Number);
+        return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      })()
+    : null;
+
+  if (!formattedDate && !department) return;
+
+  const metaEl = document.createElement('div');
+  metaEl.id = 'cast-member-meta';
+  metaEl.className = 'cast-member-meta';
+
+  const departmentLabel = (() => {
+    if ((department || '').toLowerCase() === 'acting') {
+      if (gender === 1) return 'Actress';
+      if (gender === 2) return 'Actor';
+      return 'Actor/Actress';
+    }
+    return department || '';
+  })();
+
+  metaEl.innerHTML = `
+    <span class="meta-department">${departmentLabel}</span>
+    <span class="meta-born">
+      ${formattedDate ? `<strong>Born</strong> ${formattedDate}` : ''}
+    </span>
+  `;
+
+  castMemberNameElement.insertAdjacentElement('afterend', metaEl);
+}
+
 // FETCH DETAILS
 function returnCastDetails(url) {
   fetch(url)
@@ -36,23 +72,25 @@ function returnCastDetails(url) {
       castMemberNameElement.innerHTML =
         castData.name || castName || 'Unknown Name';
 
+      renderCastMemberMeta(castData.birthday, castData.known_for_department, castData.gender);
+
       biographyTextElement.innerHTML =
         castData.biography || 'No biography available';
 
-      returnCastCredits(API_LINKS.CAST_CREDITS);
+      returnCastCredits(API_LINKS.CAST_CREDITS, castData.known_for_department || '');
     })
     .catch(() => {
       castMemberNameElement.innerHTML = castName || 'Unknown Name';
       castMemberPhotoElement.src = '../images/no-image-cast.jpg';
-      biographyTextElement.innerHTML = 'Biography unavailable';
+      biographyTextElement.innerHTML = 'Biography unavailable.';
     });
 }
 
 // FETCH CREDITS
-function returnCastCredits(url) {
+function returnCastCredits(url, knownForDepartment = '') {
   fetch(url)
     .then(res => res.json())
-    .then(displayKnownFor)
+    .then(data => displayKnownFor(data, knownForDepartment))
     .catch(() => {
       knownForContainer.innerHTML =
         '<div class="known-for-loading">Unavailable</div>';
@@ -60,7 +98,13 @@ function returnCastCredits(url) {
 }
 
 // CAREER DETECTION
-function detectPrimaryCareer(castCredits) {
+function detectPrimaryCareer(castCredits, knownForDepartment = '') {
+  if (knownForDepartment) {
+    const dept = knownForDepartment.toLowerCase();
+    if (dept === 'acting') return 'actor';
+    if (dept === 'directing') return 'director';
+  }
+
   let acting = 0;
   let self = 0;
 
@@ -70,7 +114,9 @@ function detectPrimaryCareer(castCredits) {
     else acting++;
   });
 
-  return self > acting ? 'host' : 'actor';
+  // Require self credits to be a clear majority (>75%) to classify as host
+  const total = acting + self;
+  return (total > 0 && self / total > 0.75) ? 'host' : 'actor';
 }
 
 // HOST OWNERSHIP CHECK
@@ -86,13 +132,13 @@ function isPrimaryShow(credit, personName) {
 }
 
 // MAIN KNOWN FOR LOGIC
-function displayKnownFor(data) {
+function displayKnownFor(data, knownForDepartment = '') {
   if (!knownForContainer) return;
 
   const cast = data.cast || [];
   const crew = data.crew || [];
 
-  const careerType = detectPrimaryCareer(cast);
+  const careerType = detectPrimaryCareer(cast, knownForDepartment);
 
   const filteredCast = cast.filter(c => {
     const char = (c.character || '').toLowerCase();
