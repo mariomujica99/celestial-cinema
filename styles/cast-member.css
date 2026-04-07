@@ -197,6 +197,28 @@
   padding: 20px;
 }
 
+.expand-collapse-btn {
+  display: none;
+  width: 100%;
+  background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+  color: white;
+  border: none;
+  padding: 7px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-family: "Science Gothic", "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.expand-collapse-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+}
+
 @media (max-width: 1111px) {
   .cast-member-container {
     flex-direction: column;
@@ -268,6 +290,7 @@
 }
 
 @media (max-width: 400px) {
+  /* ── Shared base styles ── */
   .cast-member-back {
     padding: 5px 15px 5px 15px;
   }
@@ -275,25 +298,6 @@
   .back-button {
     padding: 6px 14px 6px 14px;
     font-size: 0.7rem;
-  }
-
-  .cast-member-container {
-    padding: 10px 15px 0 15px;
-    margin-bottom: 15px;
-    gap: 15px;
-  }
-  .cast-member-name {
-    font-size: 1.4rem;
-    text-align: center;
-    margin-bottom: 0px;
-  }
-  
-  .biography-title {
-    font-size: 0.8rem;
-  }
-
-  .biography-text {
-    font-size: 0.8rem;
   }
 
   .known-for-section {
@@ -306,11 +310,139 @@
   }
 
   .known-for-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin: 0 0 15px 0;
   }
 
-  .cast-member-meta {
+  .expand-collapse-btn {
+    display: block;
+  }
+
+  /* ── COMPACT MODE (default at ≤400px) ── */
+  .cast-member-container:not(.is-expanded) {
+    display: grid;
+    grid-template-columns: 105px 1fr;
+    grid-template-areas:
+      "name  name"
+      "meta  meta"
+      "photo bio"
+      "btn   btn";
+    gap: 0px 10px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    align-items: start;
+  }
+
+  .cast-member-container:not(.is-expanded) .cast-member-details {
+    display: contents;
+  }
+
+  .cast-member-container:not(.is-expanded) .cast-member-name {
+    grid-area: name;
+    text-align: left;
+    margin-bottom: 0;
+  }
+
+  .cast-member-container:not(.is-expanded) #cast-member-meta {
+    grid-area: meta;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1.5px solid #6A5ACD;
+    margin-bottom: 9px;
+  }
+
+  /* Born on left, department on right */
+  .cast-member-container:not(.is-expanded) #cast-member-meta .meta-born {
+    order: 1;
+  }
+
+  .cast-member-container:not(.is-expanded) #cast-member-meta .meta-department {
+    order: 2;
+  }
+
+  .cast-member-container:not(.is-expanded) .cast-member-image {
+    grid-area: photo;
+  }
+
+  .cast-member-container:not(.is-expanded) .cast-member-photo {
+    height: 164px;
+    width: 105px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .cast-member-container:not(.is-expanded) .biography-section {
+    grid-area: bio;
+    margin-bottom: 0;
+    max-width: none;
+    overflow: hidden;
+    max-height: 164px;
+  }
+
+  .cast-member-container:not(.is-expanded) .biography-title {
+    display: none;
+  }
+
+  .cast-member-container:not(.is-expanded) .biography-text {
+    font-size: 0.85rem;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+  }
+
+  .cast-member-container:not(.is-expanded) .expand-collapse-btn {
+    grid-area: btn;
+    margin-top: 2px;
+  }
+
+  /* ── EXPANDED MODE ── */
+  .cast-member-container.is-expanded {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 15px 0 15px;
+    margin-bottom: 15px;
+    gap: 15px;
+  }
+
+  .cast-member-container.is-expanded .cast-member-photo {
+    height: 320px;
+    width: 100%;
+  }
+
+  .cast-member-container.is-expanded .cast-member-name {
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  .cast-member-container.is-expanded #cast-member-meta {
     font-size: 0.75rem;
+  }
+
+  .cast-member-container.is-expanded .biography-section {
+    text-align: left;
+  }
+
+  .cast-member-container.is-expanded .biography-title {
+    margin: 2px 0 2px 0;
+    font-size: 0.85rem;
+  }
+
+  .cast-member-container.is-expanded .biography-text {
+    font-size: 0.85rem;
+  }
+
+  .cast-member-container.is-expanded .toggle-chevron {
+    transform: rotate(180deg);
+  }
+
+  .toggle-chevron {
+    display: inline-block;
+    transition: transform 0.3s ease;
   }
 }

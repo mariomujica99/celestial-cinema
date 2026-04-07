@@ -13,11 +13,15 @@ const castMemberNameElement = document.getElementById("cast-member-name");
 const biographyTextElement = document.getElementById("biography-text");
 const knownForContainer = document.getElementById("known-for-container");
 const knownForSection = document.querySelector(".known-for-section");
+const castMemberContainer = document.querySelector('.cast-member-container');
+const expandCollapseBtn = document.getElementById('expand-collapse-btn');
 
 initSearchRedirect(
   document.getElementById("search-form"),
   document.getElementById("search-query")
 );
+
+initCompactToggle();
 
 returnCastDetails(API_LINKS.CAST_DETAILS);
 
@@ -55,6 +59,14 @@ function renderCastMemberMeta(birthday, department, gender) {
   `;
 
   castMemberNameElement.insertAdjacentElement('afterend', metaEl);
+}
+
+function initCompactToggle() {
+  if (!expandCollapseBtn || !castMemberContainer) return;
+  expandCollapseBtn.addEventListener('click', () => {
+    const isExpanded = castMemberContainer.classList.toggle('is-expanded');
+    expandCollapseBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
+  });
 }
 
 // FETCH DETAILS
