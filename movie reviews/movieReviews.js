@@ -107,15 +107,16 @@ function createMovieDetailsSection(movieData) {
   
   const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
   
-  movieDetailsContainer.innerHTML = `
+movieDetailsContainer.innerHTML = `
     <p class="movie-title" id="movie-title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
     
     <div class="movie-info-line">
       ${contentRating ? `<span class="content-rating">${contentRating}</span>` : ''}
       ${releaseDate ? `<span class="release-date">${releaseDate} (US)</span>` : ''}
       ${runtime ? `<span class="runtime">${runtime}</span>` : ''}
-      ${genres ? `<span class="genres">${genres}</span>` : ''}
     </div>
+    
+    ${genres ? `<div class="genres-line"><span class="genres">${genres}</span></div>` : ''}
     
     <div class="user-score-container">
       <span class="user-score-label">User Score</span>
@@ -128,7 +129,7 @@ function createMovieDetailsSection(movieData) {
         Add to Watchlist
       </button>
     </div>
-    
+
     <div class="overview-section">
       <p class="overview-text">${movieData.overview || 'No overview available'}</p>
     </div>
@@ -136,6 +137,8 @@ function createMovieDetailsSection(movieData) {
     <div class="credits-section" id="movie-credits-section">
       <div class="credits-loading"></div>
     </div>
+
+    <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
     
     ${movieData.imdb_id ? `<div class="imdb-link-container">
       <a href="https://www.imdb.com/title/${movieData.imdb_id}/" target="_blank" class="imdb-link">
@@ -151,6 +154,8 @@ function createMovieDetailsSection(movieData) {
       mediaType: 'movie',
       posterPath: movieData.poster_path || ''
     });
+
+  initMediaCompactToggle();
 }
 
 function initWatchlistDetailBtn(item) {

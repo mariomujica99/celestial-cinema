@@ -11,6 +11,7 @@
 .runtime {
   font-size: 1.001rem;
   color: #CBD5E0;
+  text-transform: uppercase;
 }
 
 .user-score-container {
@@ -24,13 +25,13 @@
 .user-score-label {
   font-size: 1.1rem;
   text-transform: uppercase;
-  color: white;
+  color: rgb(245, 245, 245);
 }
 
 .user-score {
   letter-spacing: 1.1px;
   font-size: 1.345rem;
-  color: white;
+  color: rgb(245, 245, 245);
   background: linear-gradient(135deg, #b34b9e, #333399);
   padding: 6px 18px 6px 18px;
   border-radius: 40px;
@@ -70,7 +71,7 @@
 
 .person-name {
   font-size: 0.9rem;
-  color: white;
+  color: rgb(245, 245, 245);
   margin-bottom: 3px;
   text-transform: uppercase;
 }
@@ -107,10 +108,12 @@
 
 .imdb-link {
   display: inline-block;
-  background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
-  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
   text-decoration: none;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px;
   border-radius: 25px;
   font-size: 1.001rem;
   letter-spacing: 1px;
@@ -118,9 +121,12 @@
 }
 
 .imdb-link:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(255, 255, 255, 0.08);
 }
 
 .watchlist-detail-section {
@@ -132,7 +138,7 @@
   align-items: center;
   gap: 8px;
   background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
-  color: white;
+  color: rgb(245, 245, 245);
   border: none;
   padding: 10px 20px 10px 20px;
   border-radius: 25px;
@@ -160,7 +166,28 @@
   height: 18px;
   filter: brightness(0) invert(1);
   flex-shrink: 0;
-  margin-bottom: 2px;
+}
+
+/* Base: hidden — revealed only at ≤400px via movie/tv-details.css */
+.expand-collapse-btn {
+  display: none;
+  width: 100%;
+  background: linear-gradient(135deg, #2f3445, #252a38);
+  color: rgb(225, 225, 225);
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-chevron {
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
 @media (max-width: 650px) {

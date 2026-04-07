@@ -7,6 +7,7 @@
   gap: 20px;
   border: 1px solid rgba(106, 90, 205, 0.2);
   box-sizing: border-box;
+  color: rgb(225, 225, 225);
 }
 
 .filter-input-container {
@@ -19,7 +20,7 @@
 
 .filter-input-container label {
   font-size: 0.9rem;
-  color: white;
+  color: rgb(225, 225, 225);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
@@ -90,6 +91,7 @@
 .reviews-title {
   padding: 1px 0 5px 0;
   border-bottom: 2px solid #6A5ACD;
+  color: rgb(225, 225, 225);
 }
 
 .review-item .review-card {
@@ -109,7 +111,7 @@
 
 .review-header .user-review {
   font-size: 1.1rem;
-  color: rgb(224, 224, 224);
+  color: rgb(225, 225, 225);
   letter-spacing: 0.5px;
   margin: 0;
   flex: 1;
@@ -147,7 +149,7 @@
 
 .media-title-small {
   font-size: 0.8rem;
-  color: rgb(224, 224, 224);
+  color: rgb(225, 225, 225);
   text-transform: none;
   font-weight: bold;
   letter-spacing: 0.3px;
@@ -183,7 +185,7 @@
     padding: 14px 16px 14px 16px;
     background: transparent;
     border: none;
-    color: white;
+    color: rgb(225, 225, 225);
     font-size: 1.001rem;
     font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
     text-transform: uppercase;

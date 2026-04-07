@@ -123,8 +123,9 @@ function createTVDetailsSection(tvData) {
     <div class="tv-info-line">
       ${contentRating ? `<span class="content-rating">${contentRating}</span>` : ''}
       ${firstAirDate ? `<span class="release-date">${firstAirDate} (US)</span>` : ''}
-      ${genres ? `<span class="genres">${genres}</span>` : ''}
     </div>
+
+    ${genres ? `<div class="genres-line"><span class="genres">${genres}</span></div>` : ''}
     
     <div class="user-score-container">
       <span class="user-score-label">User Score</span>
@@ -145,6 +146,7 @@ function createTVDetailsSection(tvData) {
     <div class="credits-section" id="tv-credits-section">
       <div class="credits-loading"></div>
     </div>
+    <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
 
     ${tvData.external_ids && tvData.external_ids.imdb_id ? `<div class="imdb-link-container">
       <a href="https://www.imdb.com/title/${tvData.external_ids.imdb_id}/" target="_blank" class="imdb-link">
@@ -160,6 +162,7 @@ function createTVDetailsSection(tvData) {
       mediaType: 'tv',
       posterPath: tvData.poster_path || ''
     });
+  initMediaCompactToggle();
 }
 
 function initWatchlistDetailBtn(item) {

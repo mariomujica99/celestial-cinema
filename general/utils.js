@@ -246,6 +246,23 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
   });
 }
 
+/**
+ * Initializes compact/expand toggle for media detail pages.
+ * Works on both movie and TV detail pages by finding whichever
+ * container is present in the DOM.
+ */
+function initMediaCompactToggle() {
+  const expandBtn = document.getElementById('media-expand-btn');
+  const container = document.querySelector('.current-movie-container')
+    || document.querySelector('.current-tv-container');
+  if (!expandBtn || !container) return;
+
+  expandBtn.addEventListener('click', () => {
+    const isExpanded = container.classList.toggle('is-expanded');
+    expandBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
+  });
+}
+
 // Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

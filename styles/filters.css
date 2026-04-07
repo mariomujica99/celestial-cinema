@@ -175,7 +175,7 @@ html.media-toggle-tv #toggle-tv {
   font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: white;
+  color: rgb(225, 225, 225);
   margin: 5px 25px 0 25px;
   padding: 0 0 10px 0;
   letter-spacing: 1.5px;
