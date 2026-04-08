@@ -98,7 +98,7 @@ function createVideoStripCard(video) {
              src="${thumbUrl}"
              alt="${escapeHtml(video.name)}"
              onerror="this.parentElement.style.background='linear-gradient(135deg,#2d3748,#1a2332)'">
-        <div class="video-play-overlay">▶</div>
+        <div class="video-play-overlay"></div>
       </div>
       <p class="video-strip-title">${escapeHtml(video.name)}</p>
     </div>
@@ -135,7 +135,7 @@ function createVideoGridCard(video) {
              src="${thumbUrl}"
              alt="${escapeHtml(video.name)}"
              onerror="this.parentElement.style.background='linear-gradient(135deg,#2d3748,#1a2332)'">
-        <div class="video-play-overlay">▶</div>
+        <div class="video-play-overlay"></div>
       </div>
       <div class="video-grid-info">
         <p class="video-grid-title">${escapeHtml(video.name)}</p>
