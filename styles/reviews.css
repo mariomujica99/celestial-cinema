@@ -322,6 +322,12 @@
     min-height: 280px;
   }
 
+  .review-item .review-card:not(:has(.new-review)) {
+    height: auto;
+    min-height: unset;
+    max-height: 370px;
+  }
+
   .new-review {
     font-size: 1rem;
     margin-bottom: 8px;
