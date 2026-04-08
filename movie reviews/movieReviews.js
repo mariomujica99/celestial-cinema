@@ -7,7 +7,8 @@ const API_LINKS = {
   MOVIE_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/details/${movieId}`,
   MOVIE_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/credits/${movieId}`,
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces',
+  WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/watch-providers/${movieId}`
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -67,6 +68,7 @@ function returnMovieDetails(url) {
       createMovieDetailsSection(movieData);
       
       returnMovieCredits(API_LINKS.MOVIE_CREDITS);
+      loadWatchProviders();
       
     })
     .catch(error => {
@@ -107,7 +109,7 @@ function createMovieDetailsSection(movieData) {
   
   const releaseYear = movieData.release_date ? new Date(movieData.release_date).getFullYear() : '';
   
-movieDetailsContainer.innerHTML = `
+  movieDetailsContainer.innerHTML = `
     <p class="movie-title" id="movie-title">${movieData.title || 'Unknown Title'} ${releaseYear ? `(${releaseYear})` : ''}</p>
     
     <div class="movie-info-line">
@@ -156,6 +158,79 @@ movieDetailsContainer.innerHTML = `
     });
 
   initMediaCompactToggle();
+}
+
+async function loadWatchProviders() {
+  try {
+    const res = await fetch(API_LINKS.WATCH_PROVIDERS);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+    displayWatchProviders(data);
+  } catch (error) {
+    console.error('Error fetching watch providers:', error);
+  }
+}
+
+function displayWatchProviders(data) {
+  const section = document.getElementById('providers-section');
+  if (!section) return;
+
+  const LOGO_BASE = 'https://image.tmdb.org/t/p/original';
+
+  const seenIds = new Set();
+  const streamingProviders = [];
+  [...(data.flatrate || []), ...(data.free || [])].forEach(p => {
+    if (!seenIds.has(p.provider_id)) {
+      seenIds.add(p.provider_id);
+      streamingProviders.push(p);
+    }
+  });
+
+  const rentBuyIds = new Set();
+  const rentBuyProviders = [];
+  [...(data.rent || []), ...(data.buy || [])].forEach(p => {
+    if (!rentBuyIds.has(p.provider_id)) {
+      rentBuyIds.add(p.provider_id);
+      rentBuyProviders.push(p);
+    }
+  });
+
+  if (streamingProviders.length === 0 && rentBuyProviders.length === 0) return;
+
+  const buildStrip = (providers) =>
+    providers.map(p => `
+      <div class="provider-logo-wrap">
+        <img class="provider-logo"
+             src="${LOGO_BASE}${p.logo_path}"
+             alt="${escapeHtml(p.provider_name)}"
+             title="${escapeHtml(p.provider_name)}"
+             onerror="this.parentElement.style.display='none'">
+      </div>
+    `).join('');
+
+  const streamingGroup = streamingProviders.length > 0 ? `
+    <div class="providers-group">
+      <p class="providers-group-title">Streaming</p>
+      <div class="providers-strip">${buildStrip(streamingProviders)}</div>
+    </div>
+  ` : '';
+
+  const rentBuyGroup = rentBuyProviders.length > 0 ? `
+    <div class="providers-group">
+      <p class="providers-group-title">Rent / Buy</p>
+      <div class="providers-strip">${buildStrip(rentBuyProviders)}</div>
+    </div>
+  ` : '';
+
+  section.innerHTML = `
+    <div class="providers-scroll">
+      <div class="providers-inner">
+        ${streamingGroup}${rentBuyGroup}
+      </div>
+    </div>
+  `;
+
+  section.style.display = 'block';
 }
 
 function initWatchlistDetailBtn(item) {
