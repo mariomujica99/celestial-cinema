@@ -8,7 +8,8 @@ const API_LINKS = {
   MOVIE_CREDITS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/credits/${movieId}`,
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces',
-  WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/watch-providers/${movieId}`
+  WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/watch-providers/${movieId}`,
+  MOVIE_VIDEOS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/videos/${movieId}`
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -69,6 +70,7 @@ function returnMovieDetails(url) {
       
       returnMovieCredits(API_LINKS.MOVIE_CREDITS);
       loadWatchProviders();
+      loadVideoStrip(API_LINKS.MOVIE_VIDEOS, movieId, 'movie', movieData.title || '');
       
     })
     .catch(error => {
@@ -407,12 +409,13 @@ newReviewForm.innerHTML = `
         </p>
         <div class="user-line">
           <p class="user-text">User</p>
-          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Name">
+          <input class="user-input" type="text" id="new-user-input" value="" placeholder="">
         </div>
         <div class="rating-line">
           <p class="rating-text">Rating</p>
           <img src="../images/star.png" alt="Star" class="star-icon"> 
           <select class="rating-select" id="new-rating-input">
+            <option value=""></option>
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -427,7 +430,7 @@ newReviewForm.innerHTML = `
           </select>
         </div>
         <p class="review-text"> 
-          <textarea class="review-input" id="new-review-input" placeholder="Write a review"></textarea>
+          <textarea class="review-input" id="new-review-input" placeholder=""></textarea>
         </p>
       </div>
     </div>
@@ -614,6 +617,16 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="") {
   const reviewText = document.getElementById(reviewInputId).value;
   const userName = document.getElementById(userInputId).value;
   const rating = ratingInputId ? parseInt(document.getElementById(ratingInputId).value) : 0;
+
+  if (!userName || userName.length < 1) {
+    showValidateMessage('Please enter your name', document.querySelector('.reviews-left'));
+    return;
+  }
+
+  if (rating === null || isNaN(rating)) {
+    showValidateMessage('Please select a rating', document.querySelector('.reviews-left'));
+    return;
+  }
 
   if (reviewId) {
     fetch(API_LINKS.REVIEWS + reviewId, {

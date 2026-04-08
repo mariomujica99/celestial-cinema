@@ -23,17 +23,9 @@
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
-    <link rel="stylesheet" href="../styles/media-grid.css">
-    <link rel="stylesheet" href="../styles/reviews.css">
-    <link rel="stylesheet" href="../styles/movie-details.css">
-    <link rel="stylesheet" href="../styles/tv-details.css">
-    <link rel="stylesheet" href="../styles/media-details.css">
-    <link rel="stylesheet" href="../styles/top-cast.css">
-    <link rel="stylesheet" href="../styles/status-messages.css">
-    <link rel="stylesheet" href="../styles/modal.css">
-    <link rel="stylesheet" href="../styles/side-menu.css">
-    <link rel="stylesheet" href="../styles/streaming-providers.css">
     <link rel="stylesheet" href="../styles/videos.css">
+    <link rel="stylesheet" href="../styles/status-messages.css">
+    <link rel="stylesheet" href="../styles/side-menu.css">
   </head>
   <body>
     <nav class="topnav">
@@ -46,51 +38,22 @@
       </div>
     </nav>
 
-    <div class="current-movie-container">
-      <div class="current-movie-image">
-        <img class="movie-poster" id="movie-poster" src="#">
-      </div>
-      <div class="current-movie-details">
-        <p class="movie-title" id="movie-title"></p>
+    <div class="videos-page-header">
+      <div class="header-content">
+        <button class="back-button" onclick="history.back()">< Back</button>
+        <h1 class="videos-page-title" id="videos-page-title">Videos</h1>
       </div>
     </div>
 
-    <div class="providers-section" id="providers-section" style="display:none;"></div>
-
-    <div class="videos-section" style="display:none;">
-      <div class="videos-header">
-        <p class="videos-title">Videos</p>
-        <button class="view-all-btn"></button>
-      </div>
-      <div class="videos-container" id="videos-container">
+    <div class="videos-page-section">
+      <div class="videos-grid" id="videos-grid">
         <div class="videos-loading"></div>
       </div>
     </div>
 
-    <div class="cast-section">
-      <div class="cast-header">
-        <p class="cast-title">Top Cast</p>
-        <button class="full-cast-btn">Full Cast</button>
-      </div>
-
-      <div class="cast-container" id="cast-container">
-        <div class="cast-loading"></div>
-      </div>
-    </div>
-
-    <div class="reviews-left">
-      <p class="reviews-title">Reviews</p>
-    </div>
-    <section id="reviews-container"></section>
-
-    <div class="load-more-container">
-      <button id="load-more-btn" class="load-more-btn" style="display: none;">Load More Reviews</button>
-    </div>
-    
     <script src="../general/sideMenu.js"></script>
     <script src="../general/utils.js"></script>
-    <script src="../general/cast.js"></script>
     <script src="../general/videos.js"></script>
-    <script src="movieReviews.js"></script>
+    <script src="mediaVideos.js"></script>
   </body>
 </html>

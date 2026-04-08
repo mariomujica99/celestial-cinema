@@ -10,7 +10,8 @@ const API_LINKS = {
   TV_EPISODES: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/season/${tvId}/`,
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces',
-  WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/watch-providers/${tvId}`
+  WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/watch-providers/${tvId}`,
+  TV_VIDEOS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/videos/${tvId}`
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -77,6 +78,7 @@ function returnTVDetails(url) {
       
       returnTVCredits(API_LINKS.TV_CREDITS);
       loadWatchProviders();
+      loadVideoStrip(API_LINKS.TV_VIDEOS, tvId, 'tv', tvData.name || '');
       
     })
     .catch(error => {
@@ -435,24 +437,25 @@ newReviewForm.innerHTML = `
           <div class="season-line">
             <p class="season-text"></p>
             <select class="season-select" id="new-season-input" onchange="handleSeasonChange(this)">
-              <option value="">Select Season</option>
+              <option value="">SELECT SEASON</option>
             </select>
           </div>
           <div class="episode-line">
             <p class="episode-text"></p>
             <select class="episode-select" id="new-episode-input" disabled>
-              <option value="all">Season Review</option>
+              <option value="all">SEASON REVIEW</option>
             </select>
           </div>
         </div>
         <div class="user-line">
           <p class="user-text">User</p>
-          <input class="user-input" type="text" id="new-user-input" value="" placeholder="Name">
+          <input class="user-input" type="text" id="new-user-input" value="" placeholder="">
         </div>
         <div class="rating-line">
           <p class="rating-text">Rating</p>
           <img src="../images/star.png" alt="Star" class="star-icon"> 
           <select class="rating-select" id="new-rating-input">
+            <option value=""></option>
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -467,7 +470,7 @@ newReviewForm.innerHTML = `
           </select>
         </div>
         <p class="review-text"> 
-          <textarea class="review-input" id="new-review-input" placeholder="Write a review"></textarea>
+          <textarea class="review-input" id="new-review-input" placeholder=""></textarea>
         </p>
       </div>
     </div>
@@ -574,13 +577,13 @@ function editReview(reviewId) {
       <div class="season-line">
         <p class="season-text"></p>
         <select class="season-select" id="${seasonInputId}" onchange="handleSeasonChange(this)">
-          <option value="">Select Season</option>
+          <option value="">SELECT SEASON</option>
         </select>
       </div>
       <div class="episode-line">
         <p class="episode-text"></p>
         <select class="episode-select" id="${episodeInputId}" disabled>
-          <option value="all">Season Review</option>
+          <option value="all">SEASON REVIEW</option>
         </select>
       </div>
     </div>
@@ -637,14 +640,7 @@ function editReview(reviewId) {
 function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="", seasonInputId="", episodeInputId="") {
   const reviewTextElement = document.getElementById(reviewInputId);
   const userNameElement = document.getElementById(userInputId);
-  const ratingElement = ratingInputId ? document.getElementById(ratingInputId) : null;
-  
-  if (!reviewTextElement || !userNameElement) {
-    console.error('Required form elements not found');
-    showErrorMessage('Form elements missing. Please try again.');
-    return;
-  }
-  
+  const ratingElement = ratingInputId ? document.getElementById(ratingInputId) : null;  
   const reviewText = reviewTextElement.value;
   const userName = userNameElement.value;
   const rating = ratingElement ? parseInt(ratingElement.value) : 0;
@@ -652,6 +648,22 @@ function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="", s
   let season = null;
   let episode = null;
   
+  if (!userName || userName.length < 1) {
+    showValidateMessage('Please enter your name', document.querySelector('.reviews-header'));
+    return;
+  }
+
+  if (rating === null || isNaN(rating)) {
+    showValidateMessage('Please select a rating', document.querySelector('.reviews-header'));
+    return;
+  }
+
+  if (!reviewTextElement || !userNameElement) {
+    console.error('Required form elements not found');
+    showErrorMessage('Form elements missing. Please try again.');
+    return;
+  }
+
   if (seasonInputId) {
     const seasonElement = document.getElementById(seasonInputId);
     if (seasonElement) {
@@ -776,7 +788,7 @@ function fetchEpisodesForSeason(seasonNumber) {
 function populateSeasonDropdown() {
     const seasonSelects = document.querySelectorAll('.season-select');
     seasonSelects.forEach(select => {
-        select.innerHTML = '<option value="">Select Season</option>';
+        select.innerHTML = '<option value="">SELECT SEASON</option>';
         seasonsData.filter(season => season.season_number > 0).forEach(season => {
             const option = document.createElement('option');
             option.value = season.season_number;
@@ -789,7 +801,7 @@ function populateSeasonDropdown() {
 function populateEpisodeDropdown(seasonNumber) {
     const episodeSelects = document.querySelectorAll('.episode-select');
     episodeSelects.forEach(select => {
-        select.innerHTML = '<option value="all">Season Review</option>';
+        select.innerHTML = '<option value="all">SEASON REVIEW</option>';
         
         if (episodesData[seasonNumber]) {
             episodesData[seasonNumber].forEach(episode => {
@@ -811,7 +823,7 @@ function handleSeasonChange(seasonSelect) {
         fetchEpisodesForSeason(seasonNumber);
     } else {
         episodeSelect.disabled = true;
-        episodeSelect.innerHTML = '<option value="all">Season Review</option>';
+        episodeSelect.innerHTML = '<option value="all">SEASON REVIEW</option>';
     }
 }
 

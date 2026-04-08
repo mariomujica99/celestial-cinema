@@ -72,6 +72,22 @@ function showErrorMessage(message, anchorElement = null) {
     }, 5000);
 }
 
+function showValidateMessage(message, anchorElement = null) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'validate-message';
+    errorDiv.textContent = message;
+
+    if (anchorElement) {
+        anchorElement.parentNode.insertBefore(errorDiv, anchorElement.nextSibling);
+    } else {
+        document.body.appendChild(errorDiv);
+    }
+
+    setTimeout(() => {
+        if (errorDiv.parentNode) errorDiv.remove();
+    }, 5000);
+}
+
 /**
  * @param {HTMLElement} containerEl
  * @param {string|null} backdropPath - TMDB path string

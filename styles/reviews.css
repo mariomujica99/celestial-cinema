@@ -74,8 +74,9 @@
 }
 
 .user-review {
-  color: white;
   font-size: 1.1rem;
+  color: rgb(225, 225, 225);
+  letter-spacing: 0.5px;
   margin: 0 0 15px 0;
   font-weight: bold;
   text-transform: none;
@@ -142,7 +143,7 @@
 }
 
 .review-text, .user-text, .rating-text {
-  color: white;
+  color: rgb(225, 225, 225);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -181,7 +182,7 @@
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 8px;
   background: rgba(25, 38, 59, 0.8);
-  color: white;
+  color: rgb(225, 225, 225);
   font-size: 0.9rem;
 }
 
@@ -327,7 +328,6 @@
   }
 
   .user-review {
-    font-size: 1rem;
     margin-bottom: 12px;
   }
 
@@ -428,7 +428,6 @@
   }
 
   .user-review {
-    font-size: 0.9rem;
     margin-bottom: 10px;
   }
 
@@ -472,6 +471,10 @@
   .rating-select {
     font-size: 0.8rem;
     padding: 8px 12px;
+  }
+
+  .user-input {
+    margin-left: 3px;
   }
 
   .review-actions {

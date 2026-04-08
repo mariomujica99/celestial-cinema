@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="../styles/modal.css">
     <link rel="stylesheet" href="../styles/side-menu.css">
     <link rel="stylesheet" href="../styles/streaming-providers.css">
+    <link rel="stylesheet" href="../styles/videos.css">
   <body>
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
@@ -54,6 +55,16 @@
     </div>
 
     <div class="providers-section" id="providers-section" style="display:none;"></div>
+
+    <div class="videos-section" style="display:none;">
+      <div class="videos-header">
+        <p class="videos-title">Videos</p>
+        <button class="view-all-btn"></button>
+      </div>
+      <div class="videos-container" id="videos-container">
+        <div class="videos-loading"></div>
+      </div>
+    </div>
 
     <div class="seasons-section">
       <p class="seasons-title">Seasons</p>
@@ -92,6 +103,7 @@
     <script src="../general/sideMenu.js"></script>
     <script src="../general/utils.js"></script>
     <script src="../general/cast.js"></script>
+    <script src="../general/videos.js"></script>
     <script src="tvReviews.js"></script>
   </body>
 </html>
