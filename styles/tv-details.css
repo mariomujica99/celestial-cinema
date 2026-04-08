@@ -165,6 +165,12 @@
   .tv-title {
     font-size: 1.3rem;
   }
+
+  .seasons-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+  }
 }
 
 @media (max-width: 400px) {
@@ -175,8 +181,6 @@
 
   .seasons-title {
     font-size: 1rem;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
   }
 
   .seasons-container {

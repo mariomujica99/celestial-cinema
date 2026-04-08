@@ -283,7 +283,7 @@ function initMediaCompactToggle() {
 
     // If collapsing, scroll to top
     if (!isExpanded) {
-      // wait for layout to reflow before scrolling
+      suppressNextClick();
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           window.scrollTo({

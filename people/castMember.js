@@ -275,7 +275,7 @@ function displayKnownFor(data, knownForDepartment = '') {
         ? new Date(c.first_air_date).getFullYear()
         : '');
 
-    const mediaType = c.media_type === 'tv' ? 'TV' : 'Movie';
+    const mediaType = c.media_type === 'tv' ? 'Show' : 'Movie';
 
     el.innerHTML = `
       <img class="known-for-poster" src="${poster}" alt="${title}">
@@ -283,6 +283,7 @@ function displayKnownFor(data, knownForDepartment = '') {
       <div class="known-for-info">
         ${year ? year + ' • ' : ''}${mediaType}
       </div>
+      <div class="user-score-grid">${formatScore(c.vote_average)}</div>
     `;
 
     el.addEventListener('click', () => {

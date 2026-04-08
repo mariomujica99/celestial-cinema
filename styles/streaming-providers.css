@@ -1,6 +1,6 @@
 .providers-section {
   margin: 0 25px 30px 25px;
-  padding: 30px 0 0 0;
+  padding: 28px 0 0 0;
   border-top: 1px solid rgba(106, 90, 205, 0.2);
 }
 
@@ -57,6 +57,7 @@
 @media (max-width: 650px) {
   .providers-section {
     margin: 0 15px 20px 15px;
+    padding: 17px 0 0 0;
   }
 
   .providers-inner {

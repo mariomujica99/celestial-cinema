@@ -1,6 +1,7 @@
 .reviews-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .reviews-right {
@@ -100,8 +101,8 @@
 }
 
 @media (max-width: 650px) {
-  .reviews-header .reviews-left {
-    margin-top: 0;
+  .reviews-header {
+    align-items: flex-start;
   }
 
   .season-filter-dropdown {

@@ -116,6 +116,11 @@
     padding: 8px 15px 8px 15px;
     font-size: 0.7rem;
   }
+
+  .cast-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+  }
 }
 
 @media (max-width: 400px) {
@@ -126,7 +131,6 @@
 
   .cast-title {
     font-size: 1rem;
-    letter-spacing: 0.5px;
   }
 
   .cast-container {
