@@ -60,6 +60,7 @@
 
 .season-select,
 .episode-select {
+  text-transform: uppercase;
   padding: 10px 14px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 8px;

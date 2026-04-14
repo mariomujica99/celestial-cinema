@@ -439,13 +439,13 @@ newReviewForm.innerHTML = `
           <div class="season-line">
             <p class="season-text"></p>
             <select class="season-select" id="new-season-input" onchange="handleSeasonChange(this)">
-              <option value="">SELECT SEASON</option>
+              <option value="">Select Season</option>
             </select>
           </div>
           <div class="episode-line">
             <p class="episode-text"></p>
             <select class="episode-select" id="new-episode-input" disabled>
-              <option value="all">SEASON REVIEW</option>
+              <option value="all">Season Review</option>
             </select>
           </div>
         </div>
@@ -579,13 +579,13 @@ function editReview(reviewId) {
       <div class="season-line">
         <p class="season-text"></p>
         <select class="season-select" id="${seasonInputId}" onchange="handleSeasonChange(this)">
-          <option value="">SELECT SEASON</option>
+          <option value="">Select Season</option>
         </select>
       </div>
       <div class="episode-line">
         <p class="episode-text"></p>
         <select class="episode-select" id="${episodeInputId}" disabled>
-          <option value="all">SEASON REVIEW</option>
+          <option value="all">Season Review</option>
         </select>
       </div>
     </div>
@@ -790,7 +790,7 @@ function fetchEpisodesForSeason(seasonNumber) {
 function populateEpisodeDropdown(seasonNumber) {
     const episodeSelects = document.querySelectorAll('.episode-select');
     episodeSelects.forEach(select => {
-        select.innerHTML = '<option value="all">SEASON REVIEW</option>';
+        select.innerHTML = '<option value="all">Season Review</option>';
         
         if (episodesData[seasonNumber]) {
             episodesData[seasonNumber].forEach(episode => {
@@ -812,7 +812,7 @@ function handleSeasonChange(seasonSelect) {
         fetchEpisodesForSeason(seasonNumber);
     } else {
         episodeSelect.disabled = true;
-        episodeSelect.innerHTML = '<option value="all">SEASON REVIEW</option>';
+        episodeSelect.innerHTML = '<option value="all">Season Review</option>';
     }
 }
 
@@ -835,7 +835,7 @@ function populateSeasonFilter() {
 function populateSeasonDropdown() {
     const seasonSelects = document.querySelectorAll('.season-select');
     seasonSelects.forEach(select => {
-        select.innerHTML = '<option value="">SELECT SEASON</option>';
+        select.innerHTML = '<option value="">Select Season</option>';
         seasonsData.filter(season => season.season_number > 0 && season.episode_count > 0).forEach(season => {
             const option = document.createElement('option');
             option.value = season.season_number;
