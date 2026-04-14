@@ -787,19 +787,6 @@ function fetchEpisodesForSeason(seasonNumber) {
         });
 }
 
-function populateSeasonDropdown() {
-    const seasonSelects = document.querySelectorAll('.season-select');
-    seasonSelects.forEach(select => {
-        select.innerHTML = '<option value="">SELECT SEASON</option>';
-        seasonsData.filter(season => season.season_number > 0).forEach(season => {
-            const option = document.createElement('option');
-            option.value = season.season_number;
-            option.textContent = `Season ${season.season_number}`;
-            select.appendChild(option);
-        });
-    });
-}
-
 function populateEpisodeDropdown(seasonNumber) {
     const episodeSelects = document.querySelectorAll('.episode-select');
     episodeSelects.forEach(select => {
@@ -830,6 +817,20 @@ function handleSeasonChange(seasonSelect) {
 }
 
 let allReviewsData = [];
+
+function populateSeasonFilter() {
+  const seasonFilter = document.getElementById('season-filter');
+  if (!seasonFilter) return;
+
+  seasonFilter.innerHTML = '<option value="all">All Seasons</option>';
+
+  seasonsData.filter(season => season.season_number > 0 && season.episode_count > 0).forEach(season => {
+    const option = document.createElement('option');
+    option.value = season.season_number;
+    option.textContent = `Season ${season.season_number}`;
+    seasonFilter.appendChild(option);
+  });
+}
 
 function populateSeasonDropdown() {
     const seasonSelects = document.querySelectorAll('.season-select');
