@@ -311,6 +311,7 @@ function displaySeasons(tvData) {
   const seasonsContainer = document.getElementById('seasons-container');
   if (!seasonsContainer) return;
 
+  const seasons = tvData.seasons || [];
   const seasonsTitleElement = document.querySelector('.seasons-title');
 
   const filteredSeasons = seasons.filter(season => season.season_number > 0 && season.episode_count > 0).sort((a, b) => a.season_number - b.season_number);
