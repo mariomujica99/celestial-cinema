@@ -28,12 +28,11 @@
   gap: 6px;
   font-size: 1.1rem;
   margin-top: 5px;
-  color: #6A5ACD;
+  color: #8A7AED;
 }
 
 .rating-info .star-icon {
-  filter: brightness(0) invert(1) opacity(1);
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0;
 }
 
 .review-item {
@@ -61,7 +60,7 @@
 }
 
 .new-review {
-  color: #6A5ACD;
+  color: rgb(225, 225, 225);
   font-size: 1.1rem;
   margin: 0 0 10px 0;
   text-transform: uppercase;
