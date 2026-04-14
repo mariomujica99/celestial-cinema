@@ -310,36 +310,35 @@ function initWatchlistDetailBtn(item) {
 function displaySeasons(tvData) {
   const seasonsContainer = document.getElementById('seasons-container');
   if (!seasonsContainer) return;
-  
-  const seasons = tvData.seasons || [];
 
   const seasonsTitleElement = document.querySelector('.seasons-title');
-  if (seasonsTitleElement && tvData.number_of_seasons && tvData.number_of_episodes) {
-    const numberOfSeasons = tvData.number_of_seasons;
-    const numberOfEpisodes = tvData.number_of_episodes;
+
+  const filteredSeasons = seasons.filter(season => season.season_number > 0 && season.episode_count > 0).sort((a, b) => a.season_number - b.season_number);
+
+  if (seasonsTitleElement && filteredSeasons.length > 0) {
+    const numberOfSeasons = filteredSeasons.length;
+    const numberOfEpisodes = filteredSeasons.reduce((sum, s) => sum + (s.episode_count || 0), 0);
     seasonsTitleElement.innerHTML = `Seasons<br><span class="seasons-subtitle">(${numberOfSeasons} Season${numberOfSeasons > 1 ? 's' : ''} | ${numberOfEpisodes} Episode${numberOfEpisodes > 1 ? 's' : ''})</span>`;
   }
-  
-  const filteredSeasons = seasons.filter(season => season.season_number > 0 && season.episode_count > 0).sort((a, b) => a.season_number - b.season_number);
-  
+
   if (filteredSeasons.length === 0) {
     seasonsContainer.innerHTML = '<div class="seasons-loading">No seasons information available</div>';
     return;
   }
-  
+
   seasonsContainer.innerHTML = '';
-  
+
   filteredSeasons.forEach(season => {
     const seasonCard = document.createElement('div');
     seasonCard.className = 'season-card';
-    
-    const posterUrl = season.poster_path 
+
+    const posterUrl = season.poster_path
       ? `${API_LINKS.IMG_PATH}${season.poster_path}`
       : '../images/no-image-season.jpg';
-    
+
     const airDate = season.air_date ? new Date(season.air_date).getFullYear() : '';
     const episodeCount = season.episode_count || 0;
-    
+
     seasonCard.innerHTML = `
       <img class="season-poster" src="${posterUrl}" alt="Season ${season.season_number}" onerror="this.src='../images/no-image-season.jpg'">
       <div class="season-title">Season ${season.season_number}</div>
@@ -350,7 +349,7 @@ function displaySeasons(tvData) {
       const showTitle = tvData.name || tvTitle || 'Unknown Title';
       window.location.href = `tvEpisodesList.html?id=${tvId}&season=${season.season_number}&title=${encodeURIComponent(showTitle)}`;
     });
-    
+
     seasonsContainer.appendChild(seasonCard);
   });
 }
@@ -831,20 +830,17 @@ function handleSeasonChange(seasonSelect) {
 
 let allReviewsData = [];
 
-function populateSeasonFilter() {
-  const seasonFilter = document.getElementById('season-filter');
-  if (!seasonFilter) return;
-  
-  seasonFilter.innerHTML = '<option value="all">All Seasons</option>';
-
-  seasonsData.forEach(season => {
-    if (season.season_number > 0) {
-      const option = document.createElement('option');
-      option.value = season.season_number;
-      option.textContent = `Season ${season.season_number}`;
-      seasonFilter.appendChild(option);
-    }
-  });
+function populateSeasonDropdown() {
+    const seasonSelects = document.querySelectorAll('.season-select');
+    seasonSelects.forEach(select => {
+        select.innerHTML = '<option value="">SELECT SEASON</option>';
+        seasonsData.filter(season => season.season_number > 0 && season.episode_count > 0).forEach(season => {
+            const option = document.createElement('option');
+            option.value = season.season_number;
+            option.textContent = `Season ${season.season_number}`;
+            select.appendChild(option);
+        });
+    });
 }
 
 function filterReviewsBySeason() {
