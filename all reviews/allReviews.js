@@ -454,7 +454,7 @@ async function displayReviews(reviews, append = false) {
       if (reviewData.episode) {
         seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Episode ${reviewData.episode}</div>`;
       } else {
-        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} (Full Season)</div>`;
+        seasonEpisodeDisplay = `<div class="season-episode-info">Season ${reviewData.season} | Full Season</div>`;
       }
     }
   
