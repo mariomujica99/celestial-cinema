@@ -320,7 +320,7 @@ function displaySeasons(tvData) {
     seasonsTitleElement.innerHTML = `Seasons<br><span class="seasons-subtitle">(${numberOfSeasons} Season${numberOfSeasons > 1 ? 's' : ''} | ${numberOfEpisodes} Episode${numberOfEpisodes > 1 ? 's' : ''})</span>`;
   }
   
-  const filteredSeasons = seasons.filter(season => season.season_number > 0).sort((a, b) => a.season_number - b.season_number);
+  const filteredSeasons = seasons.filter(season => season.season_number > 0 && season.episode_count > 0).sort((a, b) => a.season_number - b.season_number);
   
   if (filteredSeasons.length === 0) {
     seasonsContainer.innerHTML = '<div class="seasons-loading">No seasons information available</div>';
