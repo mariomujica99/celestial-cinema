@@ -39,7 +39,7 @@
   border-radius: 10px;
   background: rgba(106, 90, 205, 0.1);
   color: #CBD5E0;
-  padding: 10px 15px 10px 15px;
+  padding: 6px 10px;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -50,20 +50,20 @@
 .name-preset-btn.selected {
   background: linear-gradient(135deg, #6A5ACD, #4C44C1);
   border-color: transparent;
-  color: white;
 }
 
 @media (hover: hover) {
   .name-preset-btn:hover {
-    background: linear-gradient(135deg, #6A5ACD, #4C44C1);
+    background: #6A5ACD;
     border-color: transparent;
-    color: white;
+    box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
   }
 }
 
 .name-modal-input {
   width: 100%;
-  padding: 10px 15px 10px 15px;
+  padding: 6px 14px;
+  text-align: center;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 10px;
   background: rgba(25, 38, 59, 0.8);
@@ -94,7 +94,7 @@
 .name-modal-cancel,
 .name-modal-confirm {
   flex: 1;
-  padding: 10px 15px 10px 15px;
+  padding: 8px 14px;
   border: none;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -107,7 +107,7 @@
 
 .name-modal-cancel {
   background: rgba(106, 90, 205, 0.1);
-  color: #CBD5E0;
+  color: rgb(225, 225, 225);
   border: 1px solid rgba(106, 90, 205, 0.2);
 }
 
@@ -118,11 +118,11 @@
 
 .name-modal-confirm {
   background: linear-gradient(135deg, #6A5ACD, #4C44C1);
-  color: white;
+  color: rgb(225, 225, 225);
 }
 
 .name-modal-confirm:hover {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.1);
+  color: white;
 }

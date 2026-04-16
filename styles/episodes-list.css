@@ -61,6 +61,7 @@
   padding: 20px;
   border: 1px solid rgba(106, 90, 205, 0.2);
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .episode-image {
@@ -86,6 +87,9 @@
 
 .episode-title-line {
   display: block;
+  line-height: 1.1;
+  margin-bottom: 3.5px;
+  margin-right: 35px;
 }
 
 .episode-number {
@@ -101,7 +105,6 @@
   font-weight: bold;
   color: white;
   text-transform: none;
-  line-height: 1.2;
   display: inline;
 }
 
@@ -147,6 +150,65 @@
   color: white;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.episode-quick-rate-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .episode-quick-rate-btn:hover {
+    transform: scale(1.2);
+  }
+  .episode-quick-rate-btn:hover .episode-quick-rate-star {
+    filter: brightness(0) invert(1) opacity(0.88);
+  }
+}
+
+.episode-quick-rate-star {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1) opacity(0.88);
+  display: block;
+}
+
+.episode-rating-line {
+  margin-top: 1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.episode-rating-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.episode-rating-star {
+  margin-bottom: 3px;
+  width: 13px;
+  height: 13px;
+  filter: brightness(0) invert(1) opacity(0.88);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.episode-rating-score,
+.episode-rating-user {
+  color: #8A7AED;
+  font-size: 0.8rem;
+  text-transform: none;
 }
 
 @media (max-width: 850px) {
@@ -202,6 +264,10 @@
   .episode-still {
     height: 200px;
   }
+
+  .episode-title-line {
+    margin-right: 0;
+  }
   
   .episode-title {
     font-size: 1.1rem;
@@ -219,6 +285,14 @@
   .episode-score {
     padding: 3px 11px;
     font-size: 0.8rem;
+  }
+
+  .episode-quick-rate-btn { 
+    top: 25px; right: 25px; 
+  }
+
+  .episode-quick-rate-star { 
+    width: 24px; height: 24px; 
   }
 }
 
@@ -267,5 +341,10 @@
   .episode-score {
     padding: 2px 9px;
     font-size: 0.7rem;
+  }
+
+  .episode-rating-score, 
+  .episode-rating-user { 
+    font-size: 0.7rem; 
   }
 }
