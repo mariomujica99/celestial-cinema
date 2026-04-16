@@ -148,7 +148,47 @@ function displayEpisodes(episodes) {
     quickRateBtn.className = 'episode-quick-rate-btn';
     quickRateBtn.setAttribute('aria-label', `Rate episode ${episode.episode_number}`);
     quickRateBtn.innerHTML = `<img src="../images/star-empty.png" alt="Rate" class="episode-quick-rate-star">`;
-    quickRateBtn.addEventListener('click', () => showQuickRateModal(episode, stillUrl));
+    quickRateBtn.addEventListener('click', () => {
+      const imagePath   = episode.still_path || window.tvBackdropPath;
+      const imageBase   = episode.still_path ? API_LINKS.IMG_PATH : API_LINKS.BACKDROP_PATH;
+
+      showReviewModal({
+        title:           episode.name || 'Untitled',
+        posterSection:   true,
+        backdropPath:    imagePath || null,
+        backdropBaseUrl: imageBase,
+        fallbackImage:   '../images/no-image-episode.jpg',
+        mediaType:       'tv',
+        lockedSeason:    parseInt(seasonNumber),
+        lockedEpisode:   episode.episode_number,
+        onSave: async ({ user, rating, review }) => {
+          const res = await fetch(API_LINKS.REVIEWS + 'new', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              movieId:   tvId,
+              user,
+              review,
+              rating,
+              mediaType: 'tv',
+              season:    parseInt(seasonNumber),
+              episode:   episode.episode_number
+            })
+          });
+          if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+
+          const ep = episode.episode_number;
+          if (!seasonReviews[ep]) seasonReviews[ep] = [];
+          seasonReviews[ep].push({
+            user, review, rating,
+            episode: ep,
+            season:  parseInt(seasonNumber),
+            createdAt: new Date().toISOString()
+          });
+          updateEpisodeRatingLine(ep);
+        }
+      });
+    });
     episodeCard.appendChild(quickRateBtn);
 
     episodesContainer.appendChild(episodeCard);
@@ -183,212 +223,3 @@ function updateEpisodeRatingLine(epNum) {
   }
 }
 
-function showQuickRateModal(episode, posterUrl) {
-  const existing = document.getElementById('quick-rate-overlay');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'quick-rate-overlay';
-  overlay.className = 'quick-rate-overlay';
-
-  const starsHTML = Array.from({ length: 10 }, (_, i) =>
-    `<img src="../images/star.png" alt="Star ${i + 1}" class="qr-star" data-index="${i + 1}">`
-  ).join('');
-
-  overlay.innerHTML = `
-    <div class="quick-rate-modal">
-      <div class="quick-rate-poster-wrap">
-        <div class="quick-rate-rating-overlay" id="qr-rating-display">0</div>
-      </div>
-      <p class="quick-rate-episode-title">${escapeHtml(`${episode.name || 'Untitled'}`)}</p>
-
-      <div class="quick-rate-name-group">
-        <div class="quick-rate-presets">
-          <button class="name-preset-btn qr-preset" data-name="mario">mario</button>
-          <button class="name-preset-btn qr-preset" data-name="monse">monse</button>
-        </div>
-        <input type="text" class="quick-rate-name-input" id="qr-name-input" placeholder="name">
-      </div>
-
-      <div class="quick-rate-stars" id="qr-stars">${starsHTML}</div>
-      <div class="quick-rate-review-section">
-        <button class="qr-review-toggle-btn" id="qr-review-toggle">
-          Write a Review <span class="toggle-chevron">▾</span>
-        </button>
-        <textarea class="qr-review-textarea" id="qr-review-textarea" placeholder=""></textarea>
-      </div>
-      <div class="quick-rate-actions">
-        <button class="qr-cancel-btn">Cancel</button>
-        <button class="qr-save-btn">Save</button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-setBackdropBackground(
-  overlay.querySelector('.quick-rate-poster-wrap'),
-  episode.still_path || window.tvBackdropPath,
-  episode.still_path ? API_LINKS.IMG_PATH : API_LINKS.BACKDROP_PATH,
-  '../images/no-image-episode.jpg'
-);
-
-  document.body.style.overflow = 'hidden';
-
-  const ratingDisplay = overlay.querySelector('#qr-rating-display');
-  const nameInput = overlay.querySelector('#qr-name-input');
-  const starsContainer = overlay.querySelector('#qr-stars');
-  const starImgs = overlay.querySelectorAll('.qr-star');
-  const reviewToggle = overlay.querySelector('#qr-review-toggle');
-  const reviewTextarea = overlay.querySelector('#qr-review-textarea');
-  const cancelBtn = overlay.querySelector('.qr-cancel-btn');
-  const saveBtn = overlay.querySelector('.qr-save-btn');
-
-  let currentRating = 0;
-  let selectedPreset = null;
-  let isDragging = false;
-  let mouseDownIndex = 0;
-
-  const closeModal = () => {
-    document.removeEventListener('keydown', handleEsc);
-    overlay.remove();
-    document.body.style.overflow = '';
-  };
-
-  function renderStars(filledCount) {
-    starImgs.forEach((img, i) => {
-      img.style.opacity = i < filledCount ? '0.88' : '0.25';
-    });
-    ratingDisplay.textContent = filledCount;
-  }
-
-  function getStarIndex(clientX) {
-    const rect = starsContainer.getBoundingClientRect();
-    const relX = Math.max(0, Math.min(rect.width, clientX - rect.left));
-    return Math.min(10, Math.max(1, Math.ceil(relX / (rect.width / 10))));
-  }
-
-  renderStars(0);
-
-  starsContainer.addEventListener('pointerdown', (e) => {
-    e.preventDefault();
-    isDragging = true;
-    mouseDownIndex = getStarIndex(e.clientX);
-    starsContainer.setPointerCapture(e.pointerId);
-    renderStars(mouseDownIndex);
-  });
-
-  starsContainer.addEventListener('pointermove', (e) => {
-    renderStars(getStarIndex(e.clientX));
-  });
-
-  starsContainer.addEventListener('pointerleave', () => {
-    if (!isDragging) renderStars(currentRating);
-  });
-
-  starsContainer.addEventListener('pointerup', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    const upIndex = getStarIndex(e.clientX);
-    currentRating = (upIndex === currentRating && upIndex === mouseDownIndex) ? 0 : upIndex;
-    renderStars(currentRating);
-  });
-
-  starsContainer.addEventListener('pointercancel', () => {
-    isDragging = false;
-    renderStars(currentRating);
-  });
-
-  overlay.querySelectorAll('.qr-preset').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (selectedPreset === btn) {
-        btn.classList.remove('is-selected');
-        selectedPreset = null;
-      } else {
-        if (selectedPreset) selectedPreset.classList.remove('is-selected');
-        btn.classList.add('is-selected');
-        selectedPreset = btn;
-        nameInput.value = '';
-      }
-    });
-  });
-
-  nameInput.addEventListener('input', () => {
-    if (selectedPreset) {
-      selectedPreset.classList.remove('is-selected');
-      selectedPreset = null;
-    }
-  });
-
-  reviewToggle.addEventListener('click', () => {
-    const isOpen = reviewTextarea.classList.toggle('is-open');
-    reviewToggle.querySelector('.toggle-chevron').style.transform = isOpen ? 'rotate(180deg)' : '';
-  });
-
-  cancelBtn.addEventListener('click', closeModal);
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
-
-  const handleEsc = (e) => {
-    if (e.key === 'Escape') closeModal();
-  };
-  document.addEventListener('keydown', handleEsc);
-
-  saveBtn.addEventListener('click', async () => {
-    const name = selectedPreset ? selectedPreset.dataset.name : nameInput.value.trim();
-
-    if (!name) {
-      nameInput.style.borderColor = '#6A5ACD';
-      nameInput.focus();
-      setTimeout(() => { nameInput.style.borderColor = ''; }, 2000);
-      return;
-    }
-    if (!currentRating) {
-      starsContainer.classList.add('qr-stars-error');
-      setTimeout(() => starsContainer.classList.remove('qr-stars-error'), 2000);
-      return;
-    }
-
-    saveBtn.textContent = 'Saving';
-    saveBtn.disabled = true;
-
-    try {
-      const res = await fetch(API_LINKS.REVIEWS + 'new', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          movieId: tvId,
-          user: name,
-          review: reviewTextarea.value.trim(),
-          rating: currentRating,
-          mediaType: 'tv',
-          season: parseInt(seasonNumber),
-          episode: episode.episode_number
-        })
-      });
-
-      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-
-      const ep = episode.episode_number;
-      if (!seasonReviews[ep]) seasonReviews[ep] = [];
-      seasonReviews[ep].push({
-        user: name,
-        review: reviewTextarea.value.trim(),
-        rating: currentRating,
-        episode: ep,
-        season: parseInt(seasonNumber),
-        createdAt: new Date().toISOString()
-      });
-
-      updateEpisodeRatingLine(ep);
-      closeModal();
-    } catch (e) {
-      console.error('Error saving episode review:', e);
-      showErrorMessage('Failed to save review. Please try again.', document.querySelector('.episodes-header'));
-      saveBtn.textContent = 'Save';
-      saveBtn.disabled = false;
-    }
-  });
-}

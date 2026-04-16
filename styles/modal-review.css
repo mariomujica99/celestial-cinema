@@ -1,4 +1,56 @@
-.quick-rate-overlay {
+/* ── Trigger button ── */
+.review-modal-trigger-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 10px;
+  margin: 10px 25px 5px 25px;
+}
+
+.review-modal-trigger-btn {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4b6eb3b4, #573399c0);
+  color: rgb(225, 225, 225);
+  font-size: 0.85rem;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+@media (hover: hover) {
+  .review-modal-trigger-btn:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(106, 90, 205, 0.1);
+    color: white;
+  }
+}
+
+/* Mirror reviews.css breakpoints so button = one card width */
+@media (max-width: 650px) {
+  .review-modal-trigger-row { grid-template-columns: 1fr; }
+}
+@media (min-width: 651px) and (max-width: 1000px) {
+  .review-modal-trigger-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1001px) and (max-width: 1350px) {
+  .review-modal-trigger-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1351px) and (max-width: 1650px) {
+  .review-modal-trigger-row { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 1651px) {
+  .review-modal-trigger-row { grid-template-columns: repeat(5, 1fr); }
+}
+@media (max-width: 400px) {
+  .review-modal-trigger-row { grid-template-columns: 1fr; margin: 10px 15px 5px 15px; }
+}
+
+/* ── Modal overlay ── */
+.review-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
@@ -9,7 +61,7 @@
   padding: 20px;
 }
 
-.quick-rate-modal {
+.review-modal {
   background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
   border: 1px solid rgba(106, 90, 205, 0.35);
   border-radius: 20px;
@@ -24,7 +76,8 @@
   overflow-y: auto;
 }
 
-.quick-rate-poster-wrap {
+/* ── Optional poster (episodes page only) ── */
+.rm-poster-wrap {
   position: relative;
   display: flex;
   align-items: center;
@@ -37,18 +90,11 @@
   flex-shrink: 0;
 }
 
-.quick-rate-poster {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.quick-rate-rating-overlay {
+.rm-rating-overlay {
   position: absolute;
   font-size: 100px;
   font-weight: 200;
-  color: rgb(225, 225, 225);
+  color: white;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
   line-height: 1;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif;
@@ -56,36 +102,77 @@
   pointer-events: none;
 }
 
-.quick-rate-episode-title {
+/* ── Title ── */
+.rm-title {
   text-align: center;
   font-size: 1.1rem;
   color: rgb(225, 225, 225);
   text-transform: none;
   font-weight: bold;
-  margin: 2px 0 0 0;
+  margin: 0 0 25px 0;
   line-height: 1.1;
   font-family: "Montserrat", sans-serif;
 }
 
-.quick-rate-name-group {
+/* ── Season / episode selects (TV reviews page) ── */
+.rm-season-episode-group {
+  display: flex;
+  gap: 8px;
+}
+
+.rm-season-select,
+.rm-episode-select {
+  flex: 1;
+  padding: 7.5px 10px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+  border-radius: 10px;
+  background: rgba(25, 38, 59, 0.8);
+  color: white;
+  font-size: 0.8rem;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.rm-season-select:focus,
+.rm-episode-select:focus {
+  outline: none;
+  border-color: #6A5ACD;
+  background: rgba(25, 38, 59, 1);
+}
+
+.rm-season-select:disabled,
+.rm-episode-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Name group ── */
+.rm-name-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.quick-rate-presets {
+.rm-presets {
   display: flex;
   gap: 8px;
 }
 
-.quick-rate-presets .name-preset-btn {
+.rm-presets .name-preset-btn {
   flex: 1;
   padding: 6px 10px;
 }
 
-.quick-rate-name-input {
+.name-preset-btn.is-selected {
+  background: linear-gradient(135deg, #213264, #33284e);
+  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
+  color: white;
+}
+
+.rm-name-input {
   width: 100%;
-  padding: 7px 14px;
+  padding: 6px 14px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   border-radius: 10px;
   background: rgba(25, 38, 59, 0.8);
@@ -96,19 +183,20 @@
   transition: border-color 0.2s ease;
 }
 
-.quick-rate-name-input:focus {
+.rm-name-input:focus {
   outline: none;
   border-color: #6A5ACD;
   box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
   background: rgba(25, 38, 59, 1);
 }
 
-.quick-rate-name-input::placeholder {
+.rm-name-input::placeholder {
   color: #CBD5E0;
   opacity: 0.7;
 }
 
-.quick-rate-stars {
+/* ── Stars ── */
+.rm-stars {
   display: flex;
   gap: 3px;
   justify-content: space-between;
@@ -120,7 +208,7 @@
   transition: outline 0.2s ease;
 }
 
-.qr-star {
+.rm-star {
   width: 26px;
   height: 26px;
   object-fit: contain;
@@ -130,17 +218,18 @@
   flex-shrink: 0;
 }
 
-.qr-stars-error {
+.rm-stars-error {
   outline: 1px solid #6A5ACD;
 }
 
-.quick-rate-review-section {
+/* ── Review section ── */
+.rm-review-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.qr-review-toggle-btn {
+.rm-review-toggle-btn {
   background: rgba(106, 90, 205, 0.1);
   border: 1px solid rgba(106, 90, 205, 0.2);
   color: #CBD5E0;
@@ -158,23 +247,18 @@
 }
 
 @media (hover: hover) {
-  .qr-review-toggle-btn:hover {
+  .rm-review-toggle-btn:hover {
     background: rgba(106, 90, 205, 0.2);
     color: white;
   }
 }
 
-.qr-preset.is-selected {
-  background: linear-gradient(135deg, #213264, #33284e);
-  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
-}
-
-.qr-review-toggle-btn .toggle-chevron {
+.rm-review-toggle-btn .toggle-chevron {
   display: inline-block;
   transition: transform 0.2s ease;
 }
 
-.qr-review-textarea {
+.rm-review-textarea {
   display: none;
   width: 100%;
   min-height: 80px;
@@ -189,23 +273,24 @@
   box-sizing: border-box;
 }
 
-.qr-review-textarea.is-open {
+.rm-review-textarea.is-open {
   display: block;
 }
 
-.qr-review-textarea:focus {
+.rm-review-textarea:focus {
   outline: none;
   border-color: #6A5ACD;
   background: rgba(25, 38, 59, 1);
 }
 
-.quick-rate-actions {
+/* ── Actions ── */
+.rm-actions {
   display: flex;
   gap: 10px;
 }
 
-.qr-cancel-btn,
-.qr-save-btn {
+.rm-cancel-btn,
+.rm-save-btn {
   flex: 1;
   padding: 8px 14px;
   border: none;
@@ -218,43 +303,38 @@
   transition: all 0.2s ease;
 }
 
-.qr-cancel-btn {
+.rm-cancel-btn {
   background: rgba(106, 90, 205, 0.1);
   color: #CBD5E0;
   border: 1px solid rgba(106, 90, 205, 0.2);
 }
 
-.qr-cancel-btn:hover {
+.rm-cancel-btn:hover {
   background: rgba(106, 90, 205, 0.2);
   color: white;
 }
 
-.qr-save-btn {
+.rm-save-btn {
   background: linear-gradient(135deg, #4b6eb3b4, #573399c0);
   color: rgb(225, 225, 225);
 }
 
-.qr-save-btn:hover {
+.rm-save-btn:hover {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: 0 4px 15px rgba(106, 90, 205, 0.1);
   color: white;
 }
 
-.qr-save-btn:disabled {
+.rm-save-btn:disabled {
   background: linear-gradient(135deg, #4a5568, #2d3748);
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
 }
 
 @media (max-width: 400px) {
-  .quick-rate-modal {
+  .review-modal {
     padding: 18px 16px;
     gap: 10px;
   }
-
-  .qr-star {
-    width: 22px;
-    height: 22px;
-  }
+  .rm-star { width: 22px; height: 22px; }
 }
