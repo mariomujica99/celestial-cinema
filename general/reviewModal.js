@@ -122,9 +122,26 @@ function showReviewModal(options) {
 
   // Pre-fill for edit mode
   if (editData) {
-    nameInput.value = editData.review ? '' : ''; // set below
-    nameInput.value = editData.user || '';
-    currentRating   = editData.rating || 0;
+    const presets = overlay.querySelectorAll('.rm-preset');
+    const user = (editData.user || '').trim().toLowerCase();
+    let matchedPreset = null;
+
+    // check if user matches a preset
+    presets.forEach(btn => {
+      if (btn.dataset.name.toLowerCase() === user) {
+        matchedPreset = btn;
+      }
+    });
+
+    if (matchedPreset) {
+      matchedPreset.classList.add('is-selected');
+      selectedPreset = matchedPreset;
+      nameInput.value = '';
+    } else {
+      nameInput.value = editData.user || '';
+    }
+
+    currentRating = editData.rating || 0;
     reviewTextarea.value = editData.review || '';
     if (editData.review) {
       reviewTextarea.classList.add('is-open');

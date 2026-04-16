@@ -2,7 +2,8 @@ const API_LINKS = {
   REVIEWS: 'https://celestial-cinema-backend.onrender.com/api/v1/reviews/',
   MOVIE_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/',
   TV_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/',
-  IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
+  IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -37,6 +38,7 @@ let allReviews = [];
 let mediaCache = {};
 let totalReviewCount = 0;
 let filteredReviewCount = 0;
+let mediaBackdropPath = null;
 
 let remainingFilteredResults = [];
 
@@ -620,76 +622,32 @@ function applyFilters() {
 
 function editReview(reviewId) {
   const reviewElement = document.getElementById(reviewId);
-  
   if (!reviewElement) {
     console.error('Review element not found with ID:', reviewId);
     return;
   }
-  
-  const originalReview = reviewElement.getAttribute('data-original-review') || '';
-  const originalUser = reviewElement.getAttribute('data-original-user') || '';
-  const originalRating = reviewElement.getAttribute('data-original-rating') || '0';
-  
-  const reviewInputId = "review-edit-" + reviewId;
-  const userInputId = "user-edit-" + reviewId;
-  const ratingInputId = "rating-edit-" + reviewId;
-  
-  const ratingOptions = generateRatingOptions(originalRating);
-  
-  reviewElement.innerHTML = `
-    <div class="user-line">
-    <p class="user-text">User</p>
-    <input class="user-input" type="text" id="${userInputId}" value="${escapeHtml(originalUser)}">
-    </div>
-    <div class="rating-line">
-      <p class="rating-text">Rating</p>
-      <img src="../images/star.png" alt="Star" class="star-icon">  
-      <select class="rating-select" id="${ratingInputId}">
-        ${ratingOptions}
-      </select>
-    </div>
-    <p class="review-text"> 
-      <textarea class="review-input" id="${reviewInputId}">${escapeHtml(originalReview)}</textarea>
-    </p>
-    <div class="review-actions">
-      <button type="button" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}', '${ratingInputId}')">Save</button>
-      <button type="button" onclick="location.reload()">Cancel</button>
-    </div>
-  `;
 
-  const editUserInput = document.getElementById(userInputId);
-  editUserInput.readOnly = true;
-  editUserInput.style.cursor = 'pointer';
-  editUserInput.addEventListener('click', () => {
-    showNameModal({
-      title: 'Sign Your Review',
-      confirmText: 'Confirm',
-      onConfirm: (name) => { editUserInput.value = name; }
-    });
-  });
-}
-
-function saveReview(reviewInputId, userInputId, reviewId, ratingInputId) {
-  const reviewText = document.getElementById(reviewInputId).value;
-  const userName = document.getElementById(userInputId).value;
-  const rating = parseInt(document.getElementById(ratingInputId).value);
-
-  fetch(API_LINKS.REVIEWS + reviewId, {
-    method: 'PUT',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
+  showReviewModal({
+    title:         reviewElement.getAttribute('data-media-title') || '',
+    mediaType:     reviewElement.getAttribute('data-media-type') || 'movie',
+    posterSection: true,
+    backdropPath: mediaBackdropPath,
+    backdropBaseUrl: API_LINKS.BACKDROP_PATH,
+    fallbackImage: '../images/no-image-backdrop.jpg',
+    editData: {
+      user:   reviewElement.getAttribute('data-original-user')   || '',
+      review: reviewElement.getAttribute('data-original-review') || '',
+      rating: parseInt(reviewElement.getAttribute('data-original-rating') || '0')
     },
-    body: JSON.stringify({"user": userName, "review": reviewText, "rating": rating})
-  })
-  .then(res => res.json())
-  .then(res => {
-    console.log(res);
-    location.reload();
-  })
-  .catch(error => {
-    console.error('Error saving review:', error);
-    showErrorMessage('Failed to save review. Please try again.');
+    onSave: async ({ user, rating, review }) => {
+      const res = await fetch(API_LINKS.REVIEWS + reviewId, {
+        method: 'PUT',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user, review, rating })
+      });
+      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+      location.reload();
+    }
   });
 }
 
