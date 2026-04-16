@@ -76,7 +76,6 @@
   overflow-y: auto;
 }
 
-/* ── Optional poster (episodes page only) ── */
 .rm-poster-wrap {
   position: relative;
   display: flex;

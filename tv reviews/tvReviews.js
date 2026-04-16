@@ -439,6 +439,7 @@ document.getElementById('new-review-btn').addEventListener('click', () => {
     backdropPath: tvBackdropPath,
     backdropBaseUrl: API_LINKS.BACKDROP_PATH,
     fallbackImage: '../images/no-image-backdrop.jpg',
+    imgPath: API_LINKS.IMG_PATH,
     seasonsData,
     fetchEpisodes: fetchEpisodesAsync,
     onSave: async ({ user, rating, review, season, episode }) => {
@@ -462,6 +463,7 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + tvId).then(res => res.json()).then(function(reviewsData) {
+    reviewsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     allReviewsData = reviewsData;
     allFilteredReviews = reviewsData;
 
@@ -532,6 +534,7 @@ function editReview(reviewId) {
     backdropPath: tvBackdropPath,
     backdropBaseUrl: API_LINKS.BACKDROP_PATH,
     fallbackImage: '../images/no-image-backdrop.jpg',
+    imgPath: API_LINKS.IMG_PATH,
     seasonsData,
     fetchEpisodes: fetchEpisodesAsync,
     editData: {

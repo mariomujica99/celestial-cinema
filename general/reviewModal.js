@@ -4,7 +4,8 @@
  * @param {object}   options
  * @param {string}   options.title             - Text displayed at top of modal
  * @param {string}   options.mediaType         - 'movie' | 'tv'
- * @param {boolean}  [options.posterSection]   - Show image header (episodes page only)
+ * @param {boolean}  [options.posterSection]   - Show image header
+ * @param {string}   [options.imgPath]         - Base URL for episode still images (IMG_PATH)
  * @param {string}   [options.backdropPath]    - TMDB path for image header
  * @param {string}   [options.backdropBaseUrl] - Base URL for backdrop
  * @param {string}   [options.fallbackImage]   - Fallback image path
@@ -24,6 +25,7 @@ function showReviewModal(options) {
     backdropPath = null,
     backdropBaseUrl = '',
     fallbackImage = '',
+    imgPath = '',
     seasonsData = [],
     fetchEpisodes = null,
     lockedSeason = null,
@@ -95,7 +97,7 @@ function showReviewModal(options) {
 
   document.body.appendChild(overlay);
 
-  if (posterSection) {
+  if (posterSection && !(editData?.season && editData?.episode)) {
     setBackdropBackground(
       overlay.querySelector('.rm-poster-wrap'),
       backdropPath,
@@ -224,23 +226,56 @@ function showReviewModal(options) {
   if (hasSelectableSeasons) {
     const seasonSelect  = overlay.querySelector('#rm-season-select');
     const episodeSelect = overlay.querySelector('#rm-episode-select');
+    const posterWrap    = posterSection ? overlay.querySelector('.rm-poster-wrap') : null;
+    const episodeCache  = {};
 
-    seasonSelect.addEventListener('change', () => {
+    const revertToShowBackdrop = () => {
+      if (!posterWrap) return;
+      setBackdropBackground(posterWrap, backdropPath, backdropBaseUrl, fallbackImage);
+    };
+
+    const updatePosterForEpisode = (seasonNum, episodeNum) => {
+      if (!posterWrap || !episodeNum) {
+        revertToShowBackdrop();
+        return;
+      }
+      const episodes = episodeCache[seasonNum] || [];
+      const episode = episodes.find(ep => String(ep.episode_number) === String(episodeNum));
+      if (episode?.still_path && imgPath) {
+        setBackdropBackground(posterWrap, episode.still_path, imgPath, fallbackImage, [0.7, 0.8]);
+      } else {
+        revertToShowBackdrop();
+      }
+    };
+
+    seasonSelect.addEventListener('change', async () => {
       const seasonNum = seasonSelect.value;
+      revertToShowBackdrop();
       if (seasonNum) {
         episodeSelect.disabled = false;
-        loadEpisodesIntoSelect(seasonNum, episodeSelect, fetchEpisodes);
+        const episodes = await loadEpisodesIntoSelect(seasonNum, episodeSelect, fetchEpisodes);
+        episodeCache[seasonNum] = episodes;
       } else {
         episodeSelect.disabled = true;
         episodeSelect.innerHTML = '<option value="">Entire Season</option>';
       }
     });
 
+    episodeSelect.addEventListener('change', () => {
+      updatePosterForEpisode(seasonSelect.value, episodeSelect.value);
+    });
+
     // Pre-fill edit data
     if (editData?.season) {
       seasonSelect.value = editData.season;
       episodeSelect.disabled = false;
-      loadEpisodesIntoSelect(editData.season, episodeSelect, fetchEpisodes, editData.episode);
+      loadEpisodesIntoSelect(editData.season, episodeSelect, fetchEpisodes, editData.episode)
+        .then(episodes => {
+          episodeCache[editData.season] = episodes;
+          if (editData.episode) {
+            updatePosterForEpisode(editData.season, editData.episode);
+          }
+        });
     }
   }
 
@@ -306,7 +341,7 @@ function showReviewModal(options) {
  */
 async function loadEpisodesIntoSelect(seasonNumber, episodeSelect, fetchEpisodes, selectedEpisode = null) {
   episodeSelect.innerHTML = '<option value="">Entire Season</option>';
-  if (!fetchEpisodes) return;
+  if (!fetchEpisodes) return [];
 
   try {
     const episodes = await fetchEpisodes(seasonNumber);
@@ -317,7 +352,9 @@ async function loadEpisodesIntoSelect(seasonNumber, episodeSelect, fetchEpisodes
       if (selectedEpisode != null && ep.episode_number == selectedEpisode) option.selected = true;
       episodeSelect.appendChild(option);
     });
+    return episodes;
   } catch (err) {
     console.error('Error loading episodes into select:', err);
+    return [];
   }
 }

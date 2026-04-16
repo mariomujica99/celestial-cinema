@@ -429,7 +429,7 @@ returnReviews(API_LINKS.REVIEWS);
 
 function returnReviews(url) {
   fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
-    allMovieReviews = reviewsData;
+    allMovieReviews = reviewsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     updateReviewsTitle(reviewsData);
     
     displayMovieReviews(reviewsData.slice(0, 8));

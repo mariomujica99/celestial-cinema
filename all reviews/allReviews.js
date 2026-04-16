@@ -3,7 +3,9 @@ const API_LINKS = {
   MOVIE_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/',
   TV_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/',
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
-  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
+  BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces',
+  TV_SEASONS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/seasons/',
+  TV_EPISODES: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/season/'
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -499,6 +501,8 @@ async function displayReviews(reviews, append = false) {
     cardElement.setAttribute('data-media-title', mediaInfo.title);
     cardElement.setAttribute('data-media-id', mediaId);
     cardElement.setAttribute('data-media-type', actualMediaType);
+    cardElement.setAttribute('data-original-season',  reviewData.season  ?? '');
+    cardElement.setAttribute('data-original-episode', reviewData.episode ?? '');
     reviewsContainer.appendChild(reviewCard);
   }
 }
@@ -566,7 +570,8 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
         posterUrl: data.poster_path 
           ? `${API_LINKS.IMG_PATH}${data.poster_path}`
           : 'images/no-image.jpg',
-        mediaType: detectedMediaType
+        mediaType: detectedMediaType,
+        backdropPath: data.backdrop_path || null
       };
     
       mediaCache[cacheKey] = mediaInfo;
@@ -579,7 +584,8 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
       title: '',
       year: '',
       posterUrl: 'images/no-image.jpg',
-      mediaType: mediaType
+      mediaType: mediaType,
+      backdropPath: null
     };
     mediaCache[cacheKey] = fallbackInfo;
     return fallbackInfo;
@@ -620,24 +626,63 @@ function applyFilters() {
   }
 }
 
-function editReview(reviewId) {
+async function editReview(reviewId) {
   const reviewElement = document.getElementById(reviewId);
   if (!reviewElement) {
     console.error('Review element not found with ID:', reviewId);
     return;
   }
 
+  const mediaId      = reviewElement.getAttribute('data-media-id');
+  const mediaType    = reviewElement.getAttribute('data-media-type') || 'movie';
+  const cacheKey     = `${mediaType}_${mediaId}`;
+  const backdropPath = mediaCache[cacheKey]?.backdropPath || null;
+
+  const rawSeason  = reviewElement.getAttribute('data-original-season');
+  const rawEpisode = reviewElement.getAttribute('data-original-episode');
+  const season     = rawSeason  ? parseInt(rawSeason)  : null;
+  const episode    = rawEpisode ? parseInt(rawEpisode) : null;
+
+  let seasonsDataForModal   = [];
+  let fetchEpisodesForModal = null;
+
+  if (mediaType === 'tv') {
+    try {
+      const res = await fetch(`${API_LINKS.TV_SEASONS}${mediaId}`);
+      if (res.ok) {
+        const data = await res.json();
+        seasonsDataForModal = (data.seasons || []).filter(
+          s => s.season_number > 0 && s.episode_count > 0
+        );
+      }
+    } catch (err) {
+      console.error('Error fetching seasons for edit modal:', err);
+    }
+
+    fetchEpisodesForModal = async (seasonNum) => {
+      const res = await fetch(`${API_LINKS.TV_EPISODES}${mediaId}/${seasonNum}`);
+      if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+      const data = await res.json();
+      return data.episodes || [];
+    };
+  }
+
   showReviewModal({
-    title:         reviewElement.getAttribute('data-media-title') || '',
-    mediaType:     reviewElement.getAttribute('data-media-type') || 'movie',
-    posterSection: true,
-    backdropPath: mediaBackdropPath,
+    title:           reviewElement.getAttribute('data-media-title') || '',
+    mediaType,
+    posterSection:   true,
+    backdropPath,
     backdropBaseUrl: API_LINKS.BACKDROP_PATH,
-    fallbackImage: '../images/no-image-backdrop.jpg',
+    fallbackImage:   '../images/no-image-backdrop.jpg',
+    imgPath:         API_LINKS.IMG_PATH,
+    seasonsData:     seasonsDataForModal,
+    fetchEpisodes:   fetchEpisodesForModal,
     editData: {
-      user:   reviewElement.getAttribute('data-original-user')   || '',
-      review: reviewElement.getAttribute('data-original-review') || '',
-      rating: parseInt(reviewElement.getAttribute('data-original-rating') || '0')
+      user:    reviewElement.getAttribute('data-original-user')   || '',
+      review:  reviewElement.getAttribute('data-original-review') || '',
+      rating:  parseInt(reviewElement.getAttribute('data-original-rating') || '0'),
+      season,
+      episode
     },
     onSave: async ({ user, rating, review }) => {
       const res = await fetch(API_LINKS.REVIEWS + reviewId, {
