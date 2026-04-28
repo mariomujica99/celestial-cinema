@@ -264,13 +264,16 @@
     align-self: start;
   }
 
-  .current-tv-container:not(.is-expanded) .user-score-label {
-    font-size: 0.65rem;
+  .current-tv-container:not(.is-expanded) .user-score-pill {
+    gap: 6px;
+    padding: 0 0 0 14px;
   }
-
-  .current-tv-container:not(.is-expanded) .user-score {
+  .current-tv-container:not(.is-expanded) .score-value {
     font-size: 0.7rem;
-    padding: 2px 10px;
+  }
+  .current-tv-container:not(.is-expanded) .score-label {
+    font-size: 0.7rem;
+    padding: 1px 12px;
   }
 
   .current-tv-container:not(.is-expanded) .overview-section {

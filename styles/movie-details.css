@@ -141,18 +141,21 @@
     align-self: start;
   }
 
-  .current-movie-container:not(.is-expanded) .user-score-label {
-    font-size: 0.65rem;
+  .current-movie-container:not(.is-expanded) .user-score-pill {
+    gap: 6px;
+    padding: 0 0 0 10px;
   }
-
-  .current-movie-container:not(.is-expanded) .user-score {
+  .current-movie-container:not(.is-expanded) .score-value {
     font-size: 0.7rem;
-    padding: 2px 10px;
+  }
+  .current-movie-container:not(.is-expanded) .score-label {
+    font-size: 0.7rem;
+    padding: 1px 10px;
   }
 
   .current-movie-container:not(.is-expanded) .overview-section {
     grid-area: overview;
-    margin: 0;
+    margin: 10px 0 0 0;
     overflow: hidden;
   }
 

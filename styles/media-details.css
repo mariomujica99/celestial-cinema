@@ -19,23 +19,33 @@
   margin-bottom: 5px;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.user-score-label {
-  font-size: 1.1rem;
-  text-transform: uppercase;
+.score-value,
+.score-label {
   color: rgb(245, 245, 245);
-}
-
-.user-score {
-  letter-spacing: 1.1px;
-  font-size: 1.345rem;
-  color: rgb(245, 245, 245);
-  background: linear-gradient(135deg, #b34b9e, #333399);
-  padding: 6px 18px 6px 18px;
-  border-radius: 40px;
   font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1.1px;
+}
+
+.user-score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #3949ab;
+  padding: 0 0 0 18px;
+  border-radius: 40px;
+  transition: all 0.3s ease;
+}
+.score-label {
+  font-weight: normal;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px 40px 40px 20px;
+  padding: 2px 14px;
+  font-size: 1.1rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
 }
 
 .overview-section {
@@ -201,13 +211,18 @@
     font-size: 0.7rem;
   }
 
-  .user-score-label {
-    font-size: 0.8rem;
+  .score-value,
+  .score-label {
+    font-size: 1rem;
+  }
+  
+  .user-score-pill {
+    gap: 8px;
+    padding: 0 0 0 16px;
   }
 
-  .user-score {
-    font-size: 1rem;
-    padding: 4px 14px 4px 14px;
+  .score-label {
+    padding: 1px 14px;
   }
 
   .overview-title {

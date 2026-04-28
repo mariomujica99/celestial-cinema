@@ -65,7 +65,7 @@
   letter-spacing: 1px;
   font-size: 0.85rem;
   color: rgb(224, 224, 224);
-  background: linear-gradient(135deg, #b34b9e, #333399);
+  background: linear-gradient(135deg, #3949ab 55%, #0d1b4b 100%);
   padding: 3px 10px 3px 10px;
   border-radius: 20px;
   font-weight: bold;

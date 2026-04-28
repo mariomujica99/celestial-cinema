@@ -127,8 +127,10 @@ function createMovieDetailsSection(movieData) {
     ${genres ? `<div class="genres-line"><span class="genres">${genres}</span></div>` : ''}
     
     <div class="user-score-container">
-      <span class="user-score-label">User Score</span>
-      <span class="user-score">${userScore}</span>
+      <div class="user-score-pill">
+        <span class="score-value">${userScore}</span>
+        <span class="score-label">TMDB</span>
+      </div>
     </div>
 
     <div class="watchlist-detail-section">

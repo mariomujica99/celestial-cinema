@@ -130,7 +130,7 @@ function renderWatchlist(items) {
   }
 
   if (items.length === 0) {
-    watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and TV shows!</div>';
+    watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and shows</div>';
     return;
   }
 
@@ -147,7 +147,7 @@ function createWatchlistItem(item) {
     ? `${API_LINKS.IMG_PATH}${item.posterPath}`
     : '../images/no-image.jpg';
 
-  const typeLabel = item.mediaType === 'tv' ? 'TV Show' : 'Movie';
+  const typeLabel = item.mediaType === 'tv' ? 'Show' : 'Movie';
   const detailUrl = item.mediaType === 'tv'
     ? `../tv reviews/tvReviews.html?id=${item.mediaId}&title=${encodeURIComponent(item.title)}`
     : `../movie reviews/movieReviews.html?id=${item.mediaId}&title=${encodeURIComponent(item.title)}`;
@@ -181,7 +181,7 @@ function createWatchlistItem(item) {
         }
 
         if (remainingItems === 0) {
-          watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and TV shows!</div>';
+          watchlistContainer.innerHTML = '<div class="watchlist-empty">The watchlist is empty. Start adding movies and shows</div>';
         }
       } catch (e) {
         console.error('Failed to remove watchlist item:', e);
