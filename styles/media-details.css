@@ -15,8 +15,8 @@
 }
 
 .user-score-container {
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
 }
@@ -38,6 +38,20 @@
   border-radius: 40px;
   transition: all 0.3s ease;
 }
+
+a.user-score-pill {
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .user-score-pill:hover {
+    background: linear-gradient(90deg, #3949ab, #01b3e4be);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+    cursor: pointer;
+  }
+}
+
 .score-label {
   font-weight: normal;
   background: rgba(255, 255, 255, 0.14);
@@ -123,7 +137,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(6px);
   text-decoration: none;
-  padding: 10px 20px;
+  padding: 8px 18px;
   border-radius: 25px;
   font-size: 1.001rem;
   letter-spacing: 1px;
@@ -147,10 +161,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #6A5ACD, #4C44C1, #442daa);
+  background: linear-gradient(315deg, #6A5ACD, #4C44C1, #442daa);
   color: rgb(245, 245, 245);
   border: none;
-  padding: 10px 20px 10px 20px;
+  padding: 8px 18px 8px 18px;
   border-radius: 25px;
   font-size: 1.001rem;
   text-transform: uppercase;
@@ -160,14 +174,17 @@
   transition: all 0.3s ease;
 }
 
-.watchlist-detail-btn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+
+@media (hover: hover) {
+  .watchlist-detail-btn:hover {
+    background: linear-gradient(315deg, #667eea 0%, #764ba2 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(106, 90, 205, 0.4);
+  }
 }
 
 .watchlist-detail-btn.in-watchlist {
-  background: linear-gradient(135deg, #2d1b3d, #1a2332);
+  background: linear-gradient(315deg, #2d1b3d, #1a2332);
   box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
 }
 

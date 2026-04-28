@@ -126,22 +126,24 @@ function createMovieDetailsSection(movieData) {
     
     ${genres ? `<div class="genres-line"><span class="genres">${genres}</span></div>` : ''}
     
-    <div class="user-score-container">
-      <div class="user-score-pill">
-        <span class="score-value">${userScore}</span>
-        <span class="score-label">TMDB</span>
+    <div class="compact-right-col">
+      <div class="user-score-container">
+        <a href="https://www.themoviedb.org/movie/${movieId}" target="_blank" rel="noopener noreferrer" class="user-score-pill">
+          <span class="score-value">${userScore}</span>
+          <span class="score-label">TMDB</span>
+        </a>
       </div>
-    </div>
 
-    <div class="watchlist-detail-section">
-      <button class="watchlist-detail-btn" id="watchlist-detail-btn">
-        <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
-        Add to Watchlist
-      </button>
-    </div>
+      <div class="watchlist-detail-section">
+        <button class="watchlist-detail-btn" id="watchlist-detail-btn">
+          <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
+          Add to Watchlist
+        </button>
+      </div>
 
-    <div class="overview-section">
-      <p class="overview-text">${movieData.overview || 'No overview available'}</p>
+      <div class="overview-section">
+        <p class="overview-text">${movieData.overview || 'No overview available'}</p>
+      </div>
     </div>
     
     <div class="credits-section" id="movie-credits-section">

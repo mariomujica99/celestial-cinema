@@ -208,9 +208,7 @@
     grid-template-areas:
       "title    title"
       "info     info"
-      "poster   uscore"
-      "poster   watchlist"
-      "poster   overview"
+      "poster   right"
       "genres   genres"
       "credits  credits"
       "btn      btn"
@@ -257,11 +255,29 @@
     padding: 0px 6px;
   }
 
-  .current-tv-container:not(.is-expanded) .user-score-container {
-    grid-area: uscore;
+  .current-tv-container:not(.is-expanded) .compact-right-col {
+    grid-area: right;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 188px;
+    overflow: hidden;
+  }
+
+  .current-tv-container:not(.is-expanded) .compact-right-col .user-score-container {
+    margin: 0;
     justify-content: flex-start;
-    margin: 0px 0 0 0;
-    align-self: start;
+  }
+
+  .current-tv-container:not(.is-expanded) .compact-right-col .watchlist-detail-section {
+    margin: 0;
+    text-align: left;
+  }
+
+  .current-tv-container:not(.is-expanded) .compact-right-col .overview-section {
+    margin-top: auto;
+    margin-bottom: 0;
+    overflow: hidden;
   }
 
   .current-tv-container:not(.is-expanded) .user-score-pill {
@@ -274,12 +290,6 @@
   .current-tv-container:not(.is-expanded) .score-label {
     font-size: 0.7rem;
     padding: 1px 12px;
-  }
-
-  .current-tv-container:not(.is-expanded) .overview-section {
-    grid-area: overview;
-    margin: 0;
-    overflow: hidden;
   }
 
   .current-tv-container:not(.is-expanded) .overview-text {
@@ -340,11 +350,6 @@
     order: 2;
     text-align: right;
     min-width: 0;
-  }
-
-  .current-tv-container:not(.is-expanded) .watchlist-detail-section {
-    grid-area: watchlist;
-    text-align: left;
   }
 
   .current-tv-container:not(.is-expanded) .watchlist-detail-btn {

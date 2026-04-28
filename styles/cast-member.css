@@ -107,7 +107,7 @@
 }
 
 .known-for-section {
-  margin: 30px 25px 0 25px;
+  margin: 30px 25px 30px 25px;
   padding: 25px 0 0 0;
   border-top: 1px solid rgba(106, 90, 205, 0.2);
 }
@@ -250,7 +250,7 @@
   }
 
   .known-for-section {
-    margin: 0px 25px 0 25px;
+    margin: 0px 25px 25px 25px;
     padding: 25px 0 0 0;
   }
 
@@ -276,7 +276,7 @@
   }
 
   .known-for-section {
-    margin: 0px 15px 0 15px;
+    margin: 0px 15px 15px 15px;
     padding: 25px 0 0 0;
   }
 

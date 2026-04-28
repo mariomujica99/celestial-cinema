@@ -113,15 +113,15 @@
   align-items: center;
   gap: 15px;
   color: #CBD5E0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .episode-score {
-  background: linear-gradient(135deg, #3949ab 55%, #0d1b4b 100%);
+  background: linear-gradient(315deg, #6a5acd, #3949ab);
   color: white;
-  padding: 4px 12px;
+  padding: 3px 12px 3px 14px;
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.9rem;
@@ -280,10 +280,11 @@
   .episode-info-line {
     flex-wrap: wrap;
     gap: 10px;
+    font-size: 0.8rem;
   }
 
   .episode-score {
-    padding: 3px 11px;
+    padding: 2px 11px 2px 13px;
     font-size: 0.8rem;
   }
 
@@ -339,8 +340,8 @@
   }
 
   .episode-score {
-    padding: 2px 9px;
-    font-size: 0.7rem;
+    padding: 2px 9px 2px 11px;
+    font-size: 0.65rem;
   }
 
   .episode-rating-score, 
