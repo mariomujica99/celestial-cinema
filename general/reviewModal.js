@@ -317,7 +317,7 @@ function showReviewModal(options) {
       episode = (season && episodeSelect.value) ? parseInt(episodeSelect.value) : null;
     }
 
-    saveBtn.textContent = 'Saving...';
+    saveBtn.textContent = 'Saving';
     saveBtn.disabled = true;
 
     try {
