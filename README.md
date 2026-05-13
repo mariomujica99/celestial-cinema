@@ -1,6 +1,6 @@
 # Celestial Cinema Frontend
 
-This is a full-stack web application for discovering movies and TV shows. Users can also view detailed media information, look at cast/crew data, and leave reviews. This project is powered by The Movie Database (TMDB) API.
+This is a full-stack web application for browsing movies and shows. Users can leave reviews and save media to a watchlist. Movies and shows contain detailed information including cast, crew, show seasons, and trailers.
 
 [![Website](https://img.shields.io/badge/Website-6A5ACD)](https://mariomujica99.github.io/celestial-cinema/index.html)
 [![Backend](https://img.shields.io/badge/Backend-lightslategray)](https://github.com/mariomujica99/celestial-cinema-backend)
@@ -8,73 +8,64 @@ This is a full-stack web application for discovering movies and TV shows. Users 
 ## Features
 
 #### Media Discovery
-- Browse Categories: Trending, Popular, Now Playing, Upcoming, and Top Rated movies
-- TV Shows: Dedicated section for television series with season and episode breakdowns
-- Search Functionality: Search across movies and TV shows
+- Browse Categories: Trending, Popular, Now Playing/Airing Today, and Top Rated for both movies and shows
+- Movies/Shows Toggle: Switch between movie and show browsing modes with a persistent toggle
+- Genre Browsing: Side hamburger menu with genre filters for both movies and TV shows
+- Search: Categorized search results across movies, TV shows, and people with count tabs per category
 - Detailed Information: Release dates, genres, ratings, runtime, content ratings, and plot overviews
+- Streaming Providers: Displays streaming, rent, and buy options for movies and TV shows
 
 #### Cast & Crew
-- Actor Profiles: Detailed biographies and filmographies
-- Cast Lists: Complete cast and crew organized by department
-- Search & Filter: Search cast/crew by name, role, or department
-- Known For Section: Relevance-based display of notable works
+- Actor Profiles: Detailed biographies, birthdate, department, and filmographies with relevance-based scoring
+- Cast Lists: Full cast and crew organized by department with episode counts for TV
+- Search & Filter: Search cast and crew by name, role, or department
+- Popular People: Dedicated page for browsing trending people
+
+#### Video Trailers
+- Trailer Strip: Horizontal scrolling trailer previews on detail pages with YouTube modal player
+- Full Video Page: Grid layout of all available trailers for a given title
+- Responsive: Automatically collapses to a single primary trailer on mobile
+
+#### Similar Media
+- Similar Section: Horizontally scrollable strip of related movies or TV shows on each detail page
+
+#### Watchlist
+- Save to Watchlist: Add movies and TV shows from grid cards or detail pages
+- Watchlist Page: View all saved items sorted by most recently added
+- Remove Items: Delete items from the watchlist directly
+- Name-based Ownership: Watchlist entries are attributed to a user-entered name
 
 #### Review System
-- CRUD Operations: Create, read, update, and delete user reviews
-- Rating System: 0-10 star rating scale with average calculations
-- TV Episode Reviews: Review specific episodes or entire seasons
-- Advanced Filtering: Sort and filter reviews by user, media title, rating, and date
-- Load More Pagination: Efficient data loading for better performance
+- CRUD Operations: Create, read, update, and delete reviews via a modal interface
+- Rating System: 0-10 interactive star rating with drag and pointer support
+- TV Episode Reviews: Review an entire series, a specific season, or a specific episode
+- All Reviews Page: Browse all reviews across all media with user and media title filters, sort options, and load-more pagination
+- Episode List Reviews: Rate individual episodes inline from the season episode list
 
 #### User Interface
-- Responsive Design: Optimized for desktop, tablet, and mobile devices
-- Dynamic Backdrops: Backgrounds using media artwork
-- Navigation: Preserved scroll positions, searches, and filters
+- Responsive Design: Optimized for desktop, tablet, and mobile with breakpoints from 400px to 1850px+
+- Adaptive Media Grid: 3 to 9 columns depending on viewport width
+- Compact/Expand Toggle: On small screens, media detail pages collapse to a compact card layout
+- Dynamic Backdrops: Detail page headers use TMDB backdrop images
+- Progressive Web App: Installable on mobile and desktop with a custom app icon
+- Navigation: Scroll position preserved when navigating between pages
 
 ## Technology Stack
-
+ 
 #### Frontend
-- HTML5/CSS3: Semantic markup and modern styling
-- JavaScript: ES6+ features, async/await, Fetch API
-- Fonts: Rollbox (Custom) and Montserrat (Google Fonts)
-- Responsive CSS Grid/Flexbox: Mobile responsive layouts
+- HTML5/CSS3: Semantic markup and custom styling with CSS Grid and Flexbox
+- JavaScript: ES6+ features, async/await, Fetch API, pointer events
+- Fonts: Rollbox (Custom), Science Gothic, and Montserrat (Google Fonts)
+- PWA: Service Worker and Web App Manifest
 
 #### Backend
 - Node.js/Express: RESTful API server
-- MongoDB: NoSQL database for review storage
-- TMDB API Proxy: Server-side API integration
+- MongoDB: NoSQL database for reviews and watchlist storage
+- TMDB API Proxy: Server-side API key management
 - Hosted on Render: `https://celestial-cinema-backend.onrender.com`
 
 #### External API
-- TMDB API: Movie and TV show data, cast information, and media assets
-
-## Implementation
-
-#### Dynamic Review System
-- Reviews support both movie and TV show content
-- TV reviews can target specific episodes or entire seasons
-- Filtering by user name, media title, rating, and date
-- Pagination with "Load More" functionality
-- Automatic timestamp formatting (e.g., "5min ago", "JAN 15 2024")
-
-#### Responsive Media Grid
-- Adaptive grid layout: 1-7 columns based on viewport width
-- Lazy loading images with error handling and fallback images
-- Smooth transitions and hover effects
-- User score display with gradient backgrounds
-
-#### Advanced Filtering
-- Debounced search inputs for performance optimization
-- Combined server-side and client-side filtering
-- Maintained filter state across page navigation
-- Season/episode specific filtering for TV reviews
-
-#### Cast & Crew Features
-- Hierarchical display by department (Directing, Production, Writing, etc.)
-- Episode count tracking for TV show cast members
-- Search functionality across all departments
-- Click-through navigation to detailed profiles
-- "Known For" section with relevance-based sorting
+- TMDB API: Movie and TV show data, cast, crew, trailers, providers, and media assets
 
 ## Architecture Overview
 
@@ -88,7 +79,7 @@ Backend API (Render)
     ↓
 ┌─────────────────┬─────────────────┐
 │   TMDB API      │   MongoDB       │
-│   (Movies/TV)   │   (Reviews)     │
+│ (Movies/TV/Cast)│ (Reviews/Watch) │
 └─────────────────┴─────────────────┘
 ```
 
