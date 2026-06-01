@@ -160,11 +160,20 @@ function createMovieDetailsSection(movieData) {
   `;
 
   initWatchlistDetailBtn({
-      id: String(movieId),
-      title: movieData.title || '',
-      year: movieData.release_date ? new Date(movieData.release_date).getFullYear() : '',
-      mediaType: 'movie',
-      posterPath: movieData.poster_path || ''
+      id:           String(movieId),
+      title:        movieData.title        || '',
+      year:         movieData.release_date ? new Date(movieData.release_date).getFullYear() : '',
+      mediaType:    'movie',
+      posterPath:   movieData.poster_path  || '',
+      voteAverage:  movieData.vote_average ?? null,
+      runtime:      movieData.runtime      ?? null,
+      contentRating: (() => {
+        if (!movieData.release_dates?.results) return null;
+        const us = movieData.release_dates.results.find(r => r.iso_3166_1 === 'US');
+        if (!us?.release_dates?.length) return null;
+        const rd = us.release_dates.find(r => r.type === 3) || us.release_dates[0];
+        return rd.certification || null;
+      })()
     });
 
   initMediaCompactToggle();

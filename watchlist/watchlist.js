@@ -194,13 +194,43 @@ function createWatchlistItem(item) {
 
   const displayName = item.username || '';
 
+  const runtimeStr = (() => {
+    if (!item.runtime) return '';
+    const h = Math.floor(item.runtime / 60);
+    const m = item.runtime % 60;
+    return h > 0 ? `${h}H ${m}M` : `${m}M`;
+  })();
+
+  const scorePct = item.voteAverage
+    ? `${Math.round(item.voteAverage * 10)}%`
+    : null;
+
+  const infoLineParts = [
+    item.year         || null,
+    item.contentRating || null,
+    runtimeStr        || null
+  ].filter(Boolean);
+
   const details = document.createElement('div');
   details.className = 'watchlist-item-details';
   details.innerHTML = `
     <p class="watchlist-item-title">${escapeHtml(item.title)}</p>
-    ${item.year ? `<p class="watchlist-item-year">${item.year}</p>` : ''}
-    <span class="watchlist-item-type">${typeLabel}</span>
+    <div class="watchlist-media-info-line">
+      ${infoLineParts.map(p => `<span>${escapeHtml(String(p))}</span>`).join('')}
+    </div>
     ${displayName ? `<p class="watchlist-item-added-by">Added by ${escapeHtml(displayName)}</p>` : ''}
+    <div class="watchlist-item-info">
+      <span class="watchlist-item-type">${typeLabel}</span>
+      ${scorePct ? `
+      <div class="watchlist-score-pill">
+        <span class="watchlist-score-value">${scorePct}</span>
+        <span class="watchlist-score-label">TMDB</span>
+      </div>` : `
+      <div class="watchlist-score-pill">
+        <span class="watchlist-score-value">NR</span>
+        <span class="watchlist-score-label">TMDB</span>
+      </div>`}
+    </div>
   `;
 
   wrapper.appendChild(posterWrapper);

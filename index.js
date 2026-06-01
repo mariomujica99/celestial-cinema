@@ -12,6 +12,8 @@ const API_LINKS = {
   TV_GENRE:             'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/genre/',
   SEARCH_MULTI:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/search?query=',
   SEARCH_CATEGORIZED:   'https://celestial-cinema-backend.onrender.com/api/v1/movies/search/categorized?query=',
+  MOVIE_DETAILS:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/',
+  TV_DETAILS:            'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/',
   IMG_PATH:             'https://image.tmdb.org/t/p/w1280'
 };
 
@@ -422,6 +424,47 @@ function renderCategoryResults(category) {
   }
 }
 
+async function hydrateGridWatchlistItem(item) {
+  const detailsUrl = item.mediaType === 'tv'
+    ? `${API_LINKS.TV_DETAILS}${item.id}`
+    : `${API_LINKS.MOVIE_DETAILS}${item.id}`;
+
+  try {
+    const res = await fetch(detailsUrl);
+    if (!res.ok) return item;
+
+    const details = await res.json();
+
+    return {
+      ...item,
+      runtime: item.mediaType === 'movie'
+        ? details.runtime ?? null
+        : null,
+      contentRating: item.mediaType === 'tv'
+        ? getTVContentRating(details)
+        : getMovieContentRating(details)
+    };
+  } catch (e) {
+    console.error('Failed to hydrate grid watchlist item:', e);
+    return item;
+  }
+}
+
+function getMovieContentRating(movieData) {
+  const us = movieData.release_dates?.results?.find(r => r.iso_3166_1 === 'US');
+  if (!us?.release_dates?.length) return null;
+
+  const theatrical = us.release_dates.find(r => r.type === 3 && r.certification);
+  const firstRated = us.release_dates.find(r => r.certification);
+
+  return theatrical?.certification || firstRated?.certification || null;
+}
+
+function getTVContentRating(tvData) {
+  const us = tvData.content_ratings?.results?.find(r => r.iso_3166_1 === 'US');
+  return us?.rating || null;
+}
+
 function createMediaCard(itemData, contentType) {
   const mediaItemWrapper = document.createElement('div');
   mediaItemWrapper.setAttribute('class', 'media-item');
@@ -474,7 +517,8 @@ function createMediaCard(itemData, contentType) {
         ? new Date(itemData.release_date).getFullYear()
         : (itemData.first_air_date ? new Date(itemData.first_air_date).getFullYear() : ''),
       mediaType: contentType === 'tv' ? 'tv' : 'movie',
-      posterPath: itemData.poster_path || ''
+      posterPath: itemData.poster_path  || '',
+      voteAverage: itemData.vote_average ?? null
     };
 
     const watchlistBtn = document.createElement('button');
@@ -531,7 +575,8 @@ function createMediaCard(itemData, contentType) {
           confirmText: 'Save',
           onConfirm: async (username) => {
             try {
-              const status = await toggleWatchlistAPI(username, watchlistItem);
+              const hydratedItem = await hydrateGridWatchlistItem(watchlistItem);
+              const status = await toggleWatchlistAPI(username, hydratedItem);
               const nowInList = status === 'added';
               if (nowInList) savedMediaIds.add(String(watchlistItem.id));
               else savedMediaIds.delete(String(watchlistItem.id));

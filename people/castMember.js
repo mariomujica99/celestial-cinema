@@ -249,13 +249,34 @@ function displayKnownFor(data, knownForDepartment = '') {
 
   const top = scored
     .sort((a, b) => b.score - a.score)
-    .slice(0, 8);
+    .slice(0, 10);
 
   if (!top.length) {
     if (knownForSection) {
       knownForSection.remove();
     }
     return;
+  }
+
+  const knownForHeader = knownForSection.querySelector('.credits-line');
+  if (!knownForHeader) {
+    const titleEl = knownForSection.querySelector('.known-for-title');
+    if (titleEl) {
+      const creditsLine = document.createElement('div');
+      creditsLine.className = 'credits-line';
+
+      const titleSpan = document.createElement('p');
+      titleSpan.className = 'known-for-title';
+      titleSpan.textContent = 'Known For';
+
+      const filmographyBtn = document.createElement('button');
+      filmographyBtn.className = 'filmography-btn';
+      filmographyBtn.textContent = 'Filmography';
+
+      creditsLine.appendChild(titleSpan);
+      creditsLine.appendChild(filmographyBtn);
+      titleEl.replaceWith(creditsLine);
+    }
   }
 
   knownForContainer.innerHTML = '';
@@ -277,11 +298,18 @@ function displayKnownFor(data, knownForDepartment = '') {
 
     const mediaType = c.media_type === 'tv' ? 'Show' : 'Movie';
 
+    const castCredit = (() => {
+      if (c.character) return c.character;
+      if (c.job)       return c.job;
+      return '';
+    })();
+
     el.innerHTML = `
       <img class="known-for-poster" src="${poster}" alt="${title}">
-      <div class="known-for-title-text">${title}</div>
+      <div class="known-for-title-text">${escapeHtml(title)}</div>
+      <div class="cast-credit">${escapeHtml(castCredit)}</div>
       <div class="known-for-info">
-        ${year ? year + ' • ' : ''}${mediaType}
+        ${year ? year + ' \u2022 ' : ''}${mediaType}
       </div>
       <div class="user-score-grid">${formatScore(c.vote_average)}</div>
     `;

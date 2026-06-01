@@ -142,15 +142,18 @@ async function toggleWatchlistAPI(username, item) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username,
-        mediaId: String(item.id),
-        title: item.title || '',
-        year: item.year || '',
-        mediaType: item.mediaType || 'movie',
-        posterPath: item.posterPath || ''
+        mediaId:       String(item.id),
+        title:         item.title        || '',
+        year:          item.year         || '',
+        mediaType:     item.mediaType    || 'movie',
+        posterPath:    item.posterPath   || '',
+        voteAverage:   item.voteAverage  ?? null,
+        runtime:       item.runtime      ?? null,
+        contentRating: item.contentRating ?? null
       })
     });
     const data = await res.json();
-    return data.status; // 'added' | 'removed'
+    return data.status;
   } catch (e) {
     console.error('Watchlist toggle failed:', e);
     return null;

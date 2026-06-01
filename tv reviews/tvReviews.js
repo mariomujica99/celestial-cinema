@@ -168,12 +168,19 @@ function createTVDetailsSection(tvData) {
   `;
 
   initWatchlistDetailBtn({
-      id: String(tvId),
-      title: tvData.name || '',
-      year: tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '',
-      mediaType: 'tv',
-      posterPath: tvData.poster_path || ''
+      id:           String(tvId),
+      title:        tvData.name         || '',
+      year:         tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '',
+      mediaType:    'tv',
+      posterPath:   tvData.poster_path  || '',
+      voteAverage:  tvData.vote_average ?? null,
+      contentRating: (() => {
+        if (!tvData.content_ratings?.results) return null;
+        const us = tvData.content_ratings.results.find(r => r.iso_3166_1 === 'US');
+        return us?.rating || null;
+      })()
     });
+
   initMediaCompactToggle();
 }
 

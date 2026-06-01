@@ -101,6 +101,7 @@
 .person-photo {
   width: 80px;
   height: 100%;
+  aspect-ratio: 2 / 3;
   border-radius: 10%;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);

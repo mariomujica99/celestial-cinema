@@ -39,6 +39,7 @@
 .cast-member-photo {
   height: 480px;
   width: 100%;
+  aspect-ratio: 2 / 3;
   border-radius: 20px;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
@@ -118,6 +119,53 @@
   text-transform: uppercase;
   color: white;
   margin: 0 0 20px 0;
+}
+
+.credits-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 20px 0;
+}
+
+.credits-line .known-for-title {
+  margin: 0;
+}
+
+.filmography-btn {
+  background: linear-gradient(135deg, #2f3445, #252a38);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filmography-btn:hover {
+  background: linear-gradient(135deg, #3a3f55, #2e3447);
+  box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);
+  transform: translateY(-2px);
+}
+
+.cast-credit {
+  font-size: 0.6rem;
+  color: #CBD5E0;
+  margin: 0 0 3px 0;
+  text-transform: none;
+  line-height: 1.2;
+  min-height: 0.72rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .known-for-container {
@@ -262,6 +310,11 @@
   .cast-member-meta {
     font-size: 0.8rem;
   }
+
+  .filmography-btn {
+    padding: 7px 15px;
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 400px) {
@@ -291,6 +344,12 @@
 
   .cast-member-container .expand-collapse-btn {
     display: block;
+  }
+
+  .filmography-btn {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    letter-spacing: 0.3px;
   }
 
   /* ── COMPACT MODE (default at ≤400px) ── */

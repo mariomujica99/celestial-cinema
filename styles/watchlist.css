@@ -82,11 +82,11 @@
 }
 
 .watchlist-item-poster {
-  width: 70px;
-  height: 105px;
+  display: block;
+  width: 103px;
+  height: 155px;
   border-radius: 10px;
   object-fit: cover;
-
   background: linear-gradient(135deg, #2d3748, #1a2332);
 }
 
@@ -102,8 +102,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 48px;
   z-index: 10;
   transition: all 0.2s ease;
 }
@@ -116,8 +116,8 @@
 }
 
 .watchlist-remove-icon {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   filter: brightness(0) invert(1);
   display: block;
 }
@@ -130,7 +130,7 @@
 }
 
 .watchlist-item-title {
-  font-size: 1.001rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: rgb(224, 224, 224);
   text-transform: none;
@@ -138,28 +138,80 @@
   margin: 0;
 }
 
-.watchlist-item-year {
-  font-size: 0.8rem;
+.watchlist-item-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.watchlist-media-info-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.watchlist-media-info-line span {
+  font-size: 0.9rem;
   color: #CBD5E0;
-  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
+}
+
+.watchlist-score-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 5px;
+  background: linear-gradient(
+    135deg,
+    rgba(57, 73, 171, 0.35),
+    rgba(25, 38, 59, 0.25)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0 0 0 12px;
+  border-radius: 40px;
+  transition: all 0.3s ease;
+  margin: 6px 0 6px 0;
+}
+
+.watchlist-score-value,
+.watchlist-score-label {
+  color: #CBD5E0;
+  font-weight: bold;
+  font-size: 0.9rem;
+  letter-spacing: 1.1px;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
+
+}
+
+.watchlist-score-label {
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px 30px 30px 15px;
+  padding: 1px 10px 1px 0;
   text-transform: uppercase;
 }
 
 .watchlist-item-type {
   display: inline-block;
-  font-size: 0.6rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(106, 90, 205, 0.5);
   background: rgba(106, 90, 205, 0.2);
   color: #9d8ff0;
-  padding: 3px 10px 3px 10px;
-  border-radius: 20px;
+  margin: 6px 0 6px 0;
+  padding: 1px 12px 1px 12px;
+  border-radius: 40px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.1px;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   align-self: flex-start;
+  transition: all 0.3s ease;
 }
 
 .watchlist-item-added-by {
-  font-size: 0.65rem;
+  font-size: 0.9rem;
   color: #9d8ff0;
   text-transform: none;
   letter-spacing: 0.5px;
@@ -193,11 +245,45 @@
   }
 
   .watchlist-item-title {
+    font-size: 1rem;
+  }
+
+  .watchlist-item-poster {
+    width: 83px;
+    height: 125px;
+  }
+
+  .watchlist-item-type {
+    padding: 1px 11px 1px 11px;
+    margin: 5px 0 5px 0;
+  }
+
+  .watchlist-score-value,
+  .watchlist-score-label,
+  .watchlist-item-type,
+  .watchlist-media-info-line span {
+    font-size: 0.75rem;
+  }
+
+  .watchlist-score-pill {
+    padding: 0 0 0 11px;
+    margin: 5px 0 5px 0;
+  }
+
+  .watchlist-item-added-by {
     font-size: 0.8rem;
   }
 
-  .watchlist-item-year {
-    font-size: 0.7rem;
+  .watchlist-remove-btn {
+    border-radius: 10px 0 6px 0;
+    padding: 4px;
+    width: 28px;
+    height: 44px;
+  }
+
+  .watchlist-remove-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -228,11 +314,49 @@
     padding: 15px 10px 13px 10px;
     font-size: 0.6rem;
   }
+
+  .watchlist-item-title {
+    font-size: 0.8rem;
+  }
+
+  .watchlist-item-poster {
+    width: 70px;
+    height: 105px;
+  }
+
   .watchlist-item-type {
-    margin: 3px 0 3px 0;
+    margin: 4px 0 4px 0;
+    padding: 1px 10px 1px 10px;
   }
 
   .watchlist-item-details {
     gap: 0px; 
+  }
+
+  .watchlist-score-value,
+  .watchlist-score-label,
+  .watchlist-item-type,
+  .watchlist-media-info-line span {
+    font-size: 0.6rem;
+  }
+
+  .watchlist-score-pill {
+    padding: 0 0 0 10px;
+    margin: 4px 0 4px 0;
+  }
+
+  .watchlist-item-added-by {
+    font-size: 0.65rem;
+  }
+
+  .watchlist-remove-btn {
+    padding: 4px;
+    width: 24px;
+    height: 40px;
+  }
+
+  .watchlist-remove-icon {
+    width: 18px;
+    height: 18px;
   }
 }
