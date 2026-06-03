@@ -39,37 +39,7 @@ searchInput.addEventListener('input', debounce(() => {
   filterFilmography(searchInput.value.trim().toLowerCase());
 }, 250));
 
-loadSavedMediaIds().then(() => loadFilmography());
-
-// ── Watchlist preload ─────────────────────────────────────────────────────────
-
-async function loadSavedMediaIds() {
-  try {
-    const res = await fetch(API_LINKS.WATCHLIST);
-    if (!res.ok) return;
-    const data = await res.json();
-    savedMediaIds = new Set(
-      (data.items || []).map(item => String(item.mediaId))
-    );
-  } catch (e) {
-    console.error('Failed to load saved media ids:', e);
-  }
-}
-
-// ── Content rating helpers (copied from index.js) ─────────────────────────────
-
-function getMovieContentRating(movieData) {
-  const us = movieData.release_dates?.results?.find(r => r.iso_3166_1 === 'US');
-  if (!us?.release_dates?.length) return null;
-  const theatrical = us.release_dates.find(r => r.type === 3 && r.certification);
-  const firstRated = us.release_dates.find(r => r.certification);
-  return theatrical?.certification || firstRated?.certification || null;
-}
-
-function getTVContentRating(tvData) {
-  const us = tvData.content_ratings?.results?.find(r => r.iso_3166_1 === 'US');
-  return us?.rating || null;
-}
+(async () => { savedMediaIds = await loadSavedMediaIds(); })().then(() => loadFilmography());
 
 // ── Fetch details for a single credit ────────────────────────────────────────
 

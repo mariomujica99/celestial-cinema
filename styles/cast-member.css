@@ -242,6 +242,17 @@
   padding: 20px;
 }
 
+.known-for-section .watchlist-remove-btn {
+  width: 28px;
+  height: 48px;
+  border-radius: 12px 0 8px 0;
+}
+
+.known-for-section .watchlist-remove-icon {
+  width: 22px;
+  height: 22px;
+}
+
 @media (max-width: 1111px) {
   .cast-member-container {
     flex-direction: column;

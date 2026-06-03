@@ -299,6 +299,55 @@ function initMediaCompactToggle() {
   });
 }
 
+// Shared watchlist helpers
+async function loadSavedMediaIds() {
+  try {
+    const res = await fetch('https://celestial-cinema-backend.onrender.com/api/v1/watchlist');
+    if (!res.ok) return new Set();
+    const data = await res.json();
+    return new Set((data.items || []).map(item => String(item.mediaId)));
+  } catch (e) {
+    console.error('Failed to load saved media ids:', e);
+    return new Set();
+  }
+}
+
+function getMovieContentRating(movieData) {
+  const us = movieData.release_dates?.results?.find(r => r.iso_3166_1 === 'US');
+  if (!us?.release_dates?.length) return null;
+  const theatrical = us.release_dates.find(r => r.type === 3 && r.certification);
+  const firstRated = us.release_dates.find(r => r.certification);
+  return theatrical?.certification || firstRated?.certification || null;
+}
+
+function getTVContentRating(tvData) {
+  const us = tvData.content_ratings?.results?.find(r => r.iso_3166_1 === 'US');
+  return us?.rating || null;
+}
+
+async function hydrateGridWatchlistItem(item) {
+  const MOVIE_DETAILS = 'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/';
+  const TV_DETAILS    = 'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/';
+  const detailsUrl = item.mediaType === 'tv'
+    ? `${TV_DETAILS}${item.id}`
+    : `${MOVIE_DETAILS}${item.id}`;
+  try {
+    const res = await fetch(detailsUrl);
+    if (!res.ok) return item;
+    const details = await res.json();
+    return {
+      ...item,
+      runtime: item.mediaType === 'movie' ? (details.runtime ?? null) : null,
+      contentRating: item.mediaType === 'tv'
+        ? getTVContentRating(details)
+        : getMovieContentRating(details)
+    };
+  } catch (e) {
+    console.error('Failed to hydrate watchlist item:', e);
+    return item;
+  }
+}
+
 // Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

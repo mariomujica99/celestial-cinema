@@ -33,6 +33,7 @@ let displayedReviewsCount = 8;
 let seasonsData = [];
 let episodesData = {};
 let tvBackdropPath = null;
+let savedMediaIds = new Set();
 
 initSearchRedirect(searchForm, searchInput);
 
@@ -82,8 +83,10 @@ function returnTVDetails(url) {
       returnTVCredits(API_LINKS.TV_CREDITS);
       loadWatchProviders();
       loadVideoStrip(API_LINKS.TV_VIDEOS, tvId, 'tv', tvData.name || '');
-      loadSimilarSection(API_LINKS.SIMILAR_TV, 'tv', API_LINKS.IMG_PATH);
-      
+      loadSavedMediaIds().then(ids => {
+        savedMediaIds = ids;
+        loadSimilarSection(API_LINKS.SIMILAR_TV, 'tv', API_LINKS.IMG_PATH, savedMediaIds);
+      });      
     })
     .catch(error => {
       console.error('Error fetching TV details:', error);

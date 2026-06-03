@@ -15,6 +15,7 @@ const knownForContainer = document.getElementById("known-for-container");
 const knownForSection = document.querySelector(".known-for-section");
 const castMemberContainer = document.querySelector('.cast-member-container');
 const expandCollapseBtn = document.getElementById('expand-collapse-btn');
+let savedMediaIds = new Set();
 
 initSearchRedirect(
   document.getElementById("search-form"),
@@ -22,6 +23,8 @@ initSearchRedirect(
 );
 
 initCompactToggle();
+
+loadSavedMediaIds().then(ids => { savedMediaIds = ids; });
 
 returnCastDetails(API_LINKS.CAST_DETAILS);
 
@@ -290,18 +293,18 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
     const el = document.createElement('div');
     el.className = 'known-for-item';
 
-    const poster = c.poster_path
+    const posterSrc = c.poster_path
       ? `${API_LINKS.IMG_PATH}${c.poster_path}`
       : '../images/no-image-season.jpg';
 
     const title = c.title || c.name || 'Unknown';
     const year = c.release_date
       ? new Date(c.release_date).getFullYear()
-      : (c.first_air_date
-        ? new Date(c.first_air_date).getFullYear()
-        : '');
+      : (c.first_air_date ? new Date(c.first_air_date).getFullYear() : '');
 
-    const mediaType = c.media_type === 'tv' ? 'Show' : 'Movie';
+    const mediaType  = c.media_type === 'tv' ? 'tv' : 'movie';
+    const typeLabel  = mediaType === 'tv' ? 'Show' : 'Movie';
+    const mediaIdStr = String(c.id);
 
     const castCredit = (() => {
       if (c.character) return c.character;
@@ -309,24 +312,84 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
       return '';
     })();
 
-    el.innerHTML = `
-      <img class="known-for-poster" src="${poster}" alt="${title}">
+    // Poster wrapper with watchlist button
+    const posterWrapper = document.createElement('div');
+    posterWrapper.className = 'watchlist-item-poster-wrapper';
+    posterWrapper.style.cssText = 'position:relative;width:100%;';
+
+    const posterImg = document.createElement('img');
+    posterImg.className = 'known-for-poster';
+    posterImg.src = posterSrc;
+    posterImg.alt = escapeHtml(title);
+    posterImg.onerror = function() { this.src = '../images/no-image-season.jpg'; };
+
+    const watchlistBtn = document.createElement('button');
+    watchlistBtn.className = 'watchlist-remove-btn';
+
+    const updateBtn = (inList) => {
+      watchlistBtn.innerHTML = `<img src="../images/${inList ? 'watchlist-saved' : 'watchlist-add'}.svg" class="watchlist-remove-icon" alt="${inList ? 'Remove from watchlist' : 'Add to watchlist'}">`;
+      watchlistBtn.setAttribute('aria-label', inList ? 'Remove from watchlist' : 'Add to watchlist');
+    };
+
+    updateBtn(savedMediaIds.has(mediaIdStr));
+
+    const watchlistItem = {
+      id:          mediaIdStr,
+      title,
+      year:        year || '',
+      mediaType,
+      posterPath:  c.poster_path || '',
+      voteAverage: c.vote_average ?? null
+    };
+
+    watchlistBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const isInList = savedMediaIds.has(mediaIdStr);
+
+      const doToggle = async (username) => {
+        try {
+          const itemToSave = isInList ? watchlistItem : await hydrateGridWatchlistItem(watchlistItem);
+          const status = await toggleWatchlistAPI(username, itemToSave);
+          const nowInList = status === 'added';
+          if (nowInList) savedMediaIds.add(mediaIdStr);
+          else savedMediaIds.delete(mediaIdStr);
+          updateBtn(nowInList);
+        } catch (err) {
+          console.error('Watchlist toggle failed:', err);
+          showErrorMessage('Failed to update watchlist. Please try again.');
+        }
+      };
+
+      if (isInList) {
+        const cachedName = localStorage.getItem('ccLastName');
+        if (cachedName) {
+          doToggle(cachedName);
+        } else {
+          showNameModal({ title: 'Remove from Watchlist', confirmText: 'Remove', onConfirm: doToggle });
+        }
+      } else {
+        showNameModal({ title: 'Save to Watchlist', confirmText: 'Save', onConfirm: doToggle });
+      }
+    });
+
+    posterWrapper.appendChild(posterImg);
+    posterWrapper.appendChild(watchlistBtn);
+    el.appendChild(posterWrapper);
+
+    // Text details
+    const detailsDiv = document.createElement('div');
+    detailsDiv.innerHTML = `
       <div class="known-for-title-text">${escapeHtml(title)}</div>
       <div class="cast-credit">${escapeHtml(castCredit)}</div>
-      <div class="known-for-info">
-        ${year ? year + ' \u2022 ' : ''}${mediaType}
-      </div>
+      <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
       <div class="user-score-grid">${formatScore(c.vote_average)}</div>
     `;
+    el.appendChild(detailsDiv);
 
     el.addEventListener('click', () => {
-      if (c.media_type === 'tv') {
-        window.location.href =
-          `../tv reviews/tvReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`;
-      } else {
-        window.location.href =
-          `../movie reviews/movieReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`;
-      }
+      window.location.href = mediaType === 'tv'
+        ? `../tv reviews/tvReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`
+        : `../movie reviews/movieReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`;
     });
 
     knownForContainer.appendChild(el);

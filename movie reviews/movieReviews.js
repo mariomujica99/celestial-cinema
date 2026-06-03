@@ -27,6 +27,7 @@ let hasMoreReviews = true;
 let isLoading = false;
 let allMovieReviews = [];
 let movieBackdropPath = null;
+let savedMediaIds = new Set();
 
 initSearchRedirect(searchForm, searchInput);
 
@@ -74,8 +75,10 @@ function returnMovieDetails(url) {
       returnMovieCredits(API_LINKS.MOVIE_CREDITS);
       loadWatchProviders();
       loadVideoStrip(API_LINKS.MOVIE_VIDEOS, movieId, 'movie', movieData.title || '');
-      loadSimilarSection(API_LINKS.SIMILAR_MOVIES, 'movie', API_LINKS.IMG_PATH);
-      
+      loadSavedMediaIds().then(ids => {
+        savedMediaIds = ids;
+        loadSimilarSection(API_LINKS.SIMILAR_MOVIES, 'movie', API_LINKS.IMG_PATH, savedMediaIds);
+      });
     })
     .catch(error => {
       console.error('Error fetching movie details:', error);

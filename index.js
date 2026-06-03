@@ -74,19 +74,6 @@ if (genreParam) {
   showGenreTitle(genreName, genreType);
 }
 
-async function loadSavedMediaIds() {
-  try {
-    const res = await fetch('https://celestial-cinema-backend.onrender.com/api/v1/watchlist');
-    if (!res.ok) return;
-    const data = await res.json();
-    savedMediaIds = new Set(
-      (data.items || []).map(item => String(item.mediaId))
-    );
-  } catch (e) {
-    console.error('Failed to load saved media ids:', e);
-  }
-}
-
 function setActiveButton(activeButton) {
   document.querySelectorAll('.filters button:not(.toggle-option), .action-row button').forEach(btn => {
     btn.classList.remove('active');
@@ -180,7 +167,7 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-loadSavedMediaIds().then(() => {
+(async () => { savedMediaIds = await loadSavedMediaIds(); })().then(() => {
   if (filterParam === 'shows') {
     currentMediaToggle = 'tv';
     localStorage.setItem('ccMediaToggle', 'tv');
@@ -422,47 +409,6 @@ function renderCategoryResults(category) {
   } else {
     loadMoreContainer.style.display = 'none';
   }
-}
-
-async function hydrateGridWatchlistItem(item) {
-  const detailsUrl = item.mediaType === 'tv'
-    ? `${API_LINKS.TV_DETAILS}${item.id}`
-    : `${API_LINKS.MOVIE_DETAILS}${item.id}`;
-
-  try {
-    const res = await fetch(detailsUrl);
-    if (!res.ok) return item;
-
-    const details = await res.json();
-
-    return {
-      ...item,
-      runtime: item.mediaType === 'movie'
-        ? details.runtime ?? null
-        : null,
-      contentRating: item.mediaType === 'tv'
-        ? getTVContentRating(details)
-        : getMovieContentRating(details)
-    };
-  } catch (e) {
-    console.error('Failed to hydrate grid watchlist item:', e);
-    return item;
-  }
-}
-
-function getMovieContentRating(movieData) {
-  const us = movieData.release_dates?.results?.find(r => r.iso_3166_1 === 'US');
-  if (!us?.release_dates?.length) return null;
-
-  const theatrical = us.release_dates.find(r => r.type === 3 && r.certification);
-  const firstRated = us.release_dates.find(r => r.certification);
-
-  return theatrical?.certification || firstRated?.certification || null;
-}
-
-function getTVContentRating(tvData) {
-  const us = tvData.content_ratings?.results?.find(r => r.iso_3166_1 === 'US');
-  return us?.rating || null;
 }
 
 function createMediaCard(itemData, contentType) {
