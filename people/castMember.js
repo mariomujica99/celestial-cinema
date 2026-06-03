@@ -107,7 +107,7 @@ function returnCastDetails(url) {
       biographyTextElement.innerHTML =
         castData.biography || 'No biography available';
 
-      returnCastCredits(API_LINKS.CAST_CREDITS, castData.known_for_department || '');
+      returnCastCredits(API_LINKS.CAST_CREDITS, castData.known_for_department || '', castData.gender ?? 0);
     })
     .catch(() => {
       castMemberNameElement.innerHTML = castName || 'Unknown Name';
@@ -117,10 +117,10 @@ function returnCastDetails(url) {
 }
 
 // FETCH CREDITS
-function returnCastCredits(url, knownForDepartment = '') {
+function returnCastCredits(url, knownForDepartment = '', gender = 0) {
   fetch(url)
     .then(res => res.json())
-    .then(data => displayKnownFor(data, knownForDepartment))
+    .then(data => displayKnownFor(data, knownForDepartment, gender))
     .catch(() => {
       knownForContainer.innerHTML =
         '<div class="known-for-loading">Unavailable</div>';
@@ -162,7 +162,7 @@ function isPrimaryShow(credit, personName) {
 }
 
 // MAIN KNOWN FOR LOGIC
-function displayKnownFor(data, knownForDepartment = '') {
+function displayKnownFor(data, knownForDepartment = '', gender = 0) {
   if (!knownForContainer) return;
 
   const cast = data.cast || [];
@@ -276,6 +276,11 @@ function displayKnownFor(data, knownForDepartment = '') {
       creditsLine.appendChild(titleSpan);
       creditsLine.appendChild(filmographyBtn);
       titleEl.replaceWith(creditsLine);
+
+      filmographyBtn.addEventListener('click', () => {
+        window.location.href =
+          `castFilmography.html?id=${castId}&name=${encodeURIComponent(castName || '')}&gender=${gender ?? 0}&department=${encodeURIComponent(knownForDepartment || '')}`;
+      });
     }
   }
 

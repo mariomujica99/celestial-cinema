@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Celestial Cinema</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#7345cc">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="CCMDb" />
+    <link rel="manifest" href="../images/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Science+Gothic:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/general.css">
+    <link rel="stylesheet" href="../styles/topnav.css">
+    <link rel="stylesheet" href="../styles/cast-list.css">
+    <link rel="stylesheet" href="../styles/watchlist.css">
+    <link rel="stylesheet" href="../styles/status-messages.css">
+    <link rel="stylesheet" href="../styles/side-menu.css">
+    <link rel="stylesheet" href="../styles/modal.css">
+  </head>
+  <body>
+    <nav class="topnav">
+      <a class="active" href="../index.html">Celestial Cinema</a>
+
+      <div class="search-container">
+        <form class="search-form" role="search" id="search-form">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search movies | shows | people" autocomplete="off">
+        </form>
+      </div>
+    </nav>
+
+    <div class="cast-list-header filmography-header">
+      <div class="header-content">
+        <button class="back-button" id="back-button">&lt; Back</button>
+        <h1 class="cast-list-title filmography-title" id="filmography-title">Filmography</h1>
+      </div>
+    </div>
+
+    <div class="cast-search-filters filmography-search-filters">
+      <div class="filter-input-container">
+        <input type="text" class="filter-input" id="filmography-search-input" placeholder="Search media | role | department">
+      </div>
+    </div>
+
+    <div class="cast-list-section filmography-section">
+      <div class="cast-list-container" id="filmography-container">
+        <div class="cast-loading"></div>
+      </div>
+    </div>
+
+    <script src="../general/sideMenu.js"></script>
+    <script src="../general/utils.js"></script>
+    <script src="castFilmography.js"></script>
+  </body>
+</html>
