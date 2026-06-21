@@ -75,6 +75,7 @@
   border-radius: 10px;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  color: transparent;
 }
 
 .episode-details {

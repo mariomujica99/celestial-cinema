@@ -83,6 +83,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  color: transparent;
 }
 
 .video-play-overlay {

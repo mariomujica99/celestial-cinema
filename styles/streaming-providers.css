@@ -52,6 +52,7 @@
   border-radius: 10px;
   object-fit: cover;
   display: block;
+  color: transparent;
 }
 
 @media (max-width: 650px) {
