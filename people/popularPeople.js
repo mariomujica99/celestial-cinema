@@ -9,9 +9,54 @@ const loadMoreContainer = document.getElementById('load-more-container');
 const searchForm = document.getElementById('search-form');
 const searchInput = document.getElementById('search-query');
 
+const PAGES_PER_LOGICAL_PAGE = 3;
 let currentPage = 1;
+let currentTmdbPage = 1;
+let lastKnownTotalPages = Infinity;
 let hasMorePeople = true;
 let isLoadingPeople = false;
+
+function deferTask(callback) {
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(callback, { timeout: 2000 });
+  } else {
+    setTimeout(callback, 300);
+  }
+}
+
+function fetchAdditionalPages(baseUrl, firstTmdbPage, onPageLoaded, onComplete) {
+  let lastTotalPages = Infinity;
+
+  const fetchNext = (offset) => {
+    if (offset >= PAGES_PER_LOGICAL_PAGE) {
+      onComplete(lastTotalPages);
+      return;
+    }
+
+    const tmdbPage = firstTmdbPage + offset;
+    if (tmdbPage > lastTotalPages) {
+      onComplete(lastTotalPages);
+      return;
+    }
+
+    deferTask(() => {
+      const pageUrl = baseUrl.includes('?') ? `${baseUrl}&page=${tmdbPage}` : `${baseUrl}?page=${tmdbPage}`;
+      fetch(pageUrl)
+        .then(res => res.json())
+        .then(data => {
+          lastTotalPages = data.total_pages || lastTotalPages;
+          onPageLoaded(data);
+          fetchNext(offset + 1);
+        })
+        .catch(error => {
+          console.error('Error fetching additional page:', error);
+          onComplete(lastTotalPages);
+        });
+    });
+  };
+
+  fetchNext(1);
+}
 
 initSearchRedirect(searchForm, searchInput);
 loadMoreBtn.addEventListener('click', loadMorePeople);
@@ -27,30 +72,37 @@ async function loadPeople(append = false) {
     loadMoreBtn.disabled = true;
   }
 
+  const firstTmdbPage = currentTmdbPage;
+
   try {
-    const res = await fetch(`${API_LINKS.POPULAR_PEOPLE}?page=${currentPage}`);
+    const res = await fetch(`${API_LINKS.POPULAR_PEOPLE}?page=${firstTmdbPage}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     const data = await res.json();
 
-    if (!data.results || data.results.length === 0) {
-      if (!append) {
-        mediaGrid.innerHTML = '<div class="no-media">No people found</div>';
-      }
-      hasMorePeople = false;
-      loadMoreContainer.style.display = 'none';
-      return;
-    }
+    renderPeoplePage(data, append);
+    lastKnownTotalPages = data.total_pages || lastKnownTotalPages;
 
-    data.results.forEach(person => mediaGrid.appendChild(createPersonCard(person)));
+    const firstPageHasMore = firstTmdbPage < lastKnownTotalPages;
 
-    hasMorePeople = currentPage < (data.total_pages || 1);
-
-    if (hasMorePeople) {
-      loadMoreContainer.style.display = 'flex';
-      loadMoreBtn.textContent = 'Load More';
-      loadMoreBtn.disabled = false;
+    if (firstPageHasMore) {
+      fetchAdditionalPages(
+        API_LINKS.POPULAR_PEOPLE,
+        firstTmdbPage,
+        (pageData) => {
+          renderPeoplePage(pageData, true);
+        },
+        (finalTotalPages) => {
+          currentTmdbPage = Math.min(firstTmdbPage + PAGES_PER_LOGICAL_PAGE, finalTotalPages + 1);
+          hasMorePeople = currentTmdbPage <= finalTotalPages;
+          updatePeopleLoadMoreVisibility();
+          isLoadingPeople = false;
+        }
+      );
     } else {
-      loadMoreContainer.style.display = 'none';
+      currentTmdbPage = firstTmdbPage + 1;
+      hasMorePeople = false;
+      updatePeopleLoadMoreVisibility();
+      isLoadingPeople = false;
     }
   } catch (error) {
     console.error('Error fetching popular people:', error);
@@ -58,8 +110,28 @@ async function loadPeople(append = false) {
       mediaGrid.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     }
     loadMoreContainer.style.display = 'none';
-  } finally {
     isLoadingPeople = false;
+  }
+}
+
+function renderPeoplePage(data, append) {
+  if (!data.results || data.results.length === 0) {
+    if (!append) {
+      mediaGrid.innerHTML = '<div class="no-media">No people found</div>';
+    }
+    return;
+  }
+
+  data.results.forEach(person => mediaGrid.appendChild(createPersonCard(person)));
+}
+
+function updatePeopleLoadMoreVisibility() {
+  if (hasMorePeople) {
+    loadMoreContainer.style.display = 'flex';
+    loadMoreBtn.textContent = 'Load More';
+    loadMoreBtn.disabled = false;
+  } else {
+    loadMoreContainer.style.display = 'none';
   }
 }
 

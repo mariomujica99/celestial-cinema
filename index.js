@@ -57,6 +57,8 @@ const genreName   = urlParams.get("name") || '';
 
 let currentContentType = 'movie';
 let currentPage = 1;
+let currentTmdbPage = 1;
+let lastKnownTotalPages = Infinity;
 let hasMoreMedia = true;
 let isLoadingMedia = false;
 let currentSearchTerm = '';
@@ -66,8 +68,70 @@ let activeCategoryTab = 'movies';
 let isSearchActive = false;
 let currentSearchPage = 1;
 let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
+let searchLastKnownTotalPages = Infinity;
 let savedMediaIds = new Set();
 let currentMediaToggle = localStorage.getItem('ccMediaToggle') || 'movie';
+
+const PAGES_PER_LOGICAL_PAGE = 3;
+
+/**
+ * Defers a callback using requestIdleCallback when available, falling back
+ * to setTimeout so background page fetches don't compete with on-load
+ * requests (watchlist sync, cast, etc.) for bandwidth/priority.
+ */
+function deferTask(callback) {
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(callback, { timeout: 2000 });
+  } else {
+    setTimeout(callback, 300);
+  }
+}
+
+/**
+ * Fetches up to (PAGES_PER_LOGICAL_PAGE - 1) additional TMDB pages in the
+ * background, deferred so they don't compete with initial page-load
+ * requests. Calls onPageLoaded(data) as each page resolves, and
+ * onComplete(lastTotalPages) once all background pages have settled
+ * (or fetching stops early due to hitting total_pages).
+ *
+ * @param {string} baseUrl - URL without a page param (uses ? or & correctly)
+ * @param {number} firstTmdbPage - the TMDB page already fetched/rendered
+ * @param {Function} onPageLoaded - async/sync fn(data) called per page
+ * @param {Function} onComplete - fn(lastTotalPages) called when done
+ */
+function fetchAdditionalPages(baseUrl, firstTmdbPage, onPageLoaded, onComplete) {
+  let lastTotalPages = Infinity;
+
+  const fetchNext = (offset) => {
+    if (offset >= PAGES_PER_LOGICAL_PAGE) {
+      onComplete(lastTotalPages);
+      return;
+    }
+
+    const tmdbPage = firstTmdbPage + offset;
+    if (tmdbPage > lastTotalPages) {
+      onComplete(lastTotalPages);
+      return;
+    }
+
+    deferTask(() => {
+      const pageUrl = baseUrl.includes('?') ? `${baseUrl}&page=${tmdbPage}` : `${baseUrl}?page=${tmdbPage}`;
+      fetch(pageUrl)
+        .then(res => res.json())
+        .then(data => {
+          lastTotalPages = data.total_pages || lastTotalPages;
+          onPageLoaded(data);
+          fetchNext(offset + 1);
+        })
+        .catch(error => {
+          console.error('Error fetching additional page:', error);
+          onComplete(lastTotalPages);
+        });
+    });
+  };
+
+  fetchNext(1);
+}
 
 if (genreParam) {
   hideFiltersForGenre();
@@ -224,74 +288,53 @@ searchForm.addEventListener("submit", (e) => {
 });
 
 function returnMedia(url, contentType = 'movie', append = false) {
-  if (!append && isLoadingMedia) return;
   if (!append) {
     mediaGridContainer.innerHTML = '';
     currentPage = 1;
+    currentTmdbPage = 1;
+    lastKnownTotalPages = Infinity;
     hasMoreMedia = true;
     currentApiUrl = url;
   }
-  
+
   currentContentType = contentType;
   isLoadingMedia = true;
-  
+
   if (append) {
     loadMoreBtn.textContent = 'Loading';
     loadMoreBtn.disabled = true;
   }
-  
-  const pageUrl = url.includes('?') ? `${url}&page=${currentPage}` : `${url}?page=${currentPage}`;
-  
+
+  const firstTmdbPage = currentTmdbPage;
+  const pageUrl = url.includes('?') ? `${url}&page=${firstTmdbPage}` : `${url}?page=${firstTmdbPage}`;
+
   fetch(pageUrl).then(res => res.json()).then(function(data) {
-    if (!data.results || data.results.length === 0) {
-      if (!append) {
-        mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
-        loadMoreContainer.style.display = 'none';
-      } else {
-        hasMoreMedia = false;
-        loadMoreContainer.style.display = 'none';
-      }
-      return;
-    }
-    
-    const validResults = data.results.filter(itemData => {
-      if (contentType === 'multi' && itemData.media_type === 'person') {
-        return false;
-      }
-      return true;
-    });
-    
-    if (validResults.length === 0) {
-      if (!append) {
-        mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
-        loadMoreContainer.style.display = 'none';
-      } else {
-        hasMoreMedia = false;
-        loadMoreContainer.style.display = 'none';
-      }
-      return;
-    }
-    
-    validResults.forEach(itemData => {
-      let itemContentType = contentType;
-      if (contentType === 'multi') {
-        itemContentType = itemData.media_type;
-      }
-      mediaGridContainer.appendChild(createMediaCard(itemData, itemContentType));
-    });
-    
-    hasMoreMedia = data.total_pages ? currentPage < data.total_pages : validResults.length >= 20;
-    
-    if (hasMoreMedia) {
-      loadMoreContainer.style.display = 'flex';
-      loadMoreBtn.textContent = 'Load More';
-      loadMoreBtn.disabled = false;
+    renderMediaPage(data, contentType, append);
+    lastKnownTotalPages = data.total_pages || lastKnownTotalPages;
+
+    const firstPageHasMore = firstTmdbPage < lastKnownTotalPages;
+
+    if (firstPageHasMore) {
+      fetchAdditionalPages(
+        url,
+        firstTmdbPage,
+        (pageData) => {
+          renderMediaPage(pageData, contentType, true);
+        },
+        (finalTotalPages) => {
+          currentTmdbPage = Math.min(firstTmdbPage + PAGES_PER_LOGICAL_PAGE, finalTotalPages + 1);
+          hasMoreMedia = currentTmdbPage <= finalTotalPages;
+          updateLoadMoreVisibility();
+        }
+      );
     } else {
-      loadMoreContainer.style.display = 'none';
+      currentTmdbPage = firstTmdbPage + 1;
+      hasMoreMedia = false;
+      updateLoadMoreVisibility();
     }
-    
+
     isLoadingMedia = false;
-    
+
   }).catch(error => {
     console.error('Error fetching content:', error);
     if (!append) {
@@ -304,10 +347,52 @@ function returnMedia(url, contentType = 'movie', append = false) {
   });
 }
 
+/**
+ * Renders one TMDB page's results into the grid. Shared by the initial
+ * fetch and each background-loaded follow-up page.
+ */
+function renderMediaPage(data, contentType, append) {
+  if (!data.results || data.results.length === 0) {
+    if (!append) {
+      mediaGridContainer.innerHTML = '<div class="no-media">No media found matching your search</div>';
+      loadMoreContainer.style.display = 'none';
+    }
+    return;
+  }
+
+  const validResults = data.results.filter(itemData => {
+    if (contentType === 'multi' && itemData.media_type === 'person') {
+      return false;
+    }
+    return true;
+  });
+
+  if (validResults.length === 0) return;
+
+  validResults.forEach(itemData => {
+    let itemContentType = contentType;
+    if (contentType === 'multi') {
+      itemContentType = itemData.media_type;
+    }
+    mediaGridContainer.appendChild(createMediaCard(itemData, itemContentType));
+  });
+}
+
+function updateLoadMoreVisibility() {
+  if (hasMoreMedia) {
+    loadMoreContainer.style.display = 'flex';
+    loadMoreBtn.textContent = 'Load More';
+    loadMoreBtn.disabled = false;
+  } else {
+    loadMoreContainer.style.display = 'none';
+  }
+}
+
 function searchCategorized(query) {
   hideFiltersForSearch();
   mediaGridContainer.innerHTML = '';
   currentSearchPage = 1;
+  searchLastKnownTotalPages = Infinity;
   loadMoreContainer.style.display = 'none';
   categoryTabsContainer.style.display = 'none';
   currentSearchTerm = query;
@@ -332,6 +417,28 @@ function searchCategorized(query) {
       }
 
       showCategoryTabs(movieCount, tvCount, peopleCount);
+
+      const firstSearchPageHasMore = movieCount > categorizedResults.movies.length
+        || tvCount > categorizedResults.tvShows.length
+        || peopleCount > categorizedResults.people.length;
+
+      if (firstSearchPageHasMore) {
+        fetchAdditionalPages(
+          API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(query),
+          1,
+          (pageData) => {
+            categorizedResults.movies  = [...categorizedResults.movies,  ...(pageData.movies  || [])];
+            categorizedResults.tvShows = [...categorizedResults.tvShows, ...(pageData.tvShows || [])];
+            categorizedResults.people  = [...categorizedResults.people,  ...(pageData.people  || [])];
+            renderCategoryResults(activeCategoryTab);
+          },
+          () => {
+            currentSearchPage = PAGES_PER_LOGICAL_PAGE;
+          }
+        );
+      } else {
+        currentSearchPage = 1;
+      }
     })
     .catch(error => {
       console.error('Error fetching search results:', error);
@@ -647,53 +754,74 @@ function loadMoreMedia() {
 function loadMoreSearchResults() {
   if (isLoadingMedia) return;
   isLoadingMedia = true;
-  currentSearchPage++;
   loadMoreBtn.textContent = 'Loading';
   loadMoreBtn.disabled = true;
 
-  fetch(API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(currentSearchTerm) + `&page=${currentSearchPage}`)
+  const firstPage = currentSearchPage + 1;
+
+  const mergeAndRender = (data) => {
+    categorizedResults.movies  = [...categorizedResults.movies,  ...(data.movies  || [])];
+    categorizedResults.tvShows = [...categorizedResults.tvShows, ...(data.tvShows || [])];
+    categorizedResults.people  = [...categorizedResults.people,  ...(data.people  || [])];
+
+    const newItemsMap = {
+      movies:  data.movies  || [],
+      tvshows: data.tvShows || [],
+      people:  data.people  || []
+    };
+    const contentTypeMap = { movies: 'movie', tvshows: 'tv', people: 'person' };
+    const newItems = newItemsMap[activeCategoryTab];
+    const contentType = contentTypeMap[activeCategoryTab];
+
+    newItems.forEach(itemData => {
+      const card = contentType === 'person'
+        ? createPersonCard(itemData)
+        : createMediaCard(itemData, contentType);
+      mediaGridContainer.appendChild(card);
+    });
+  };
+
+  const updateLoadMoreState = () => {
+    const accumulatedMap = {
+      movies:  categorizedResults.movies.length,
+      tvshows: categorizedResults.tvShows.length,
+      people:  categorizedResults.people.length
+    };
+    const accumulatedCount = accumulatedMap[activeCategoryTab];
+    const total = searchTotalCounts[activeCategoryTab];
+
+    if (accumulatedCount < total) {
+      loadMoreContainer.style.display = 'flex';
+      loadMoreBtn.textContent = 'Load More';
+      loadMoreBtn.disabled = false;
+    } else {
+      loadMoreContainer.style.display = 'none';
+    }
+  };
+
+  const firstUrl = `${API_LINKS.SEARCH_CATEGORIZED}${encodeURIComponent(currentSearchTerm)}&page=${firstPage}`;
+
+  fetch(firstUrl)
     .then(res => {
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
       return res.json();
     })
     .then(data => {
-      categorizedResults.movies  = [...categorizedResults.movies,  ...(data.movies  || [])];
-      categorizedResults.tvShows = [...categorizedResults.tvShows, ...(data.tvShows || [])];
-      categorizedResults.people  = [...categorizedResults.people,  ...(data.people  || [])];
-
-      const newItemsMap = {
-        movies:  data.movies  || [],
-        tvshows: data.tvShows || [],
-        people:  data.people  || []
-      };
-      const contentTypeMap = { movies: 'movie', tvshows: 'tv', people: 'person' };
-      const newItems = newItemsMap[activeCategoryTab];
-      const contentType = contentTypeMap[activeCategoryTab];
-
-      newItems.forEach(itemData => {
-        const card = contentType === 'person'
-          ? createPersonCard(itemData)
-          : createMediaCard(itemData, contentType);
-        mediaGridContainer.appendChild(card);
-      });
-
-      const accumulatedMap = {
-        movies:  categorizedResults.movies.length,
-        tvshows: categorizedResults.tvShows.length,
-        people:  categorizedResults.people.length
-      };
-      const accumulatedCount = accumulatedMap[activeCategoryTab];
-      const total = searchTotalCounts[activeCategoryTab];
-
-      if (accumulatedCount < total) {
-        loadMoreContainer.style.display = 'flex';
-        loadMoreBtn.textContent = 'Load More';
-        loadMoreBtn.disabled = false;
-      } else {
-        loadMoreContainer.style.display = 'none';
-      }
-
+      mergeAndRender(data);
+      updateLoadMoreState();
       isLoadingMedia = false;
+
+      fetchAdditionalPages(
+        `${API_LINKS.SEARCH_CATEGORIZED}${encodeURIComponent(currentSearchTerm)}`,
+        firstPage,
+        (pageData) => {
+          mergeAndRender(pageData);
+          updateLoadMoreState();
+        },
+        () => {
+          currentSearchPage = firstPage + PAGES_PER_LOGICAL_PAGE - 1;
+        }
+      );
     })
     .catch(error => {
       console.error('Error loading more search results:', error);

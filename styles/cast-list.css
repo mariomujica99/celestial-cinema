@@ -106,6 +106,7 @@
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
   flex-shrink: 0;
+  color: transparent;
 }
 
 .person-details {
