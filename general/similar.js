@@ -1,38 +1,49 @@
 /**
- * Fetches and renders the Similar section on media detail pages.
+ * Fetches and renders the Similar section on media detail pages
+ * using the custom content-based similarity algorithm endpoint.
  * Hides the entire section if no results are returned.
  *
- * @param {string} apiUrl    - Full backend URL for similar media
- * @param {string} mediaType - 'movie' | 'tv'
- * @param {string} imgPath   - Base URL for poster images
+ * @param {string} mediaId
+ * @param {string} mediaType  - 'movie' | 'tv'
+ * @param {string} imgPath    - Base URL for poster images
+ * @param {Set<string>} savedMediaIds
  */
-async function loadSimilarSection(apiUrl, mediaType, imgPath, savedMediaIds = new Set()) {
+async function loadSimilarSection(mediaId, mediaType, imgPath, savedMediaIds = new Set()) {
   const section = document.querySelector('.similar-section');
   if (!section) return;
 
+  const SIMILAR_API = 'https://celestial-cinema-backend.onrender.com/api/v1/similar';
+  const container = document.getElementById('similar-container');
+  if (!container) return;
+
+  // Show skeletons immediately — section is already visible
+  showSkeletonCards(container, 10, 'similar');
+
   try {
-    const res = await fetch(apiUrl);
+    const res = await fetch(`${SIMILAR_API}/${mediaType}/${mediaId}`);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     const results = data.results || [];
 
-    if (results.length === 0) return;
+    hideSkeletonCards(container);
 
-    const container = document.getElementById('similar-container');
-    if (!container) return;
+    if (results.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
 
     container.innerHTML = '';
 
     results.forEach(item => {
-      const title      = item.title || item.name || 'Unknown';
-      const year       = (item.release_date || item.first_air_date)
-        ? new Date(item.release_date || item.first_air_date).getFullYear()
+      const title     = item.title || '';
+      const year      = item.releaseDate
+        ? new Date(item.releaseDate).getFullYear()
         : '';
-      const typeLabel  = mediaType === 'tv' ? 'Show' : 'Movie';
-      const posterUrl  = item.poster_path
-        ? `${imgPath}${item.poster_path}`
+      const typeLabel = item.mediaType === 'tv' ? 'Show' : 'Movie';
+      const posterUrl = item.posterPath
+        ? `${imgPath}${item.posterPath}`
         : '../images/no-image.jpg';
-      const detailUrl  = mediaType === 'tv'
+      const detailUrl = item.mediaType === 'tv'
         ? `../tv reviews/tvReviews.html?id=${item.id}&title=${encodeURIComponent(title)}`
         : `../movie reviews/movieReviews.html?id=${item.id}&title=${encodeURIComponent(title)}`;
       const mediaIdStr = String(item.id);
@@ -40,7 +51,6 @@ async function loadSimilarSection(apiUrl, mediaType, imgPath, savedMediaIds = ne
       const el = document.createElement('div');
       el.className = 'known-for-item';
 
-      // Poster wrapper with watchlist button
       const posterWrapper = document.createElement('div');
       posterWrapper.className = 'watchlist-item-poster-wrapper';
       posterWrapper.style.cssText = 'position:relative;width:100%;';
@@ -65,9 +75,9 @@ async function loadSimilarSection(apiUrl, mediaType, imgPath, savedMediaIds = ne
         id:          mediaIdStr,
         title,
         year:        year || '',
-        mediaType,
-        posterPath:  item.poster_path || '',
-        voteAverage: item.vote_average ?? null
+        mediaType:   item.mediaType,
+        posterPath:  item.posterPath  || '',
+        voteAverage: item.voteAverage ?? null
       };
 
       watchlistBtn.addEventListener('click', async (e) => {
@@ -108,7 +118,7 @@ async function loadSimilarSection(apiUrl, mediaType, imgPath, savedMediaIds = ne
       detailsDiv.innerHTML = `
         <div class="known-for-title-text">${escapeHtml(title)}</div>
         <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
-        <div class="user-score-grid">${formatScore(item.vote_average)}</div>
+        <div class="user-score-grid">${formatScore(item.voteAverage)}</div>
       `;
       el.appendChild(detailsDiv);
 
@@ -119,9 +129,9 @@ async function loadSimilarSection(apiUrl, mediaType, imgPath, savedMediaIds = ne
       container.appendChild(el);
     });
 
-    section.style.display = 'block';
-
   } catch (error) {
     console.error('Error fetching similar media:', error);
+    hideSkeletonCards(container);
+    section.style.display = 'none';
   }
 }

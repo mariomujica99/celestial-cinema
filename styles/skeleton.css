@@ -1,0 +1,138 @@
+/* ── Skeleton base ── */
+.skeleton-card {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 12px;
+  padding: 5px 5px 10px 5px;
+  overflow: hidden;
+}
+
+.skeleton-block {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s infinite linear;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Poster block ── */
+.skeleton-poster {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+/* ── Text blocks ── */
+.skeleton-title {
+  width: 80%;
+  height: 10px;
+  margin-bottom: 6px;
+}
+
+.skeleton-info {
+  width: 55%;
+  height: 8px;
+  margin-bottom: 6px;
+}
+
+.skeleton-score {
+  width: 40%;
+  height: 20px;
+  border-radius: 20px;
+}
+
+/* ── Variants ── */
+
+/* Similar / Known For cards: 140px wide, 200px poster */
+.skeleton-card--similar {
+  flex: 0 0 140px;
+  width: 140px;
+}
+
+.skeleton-card--similar .skeleton-poster {
+  height: 200px;
+}
+
+/* Top Cast cards: 140px wide, 200px poster (same footprint, centered text) */
+.skeleton-card--cast {
+  flex: 0 0 140px;
+  width: 140px;
+  align-items: center;
+}
+
+.skeleton-card--cast .skeleton-poster {
+  height: 200px;
+}
+
+.skeleton-card--cast .skeleton-title {
+  width: 70%;
+}
+
+.skeleton-card--cast .skeleton-info {
+  width: 50%;
+}
+
+/* Seasons cards: 140px wide, 200px poster */
+.skeleton-card--season {
+  flex: 0 0 140px;
+  width: 140px;
+  align-items: center;
+}
+
+.skeleton-card--season .skeleton-poster {
+  height: 200px;
+}
+
+.skeleton-card--season .skeleton-title {
+  width: 65%;
+}
+
+.skeleton-card--season .skeleton-info {
+  width: 50%;
+}
+
+/* Known For cards on castMember page: same as similar */
+.skeleton-card--known-for {
+  flex: 0 0 140px;
+  width: 140px;
+}
+
+.skeleton-card--known-for .skeleton-poster {
+  height: 200px;
+}
+
+@media (max-width: 400px) {
+  .skeleton-card--similar,
+  .skeleton-card--known-for {
+    flex: 0 0 100px;
+    width: 100px;
+  }
+
+  .skeleton-card--similar .skeleton-poster,
+  .skeleton-card--known-for .skeleton-poster {
+    height: 143px;
+  }
+
+  .skeleton-card--cast,
+  .skeleton-card--season {
+    flex: 0 0 100px;
+    width: 100px;
+  }
+
+  .skeleton-card--cast .skeleton-poster,
+  .skeleton-card--season .skeleton-poster {
+    height: 143px;
+  }
+}

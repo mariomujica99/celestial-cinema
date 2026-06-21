@@ -51,6 +51,7 @@
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
   margin-bottom: 10px;
+  color: transparent;
 }
 
 .similar-section .known-for-title-text {

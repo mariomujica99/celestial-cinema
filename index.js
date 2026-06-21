@@ -224,6 +224,7 @@ searchForm.addEventListener("submit", (e) => {
 });
 
 function returnMedia(url, contentType = 'movie', append = false) {
+  if (!append && isLoadingMedia) return;
   if (!append) {
     mediaGridContainer.innerHTML = '';
     currentPage = 1;

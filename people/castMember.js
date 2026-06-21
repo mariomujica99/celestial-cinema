@@ -164,6 +164,139 @@ function isPrimaryShow(credit, personName) {
   return false;
 }
 
+/**
+ * Builds and appends a single Known For / fallback card to the container.
+ * Extracted from displayKnownFor so both the scored Known For path and
+ * the simple fallback path can reuse identical card markup/behavior.
+ *
+ * @param {object} c - TMDB credit object (cast or crew)
+ */
+function buildKnownForCard(c) {
+  const posterSrc = c.poster_path
+    ? `${API_LINKS.IMG_PATH}${c.poster_path}`
+    : '../images/no-image-season.jpg';
+
+  const title = c.title || c.name || 'Unknown';
+  const year = c.release_date
+    ? new Date(c.release_date).getFullYear()
+    : (c.first_air_date ? new Date(c.first_air_date).getFullYear() : '');
+
+  const mediaType  = c.media_type === 'tv' ? 'tv' : 'movie';
+  const typeLabel  = mediaType === 'tv' ? 'Show' : 'Movie';
+  const mediaIdStr = String(c.id);
+
+  const castCredit = (() => {
+    if (c.character) return c.character;
+    if (c.job)       return c.job;
+    return '';
+  })();
+
+  const el = document.createElement('div');
+  el.className = 'known-for-item';
+
+  const posterWrapper = document.createElement('div');
+  posterWrapper.className = 'watchlist-item-poster-wrapper';
+  posterWrapper.style.cssText = 'position:relative;width:100%;';
+
+  const posterImg = document.createElement('img');
+  posterImg.className = 'known-for-poster';
+  posterImg.src = posterSrc;
+  posterImg.alt = escapeHtml(title);
+  posterImg.onerror = function() { this.src = '../images/no-image-season.jpg'; };
+
+  const watchlistBtn = document.createElement('button');
+  watchlistBtn.className = 'watchlist-remove-btn';
+
+  const updateBtn = (inList) => {
+    watchlistBtn.innerHTML = `<img src="../images/${inList ? 'watchlist-saved' : 'watchlist-add'}.svg" class="watchlist-remove-icon" alt="${inList ? 'Remove from watchlist' : 'Add to watchlist'}">`;
+    watchlistBtn.setAttribute('aria-label', inList ? 'Remove from watchlist' : 'Add to watchlist');
+  };
+
+  updateBtn(savedMediaIds.has(mediaIdStr));
+
+  const watchlistItem = {
+    id:          mediaIdStr,
+    title,
+    year:        year || '',
+    mediaType,
+    posterPath:  c.poster_path || '',
+    voteAverage: c.vote_average ?? null
+  };
+
+  watchlistBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const isInList = savedMediaIds.has(mediaIdStr);
+
+    const doToggle = async (username) => {
+      try {
+        const itemToSave = isInList ? watchlistItem : await hydrateGridWatchlistItem(watchlistItem);
+        const status = await toggleWatchlistAPI(username, itemToSave);
+        const nowInList = status === 'added';
+        if (nowInList) savedMediaIds.add(mediaIdStr);
+        else savedMediaIds.delete(mediaIdStr);
+        updateBtn(nowInList);
+      } catch (err) {
+        console.error('Watchlist toggle failed:', err);
+        showErrorMessage('Failed to update watchlist. Please try again.');
+      }
+    };
+
+    if (isInList) {
+      const cachedName = localStorage.getItem('ccLastName');
+      if (cachedName) {
+        doToggle(cachedName);
+      } else {
+        showNameModal({ title: 'Remove from Watchlist', confirmText: 'Remove', onConfirm: doToggle });
+      }
+    } else {
+      showNameModal({ title: 'Save to Watchlist', confirmText: 'Save', onConfirm: doToggle });
+    }
+  });
+
+  posterWrapper.appendChild(posterImg);
+  posterWrapper.appendChild(watchlistBtn);
+  el.appendChild(posterWrapper);
+
+  const detailsDiv = document.createElement('div');
+  detailsDiv.innerHTML = `
+    <div class="known-for-title-text">${escapeHtml(title)}</div>
+    <div class="cast-credit">${escapeHtml(castCredit)}</div>
+    <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
+    <div class="user-score-grid">${formatScore(c.vote_average)}</div>
+  `;
+  el.appendChild(detailsDiv);
+
+  el.addEventListener('click', () => {
+    window.location.href = mediaType === 'tv'
+      ? `../tv reviews/tvReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`
+      : `../movie reviews/movieReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`;
+  });
+
+  knownForContainer.appendChild(el);
+}
+
+/**
+ * Fallback/top-up source when the scored Known For algorithm returns
+ * fewer than 10 results. Simple popularity sort, cast + any crew job,
+ * deduped by id, excludes ids already present in the scored results.
+ *
+ * @param {Array} cast
+ * @param {Array} crew
+ * @param {Set} excludeIds - ids already in the scored 'top' list
+ * @param {number} needed - how many more items to fetch
+ * @returns {Array}
+ */
+function getFallbackKnownFor(cast, crew, excludeIds, needed) {
+  const map = new Map();
+  [...cast, ...crew].forEach(c => {
+    if (!map.has(c.id) && !excludeIds.has(c.id)) map.set(c.id, c);
+  });
+
+  return Array.from(map.values())
+    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+    .slice(0, needed);
+}
+
 // MAIN KNOWN FOR LOGIC
 function displayKnownFor(data, knownForDepartment = '', gender = 0) {
   if (!knownForContainer) return;
@@ -250,15 +383,14 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
     return { ...c, score };
   });
 
-  const top = scored
+  let top = scored
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
 
-  if (!top.length) {
-    if (knownForSection) {
-      knownForSection.remove();
-    }
-    return;
+  if (top.length < 10) {
+    const existingIds = new Set(top.map(c => c.id));
+    const fallbackItems = getFallbackKnownFor(cast, crew, existingIds, 10 - top.length);
+    top = [...top, ...fallbackItems];
   }
 
   const knownForHeader = knownForSection.querySelector('.credits-line');
@@ -270,7 +402,7 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
 
       const titleSpan = document.createElement('p');
       titleSpan.className = 'known-for-title';
-      titleSpan.textContent = 'Known For';
+      titleSpan.textContent = top.length > 0 ? 'Known For' : '';
 
       const filmographyBtn = document.createElement('button');
       filmographyBtn.className = 'filmography-btn';
@@ -289,109 +421,5 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
 
   knownForContainer.innerHTML = '';
 
-  top.forEach(c => {
-    const el = document.createElement('div');
-    el.className = 'known-for-item';
-
-    const posterSrc = c.poster_path
-      ? `${API_LINKS.IMG_PATH}${c.poster_path}`
-      : '../images/no-image-season.jpg';
-
-    const title = c.title || c.name || 'Unknown';
-    const year = c.release_date
-      ? new Date(c.release_date).getFullYear()
-      : (c.first_air_date ? new Date(c.first_air_date).getFullYear() : '');
-
-    const mediaType  = c.media_type === 'tv' ? 'tv' : 'movie';
-    const typeLabel  = mediaType === 'tv' ? 'Show' : 'Movie';
-    const mediaIdStr = String(c.id);
-
-    const castCredit = (() => {
-      if (c.character) return c.character;
-      if (c.job)       return c.job;
-      return '';
-    })();
-
-    // Poster wrapper with watchlist button
-    const posterWrapper = document.createElement('div');
-    posterWrapper.className = 'watchlist-item-poster-wrapper';
-    posterWrapper.style.cssText = 'position:relative;width:100%;';
-
-    const posterImg = document.createElement('img');
-    posterImg.className = 'known-for-poster';
-    posterImg.src = posterSrc;
-    posterImg.alt = escapeHtml(title);
-    posterImg.onerror = function() { this.src = '../images/no-image-season.jpg'; };
-
-    const watchlistBtn = document.createElement('button');
-    watchlistBtn.className = 'watchlist-remove-btn';
-
-    const updateBtn = (inList) => {
-      watchlistBtn.innerHTML = `<img src="../images/${inList ? 'watchlist-saved' : 'watchlist-add'}.svg" class="watchlist-remove-icon" alt="${inList ? 'Remove from watchlist' : 'Add to watchlist'}">`;
-      watchlistBtn.setAttribute('aria-label', inList ? 'Remove from watchlist' : 'Add to watchlist');
-    };
-
-    updateBtn(savedMediaIds.has(mediaIdStr));
-
-    const watchlistItem = {
-      id:          mediaIdStr,
-      title,
-      year:        year || '',
-      mediaType,
-      posterPath:  c.poster_path || '',
-      voteAverage: c.vote_average ?? null
-    };
-
-    watchlistBtn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const isInList = savedMediaIds.has(mediaIdStr);
-
-      const doToggle = async (username) => {
-        try {
-          const itemToSave = isInList ? watchlistItem : await hydrateGridWatchlistItem(watchlistItem);
-          const status = await toggleWatchlistAPI(username, itemToSave);
-          const nowInList = status === 'added';
-          if (nowInList) savedMediaIds.add(mediaIdStr);
-          else savedMediaIds.delete(mediaIdStr);
-          updateBtn(nowInList);
-        } catch (err) {
-          console.error('Watchlist toggle failed:', err);
-          showErrorMessage('Failed to update watchlist. Please try again.');
-        }
-      };
-
-      if (isInList) {
-        const cachedName = localStorage.getItem('ccLastName');
-        if (cachedName) {
-          doToggle(cachedName);
-        } else {
-          showNameModal({ title: 'Remove from Watchlist', confirmText: 'Remove', onConfirm: doToggle });
-        }
-      } else {
-        showNameModal({ title: 'Save to Watchlist', confirmText: 'Save', onConfirm: doToggle });
-      }
-    });
-
-    posterWrapper.appendChild(posterImg);
-    posterWrapper.appendChild(watchlistBtn);
-    el.appendChild(posterWrapper);
-
-    // Text details
-    const detailsDiv = document.createElement('div');
-    detailsDiv.innerHTML = `
-      <div class="known-for-title-text">${escapeHtml(title)}</div>
-      <div class="cast-credit">${escapeHtml(castCredit)}</div>
-      <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
-      <div class="user-score-grid">${formatScore(c.vote_average)}</div>
-    `;
-    el.appendChild(detailsDiv);
-
-    el.addEventListener('click', () => {
-      window.location.href = mediaType === 'tv'
-        ? `../tv reviews/tvReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`
-        : `../movie reviews/movieReviews.html?id=${c.id}&title=${encodeURIComponent(title)}`;
-    });
-
-    knownForContainer.appendChild(el);
-  });
+  top.forEach(c => buildKnownForCard(c));
 }

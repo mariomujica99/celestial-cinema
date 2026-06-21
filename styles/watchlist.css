@@ -88,6 +88,7 @@
   border-radius: 10px;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748, #1a2332);
+  color: transparent;
 }
 
 .watchlist-remove-btn {
