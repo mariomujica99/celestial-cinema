@@ -15,6 +15,8 @@ let currentTmdbPage = 1;
 let lastKnownTotalPages = Infinity;
 let hasMorePeople = true;
 let isLoadingPeople = false;
+let peopleRequestToken = 0;
+let renderedPeopleIds = new Set();
 
 function deferTask(callback) {
   if (typeof requestIdleCallback === 'function') {
@@ -67,6 +69,12 @@ async function loadPeople(append = false) {
   if (isLoadingPeople || !hasMorePeople) return;
   isLoadingPeople = true;
 
+  if (!append) {
+    peopleRequestToken++;
+    renderedPeopleIds = new Set();
+  }
+  const requestToken = peopleRequestToken;
+
   if (append) {
     loadMoreBtn.textContent = 'Loading';
     loadMoreBtn.disabled = true;
@@ -79,6 +87,8 @@ async function loadPeople(append = false) {
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     const data = await res.json();
 
+    if (requestToken !== peopleRequestToken) return;
+
     renderPeoplePage(data, append);
     lastKnownTotalPages = data.total_pages || lastKnownTotalPages;
 
@@ -89,9 +99,11 @@ async function loadPeople(append = false) {
         API_LINKS.POPULAR_PEOPLE,
         firstTmdbPage,
         (pageData) => {
+          if (requestToken !== peopleRequestToken) return;
           renderPeoplePage(pageData, true);
         },
         (finalTotalPages) => {
+          if (requestToken !== peopleRequestToken) return;
           currentTmdbPage = Math.min(firstTmdbPage + PAGES_PER_LOGICAL_PAGE, finalTotalPages + 1);
           hasMorePeople = currentTmdbPage <= finalTotalPages;
           updatePeopleLoadMoreVisibility();
@@ -105,6 +117,7 @@ async function loadPeople(append = false) {
       isLoadingPeople = false;
     }
   } catch (error) {
+    if (requestToken !== peopleRequestToken) return;
     console.error('Error fetching popular people:', error);
     if (!append) {
       mediaGrid.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
@@ -122,7 +135,13 @@ function renderPeoplePage(data, append) {
     return;
   }
 
-  data.results.forEach(person => mediaGrid.appendChild(createPersonCard(person)));
+  const newPeople = data.results.filter(person => !renderedPeopleIds.has(person.id));
+  if (newPeople.length === 0) return;
+
+  newPeople.forEach(person => {
+    renderedPeopleIds.add(person.id);
+    mediaGrid.appendChild(createPersonCard(person));
+  });
 }
 
 function updatePeopleLoadMoreVisibility() {

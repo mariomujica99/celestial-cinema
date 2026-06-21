@@ -61,6 +61,8 @@ let currentTmdbPage = 1;
 let lastKnownTotalPages = Infinity;
 let hasMoreMedia = true;
 let isLoadingMedia = false;
+let mediaRequestToken = 0;
+let renderedMediaIds = new Set();
 let currentSearchTerm = '';
 let currentApiUrl = '';
 let categorizedResults = { movies: [], tvShows: [], people: [] };
@@ -69,6 +71,8 @@ let isSearchActive = false;
 let currentSearchPage = 1;
 let searchTotalCounts = { movies: 0, tvshows: 0, people: 0 };
 let searchLastKnownTotalPages = Infinity;
+let searchRequestToken = 0;
+let renderedSearchIds = { movies: new Set(), tvshows: new Set(), people: new Set() };
 let savedMediaIds = new Set();
 let currentMediaToggle = localStorage.getItem('ccMediaToggle') || 'movie';
 
@@ -289,14 +293,17 @@ searchForm.addEventListener("submit", (e) => {
 
 function returnMedia(url, contentType = 'movie', append = false) {
   if (!append) {
+    mediaRequestToken++;
     mediaGridContainer.innerHTML = '';
     currentPage = 1;
     currentTmdbPage = 1;
     lastKnownTotalPages = Infinity;
     hasMoreMedia = true;
     currentApiUrl = url;
+    renderedMediaIds = new Set();
   }
 
+  const requestToken = mediaRequestToken;
   currentContentType = contentType;
   isLoadingMedia = true;
 
@@ -309,6 +316,8 @@ function returnMedia(url, contentType = 'movie', append = false) {
   const pageUrl = url.includes('?') ? `${url}&page=${firstTmdbPage}` : `${url}?page=${firstTmdbPage}`;
 
   fetch(pageUrl).then(res => res.json()).then(function(data) {
+    if (requestToken !== mediaRequestToken) return; // stale call, a newer filter/genre/toggle superseded this one
+
     renderMediaPage(data, contentType, append);
     lastKnownTotalPages = data.total_pages || lastKnownTotalPages;
 
@@ -319,9 +328,11 @@ function returnMedia(url, contentType = 'movie', append = false) {
         url,
         firstTmdbPage,
         (pageData) => {
+          if (requestToken !== mediaRequestToken) return;
           renderMediaPage(pageData, contentType, true);
         },
         (finalTotalPages) => {
+          if (requestToken !== mediaRequestToken) return;
           currentTmdbPage = Math.min(firstTmdbPage + PAGES_PER_LOGICAL_PAGE, finalTotalPages + 1);
           hasMoreMedia = currentTmdbPage <= finalTotalPages;
           updateLoadMoreVisibility();
@@ -337,6 +348,7 @@ function returnMedia(url, contentType = 'movie', append = false) {
 
   }).catch(error => {
     console.error('Error fetching content:', error);
+    if (requestToken !== mediaRequestToken) return;
     if (!append) {
       mediaGridContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     }
@@ -364,12 +376,16 @@ function renderMediaPage(data, contentType, append) {
     if (contentType === 'multi' && itemData.media_type === 'person') {
       return false;
     }
+    if (renderedMediaIds.has(itemData.id)) {
+      return false; // TMDB can return the same item across consecutive pages
+    }
     return true;
   });
 
   if (validResults.length === 0) return;
 
   validResults.forEach(itemData => {
+    renderedMediaIds.add(itemData.id);
     let itemContentType = contentType;
     if (contentType === 'multi') {
       itemContentType = itemData.media_type;
@@ -388,7 +404,36 @@ function updateLoadMoreVisibility() {
   }
 }
 
+/**
+ * Merges a categorized-search page into categorizedResults, skipping any
+ * item whose id was already added — TMDB can repeat items across
+ * consecutive search result pages, same as discover/trending endpoints.
+ */
+function mergeUniqueCategorized(data) {
+  (data.movies || []).forEach(m => {
+    if (!renderedSearchIds.movies.has(m.id)) {
+      renderedSearchIds.movies.add(m.id);
+      categorizedResults.movies.push(m);
+    }
+  });
+  (data.tvShows || []).forEach(t => {
+    if (!renderedSearchIds.tvshows.has(t.id)) {
+      renderedSearchIds.tvshows.add(t.id);
+      categorizedResults.tvShows.push(t);
+    }
+  });
+  (data.people || []).forEach(p => {
+    if (!renderedSearchIds.people.has(p.id)) {
+      renderedSearchIds.people.add(p.id);
+      categorizedResults.people.push(p);
+    }
+  });
+}
+
 function searchCategorized(query) {
+  searchRequestToken++;
+  const requestToken = searchRequestToken;
+
   hideFiltersForSearch();
   mediaGridContainer.innerHTML = '';
   currentSearchPage = 1;
@@ -396,6 +441,7 @@ function searchCategorized(query) {
   loadMoreContainer.style.display = 'none';
   categoryTabsContainer.style.display = 'none';
   currentSearchTerm = query;
+  renderedSearchIds = { movies: new Set(), tvshows: new Set(), people: new Set() };
 
   fetch(API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(query))
     .then(res => {
@@ -403,11 +449,16 @@ function searchCategorized(query) {
       return res.json();
     })
     .then(data => {
+      if (requestToken !== searchRequestToken) return;
+
       categorizedResults = {
         movies:  data.movies  || [],
         tvShows: data.tvShows || [],
         people:  data.people  || []
       };
+      categorizedResults.movies.forEach(m  => renderedSearchIds.movies.add(m.id));
+      categorizedResults.tvShows.forEach(t => renderedSearchIds.tvshows.add(t.id));
+      categorizedResults.people.forEach(p  => renderedSearchIds.people.add(p.id));
 
       const { movieCount = 0, tvCount = 0, peopleCount = 0 } = data;
 
@@ -427,12 +478,12 @@ function searchCategorized(query) {
           API_LINKS.SEARCH_CATEGORIZED + encodeURIComponent(query),
           1,
           (pageData) => {
-            categorizedResults.movies  = [...categorizedResults.movies,  ...(pageData.movies  || [])];
-            categorizedResults.tvShows = [...categorizedResults.tvShows, ...(pageData.tvShows || [])];
-            categorizedResults.people  = [...categorizedResults.people,  ...(pageData.people  || [])];
+            if (requestToken !== searchRequestToken) return;
+            mergeUniqueCategorized(pageData);
             renderCategoryResults(activeCategoryTab);
           },
           () => {
+            if (requestToken !== searchRequestToken) return;
             currentSearchPage = PAGES_PER_LOGICAL_PAGE;
           }
         );
@@ -441,6 +492,7 @@ function searchCategorized(query) {
       }
     })
     .catch(error => {
+      if (requestToken !== searchRequestToken) return;
       console.error('Error fetching search results:', error);
       mediaGridContainer.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';
     });
@@ -757,21 +809,22 @@ function loadMoreSearchResults() {
   loadMoreBtn.textContent = 'Loading';
   loadMoreBtn.disabled = true;
 
+  const requestToken = searchRequestToken;
   const firstPage = currentSearchPage + 1;
 
   const mergeAndRender = (data) => {
-    categorizedResults.movies  = [...categorizedResults.movies,  ...(data.movies  || [])];
-    categorizedResults.tvShows = [...categorizedResults.tvShows, ...(data.tvShows || [])];
-    categorizedResults.people  = [...categorizedResults.people,  ...(data.people  || [])];
-
-    const newItemsMap = {
-      movies:  data.movies  || [],
-      tvshows: data.tvShows || [],
-      people:  data.people  || []
-    };
     const contentTypeMap = { movies: 'movie', tvshows: 'tv', people: 'person' };
-    const newItems = newItemsMap[activeCategoryTab];
+    const idSetMap = { movies: 'movies', tvshows: 'tvshows', people: 'people' };
+    const dataKeyMap = { movies: 'movies', tvshows: 'tvShows', people: 'people' };
+
+    const rawNewItems = data[dataKeyMap[activeCategoryTab]] || [];
+    const idSet = renderedSearchIds[idSetMap[activeCategoryTab]];
     const contentType = contentTypeMap[activeCategoryTab];
+
+    const newItems = rawNewItems.filter(item => !idSet.has(item.id));
+    newItems.forEach(item => idSet.add(item.id));
+
+    mergeUniqueCategorized(data);
 
     newItems.forEach(itemData => {
       const card = contentType === 'person'
@@ -807,6 +860,8 @@ function loadMoreSearchResults() {
       return res.json();
     })
     .then(data => {
+      if (requestToken !== searchRequestToken) return;
+
       mergeAndRender(data);
       updateLoadMoreState();
       isLoadingMedia = false;
@@ -815,15 +870,18 @@ function loadMoreSearchResults() {
         `${API_LINKS.SEARCH_CATEGORIZED}${encodeURIComponent(currentSearchTerm)}`,
         firstPage,
         (pageData) => {
+          if (requestToken !== searchRequestToken) return;
           mergeAndRender(pageData);
           updateLoadMoreState();
         },
         () => {
+          if (requestToken !== searchRequestToken) return;
           currentSearchPage = firstPage + PAGES_PER_LOGICAL_PAGE - 1;
         }
       );
     })
     .catch(error => {
+      if (requestToken !== searchRequestToken) return;
       console.error('Error loading more search results:', error);
       isLoadingMedia = false;
       loadMoreBtn.textContent = 'Load More';
