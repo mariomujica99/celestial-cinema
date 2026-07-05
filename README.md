@@ -16,7 +16,8 @@ This is a full-stack web application for browsing movies and shows. Users can le
 - Streaming Providers: Displays streaming, rent, and buy options for movies and TV shows
 
 #### Cast & Crew
-- Actor Profiles: Detailed biographies, birthdate, department, and filmographies with relevance-based scoring
+- Actor Profiles: Detailed biographies, birthdate, department, and a "Known For" section ranked by a relevance-scoring algorithm (role prominence, vote data, popularity, episode count)
+- Full Filmography Page: Dedicated page grouping every credit by department (Acting, Directing, Writing, Production, etc.), merging duplicate cast/crew entries per title into a single combined-role row, sorted by primary department first, with live search across title, role, and department
 - Cast Lists: Full cast and crew organized by department with episode counts for TV
 - Search & Filter: Search cast and crew by name, role, or department
 - Popular People: Dedicated page for browsing trending people
@@ -28,6 +29,8 @@ This is a full-stack web application for browsing movies and shows. Users can le
 
 #### Similar Media
 - Similar Section: Horizontally scrollable strip of related movies or TV shows on each detail page
+- Custom Recommendation Engine: Content-based similarity algorithm scoring candidates on genre, cast, and keyword overlap, with franchise/collection boosting
+- Multi-Source Candidate Sourcing: Pulls from TMDB discover, recommendations, keyword search, production company, and collection endpoints, then deduplicates and ranks results
 
 #### Watchlist
 - Save to Watchlist: Add movies and TV shows from grid cards or detail pages
@@ -62,6 +65,8 @@ This is a full-stack web application for browsing movies and shows. Users can le
 - Node.js/Express: RESTful API server
 - MongoDB: NoSQL database for reviews and watchlist storage
 - TMDB API Proxy: Server-side API key management
+- Rate Limiting: Global and stricter write-specific request throttling via express-rate-limit
+- Content-Based Similarity Algorithm: Custom scoring engine for the Similar Media recommendations
 - Hosted on Render: `https://celestial-cinema-backend.onrender.com`
 
 #### External API
