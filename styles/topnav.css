@@ -58,7 +58,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    padding: 14px 24px 12px 24px;
+    padding: calc(14px + var(--topnav-top-offset)) 24px 12px 24px;
   }
 
   .topnav a {
@@ -69,7 +69,7 @@
 
 @media (max-width: 450px) {
   .topnav {
-    padding: 12px 12px 10px 12px;
+    padding: calc(12px + var(--topnav-top-offset)) 12px 10px 12px;
   }
 
   .search-input {

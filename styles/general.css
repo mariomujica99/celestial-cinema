@@ -30,6 +30,16 @@
   box-sizing: border-box;
 }
 
+:root {
+  --topnav-top-offset: 0px;
+}
+
+@media (max-width: 650px) {
+  :root {
+    --topnav-top-offset: 24px;
+  }
+}
+
 body {
   background-color: #131720;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;

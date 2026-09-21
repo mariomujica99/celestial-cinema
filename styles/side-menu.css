@@ -45,7 +45,7 @@
 
   .hamburger-btn {
     position: absolute;
-    top: 14px;
+    top: calc(14px + var(--topnav-top-offset));
     right: 24px;
     padding: 4px 6px;
   }
@@ -53,7 +53,7 @@
 
 @media (max-width: 450px) {
   .hamburger-btn {
-    top: 11px;
+    top: calc(11px + var(--topnav-top-offset));
     right: 12px;
   }
 }
