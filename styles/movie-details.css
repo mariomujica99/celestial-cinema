@@ -77,8 +77,8 @@
   }
 }
 
-@media (max-width: 400px) {
-  /* ── COMPACT MODE (default at ≤400px) ── */
+@media (max-width: 450px) {
+  /* ── COMPACT MODE (default at ≤450px) ── */
   .current-movie-container:not(.is-expanded) {
     display: grid;
     grid-template-columns: 116px 1fr;

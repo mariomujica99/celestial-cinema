@@ -80,7 +80,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .load-more-btn {
     font-size: 0.78rem;
   }

@@ -329,7 +329,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   /* ── Shared base styles ── */
   .cast-member-back {
     padding: 5px 15px 5px 15px;
@@ -364,7 +364,7 @@
     letter-spacing: 0.3px;
   }
 
-  /* ── COMPACT MODE (default at ≤400px) ── */
+  /* ── COMPACT MODE (default at ≤450px) ── */
   .cast-member-container:not(.is-expanded) {
     display: grid;
     grid-template-columns: 105px 1fr;

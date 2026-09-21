@@ -246,7 +246,7 @@ html.media-toggle-tv #toggle-tv {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .filters-container {
     margin: 0px 12px 0px 12px;
   }

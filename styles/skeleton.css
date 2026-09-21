@@ -113,7 +113,7 @@
   height: 200px;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .skeleton-card--similar,
   .skeleton-card--known-for {
     flex: 0 0 100px;

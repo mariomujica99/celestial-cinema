@@ -123,7 +123,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .season-filter-dropdown {
     margin-right: 15px;
   }

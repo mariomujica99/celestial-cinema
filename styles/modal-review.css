@@ -45,7 +45,7 @@
 @media (min-width: 1651px) {
   .review-modal-trigger-row { grid-template-columns: repeat(5, 1fr); }
 }
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .review-modal-trigger-row { grid-template-columns: 1fr; margin: 10px 15px 5px 15px; }
 }
 
@@ -330,7 +330,7 @@
   box-shadow: none;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .review-modal {
     padding: 18px 16px;
     gap: 10px;

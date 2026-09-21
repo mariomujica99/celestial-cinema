@@ -141,7 +141,7 @@
   display: block;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   #media-grid {
     grid-template-columns: repeat(3, 1fr);
     margin: 0 5px 30px 5px;
@@ -184,7 +184,7 @@
   }
 }
 
-@media (min-width: 401px) and (max-width: 650px) {
+@media (min-width: 451px) and (max-width: 650px) {
   #media-grid {
     grid-template-columns: repeat(4, 1fr);
     column-gap: 0px;

@@ -195,7 +195,7 @@ a.user-score-pill {
   flex-shrink: 0;
 }
 
-/* Base: hidden — revealed only at ≤400px via movie/tv-details.css */
+/* Base: hidden — revealed only at ≤450px via movie/tv-details.css */
 .expand-collapse-btn {
   display: none;
   width: 100%;
