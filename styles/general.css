@@ -36,7 +36,7 @@
 
 @media (max-width: 650px) {
   :root {
-    --topnav-top-offset: 24px;
+    --topnav-top-offset: 10px;
   }
 }
 
