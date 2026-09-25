@@ -31,14 +31,7 @@
 }
 
 :root {
-  --topnav-top-offset: 0px;
   --search-open-duration: 0.2s;
-}
-
-@media (max-width: 650px) {
-  :root {
-    --topnav-top-offset: 0px;
-  }
 }
 
 :root {
