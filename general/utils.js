@@ -393,5 +393,12 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(swPath).catch((error) => {
       console.error('Service Worker registration failed:', error);
     });
+    
+    let hasReloadedForNewWorker = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hasReloadedForNewWorker) return;
+      hasReloadedForNewWorker = true;
+      window.location.reload();
+    });
   });
 }
