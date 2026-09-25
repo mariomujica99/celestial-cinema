@@ -231,7 +231,6 @@ searchForm.addEventListener("submit", (e) => {
   const searchTerm = searchInput.value.trim();
   if (searchTerm) {
     searchCategorized(searchTerm);
-    searchInput.value = "";
   }
 });
 
@@ -521,10 +520,7 @@ function showCategoryTabs(movieCount, tvCount, peopleCount) {
 }
 
 function getBestTab(movieCount, tvCount, peopleCount) {
-  // Highest count wins; tiebreaker priority: movies > tvShows > people
-  if (movieCount >= tvCount && movieCount >= peopleCount) return 'movies';
-  if (tvCount >= peopleCount) return 'tvshows';
-  return 'people';
+  return rankSearchCategories(movieCount, tvCount, peopleCount)[0];
 }
 
 function setActiveCategoryTab(category) {

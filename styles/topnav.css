@@ -1,7 +1,11 @@
 .topnav {
-  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background-color: #131720;
-  padding: 24px 0 14px 24px;
+  padding: calc(24px + env(safe-area-inset-top)) 0 14px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +28,7 @@
 }
 
 .search-form {
-  background: linear-gradient(45deg, #28303d, #212d42, #19263b);
+  background: #1a2332;
   width: 100%;
   height: 40px;
   border-radius: 30px;
@@ -44,26 +48,40 @@
 }
 
 @media (max-width: 650px) {
+  .topnav {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: calc(14px + env(safe-area-inset-top)) 16px 14px 16px;
+  }
+
+  .topnav a {
+    order: 2;
+    flex: 1;
+    min-width: 0;
+    font-size: 1.1rem;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .search-container {
-    width: 100%;
-    max-width: 100%;
-    margin-right: 0;
+    order: 3;
+    flex: 1;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin: 0;
+    transition: max-width var(--search-open-duration) ease, opacity var(--search-open-duration) ease;
   }
 
   .search-form {
     height: 32px;
-  }
-
-  .topnav {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: calc(14px + var(--topnav-top-offset)) 24px 12px 24px;
-  }
-
-  .topnav a {
-    font-size: 1.1rem;
-    margin: 0 0 0 0;
+    background: #131720;
+    box-shadow: none;
   }
 }
 

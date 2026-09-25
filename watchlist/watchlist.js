@@ -216,7 +216,7 @@ function createWatchlistItem(item) {
   details.innerHTML = `
     <p class="watchlist-item-title">${escapeHtml(item.title)}</p>
     <div class="watchlist-media-info-line">
-      ${infoLineParts.map(p => `<span>${escapeHtml(String(p))}</span>`).join('')}
+      ${buildInfoLineHTML(infoLineParts)}
     </div>
     ${displayName ? `<p class="watchlist-item-added-by">Added by ${escapeHtml(displayName)}</p>` : ''}
     <div class="watchlist-item-info">

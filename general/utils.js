@@ -27,6 +27,10 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function buildInfoLineHTML(parts) {
+    return parts.filter(Boolean).map(p => `<span>${escapeHtml(String(p))}</span>`).join('');
+}
+
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -51,6 +55,14 @@ function generateRatingOptions(selectedRating) {
 function formatScore(voteAverage) {
   if (!voteAverage) return 'NR';
   return `${Math.round(voteAverage * 10)}%`;
+}
+
+function rankSearchCategories(movieCount, tvCount, peopleCount) {
+  return [
+    { key: 'movies',  count: movieCount  },
+    { key: 'tvshows', count: tvCount     },
+    { key: 'people',  count: peopleCount }
+  ].sort((a, b) => b.count - a.count).map(c => c.key);
 }
 
 /**
@@ -310,6 +322,29 @@ async function loadSavedMediaIds() {
     console.error('Failed to load saved media ids:', e);
     return new Set();
   }
+}
+
+function initFixedTopnavOffset() {
+  const topnav = document.querySelector('.topnav');
+  if (!topnav) return;
+
+  const setOffset = () => {
+    document.documentElement.style.setProperty('--topnav-height', `${topnav.offsetHeight}px`);
+  };
+
+  setOffset();
+
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(setOffset).observe(topnav);
+  } else {
+    window.addEventListener('resize', setOffset);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFixedTopnavOffset);
+} else {
+  initFixedTopnavOffset();
 }
 
 function getMovieContentRating(movieData) {

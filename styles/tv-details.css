@@ -102,7 +102,7 @@
 
 
 .season-poster {
-  width: 100%;
+  width: 133px;
   height: 200px;
   border-radius: 12px;
   object-fit: cover;
@@ -232,7 +232,7 @@
 
   .current-tv-container:not(.is-expanded) .tv-poster {
     height: 186px;
-    width: 116px;
+    width: 124px;
     border-radius: 12px;
   }
 
@@ -260,6 +260,7 @@
     grid-area: right;
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
     gap: 10px;
     height: 188px;
     overflow: hidden;

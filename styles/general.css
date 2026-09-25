@@ -32,19 +32,24 @@
 
 :root {
   --topnav-top-offset: 0px;
+  --search-open-duration: 0.2s;
 }
 
 @media (max-width: 650px) {
   :root {
-    --topnav-top-offset: 10px;
+    --topnav-top-offset: 0px;
   }
+}
+
+:root {
+  --topnav-height: 70px;
 }
 
 body {
   background-color: #131720;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
   margin: 0px;
-  padding-top: env(safe-area-inset-top);
+  padding-top: var(--topnav-height);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);

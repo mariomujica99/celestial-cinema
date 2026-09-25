@@ -108,7 +108,7 @@
 
   .current-movie-container:not(.is-expanded) .movie-poster {
     height: 186px;
-    width: 116px;
+    width: 124px;
     border-radius: 12px;
   }
 
@@ -136,6 +136,7 @@
     grid-area: right;
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
     gap: 10px;
     height: 188px;
     overflow: hidden;
