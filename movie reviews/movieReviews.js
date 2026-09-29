@@ -9,7 +9,8 @@ const API_LINKS = {
   IMG_PATH: 'https://image.tmdb.org/t/p/w1280',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces',
   WATCH_PROVIDERS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/watch-providers/${movieId}`,
-  MOVIE_VIDEOS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/videos/${movieId}`
+  MOVIE_VIDEOS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/videos/${movieId}`,
+  IMAGES: `https://celestial-cinema-backend.onrender.com/api/v1/movies/images/${movieId}`
 };
 
 const reviewsContainer = document.getElementById("reviews-container");
@@ -74,6 +75,12 @@ function returnMovieDetails(url) {
       returnMovieCredits(API_LINKS.MOVIE_CREDITS);
       loadWatchProviders();
       loadVideoStrip(API_LINKS.MOVIE_VIDEOS, movieId, 'movie', movieData.title || '');
+      loadImageStrip({
+        imagesUrl: API_LINKS.IMAGES,
+        mediaId: movieId,
+        mediaType: 'movie',
+        mediaTitle: movieData.title || ''
+      });
       loadSavedMediaIds().then(ids => {
         savedMediaIds = ids;
         loadSimilarSection(movieId, 'movie', API_LINKS.IMG_PATH, savedMediaIds);

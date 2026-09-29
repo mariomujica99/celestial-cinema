@@ -46,6 +46,18 @@
   transform: translateY(-2px);
 }
 
+.view-all-btn {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.view-all-count {
+  font-size: 0.75em;
+  font-weight: normal;
+  color: #CBD5E0;
+}
+
 .videos-container {
   display: flex;
   gap: 20px;

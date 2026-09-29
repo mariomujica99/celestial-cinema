@@ -55,8 +55,7 @@ async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
 
     const viewAllBtn = document.querySelector('.view-all-btn');
     if (viewAllBtn) {
-      viewAllBtn.style.display = 'block';
-      viewAllBtn.textContent = `View All (${allTrailers.length})`;
+      setViewAllLabel(viewAllBtn, allTrailers.length);
       viewAllBtn.onclick = () => {
         window.location.href =
           `../media videos/mediaVideos.html?id=${mediaId}&type=${mediaType}&title=${encodeURIComponent(mediaTitle)}`;

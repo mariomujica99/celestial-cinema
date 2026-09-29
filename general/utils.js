@@ -70,6 +70,18 @@ function buildStarSvgHTML(className) {
   `;
 }
 
+function setViewAllLabel(viewAllBtn, count) {
+  const labelText = document.createElement('span');
+  labelText.textContent = 'View All';
+
+  const labelCount = document.createElement('span');
+  labelCount.className = 'view-all-count';
+  labelCount.textContent = count;
+
+  viewAllBtn.replaceChildren(labelText, labelCount);
+  viewAllBtn.style.display = 'inline-flex';
+}
+
 function buildUserRatingHTML() {
   return `
     <div class="user-rating" id="user-rating" hidden>
