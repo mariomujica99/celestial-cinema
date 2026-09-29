@@ -33,9 +33,6 @@ async function loadImageStrip({ imagesUrl, mediaId, mediaType, mediaTitle }) {
     renderImageStrip(section, backdrops);
     bindImagesViewAll(section, { imageCount: backdrops.length, mediaId, mediaType, mediaTitle });
     section.style.display = 'block';
-
-    window.matchMedia('(max-width: 450px)')
-      .addEventListener('change', () => renderImageStrip(section, backdrops));
   } catch (error) {
     console.error('Error fetching images:', error);
   }
@@ -45,11 +42,8 @@ function renderImageStrip(section, backdrops) {
   const container = section.querySelector('.images-container');
   if (!container) return;
 
-  const isSmallMobile = window.matchMedia('(max-width: 450px)').matches;
-  const visibleCount = isSmallMobile ? 1 : IMAGES_STRIP_LIMIT;
-
   container.innerHTML = '';
-  backdrops.slice(0, visibleCount).forEach((_, index) => {
+  backdrops.slice(0, IMAGES_STRIP_LIMIT).forEach((_, index) => {
     container.appendChild(createImageStripCard(backdrops, index));
   });
 }

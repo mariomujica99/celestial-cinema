@@ -1,17 +1,18 @@
 const YOUTUBE_THUMB_BASE = 'https://img.youtube.com/vi';
 const YOUTUBE_WATCH_BASE = 'https://www.youtube.com/watch?v=';
+const PRIMARY_VIDEO_KEYWORDS = ['official', 'final', 'main', 'theatrical', 'teaser'];
 
 function getPrimaryVideo(videos) {
   if (!videos || videos.length === 0) return null;
 
-  const official = videos.find(v =>
-    v.type === "Trailer" &&
-    v.name?.toLowerCase().includes("official")
-  );
+  const trailers = videos.filter(v => v.type === "Trailer");
 
-  const trailer = videos.find(v => v.type === "Trailer");
+  for (const keyword of PRIMARY_VIDEO_KEYWORDS) {
+    const match = trailers.find(v => v.name?.toLowerCase().includes(keyword));
+    if (match) return match;
+  }
 
-  return official || trailer || videos[0];
+  return trailers[0] || videos[0];
 }
 
 /**
@@ -34,45 +35,31 @@ async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
     const data = await res.json();
     const allTrailers = data.results || [];
 
+// REPLACE inside loadVideoStrip, from the empty-check down to the container loop
     if (allTrailers.length === 0) return;
-
-    const isSmallMobile = window.matchMedia('(max-width: 450px)').matches;
-
-    let trailers = allTrailers;
-
-    if (isSmallMobile) {
-      const primary = getPrimaryVideo(allTrailers);
-      trailers = primary ? [primary] : [];
-    }
-
-    if (trailers.length === 0) return;
 
     const container = document.getElementById('videos-container');
     if (!container) return;
     container.innerHTML = '';
+    container.classList.toggle('is-single', allTrailers.length === 1);
 
-    trailers.forEach(video => container.appendChild(createVideoStripCard(video)));
+    const primaryVideo = getPrimaryVideo(allTrailers);
+    const orderedTrailers = [primaryVideo, ...allTrailers.filter(video => video !== primaryVideo)];
+
+    orderedTrailers.forEach(video => container.appendChild(createVideoStripCard(video)));
 
     const viewAllBtn = document.querySelector('.view-all-btn');
-    if (viewAllBtn) {
+    if (viewAllBtn && allTrailers.length > 1) {
       setViewAllLabel(viewAllBtn, allTrailers.length);
       viewAllBtn.onclick = () => {
         window.location.href =
           `../media videos/mediaVideos.html?id=${mediaId}&type=${mediaType}&title=${encodeURIComponent(mediaTitle)}`;
       };
+    } else if (viewAllBtn) {
+      viewAllBtn.style.display = 'none';
     }
 
     section.style.display = 'block';
-
-    const mobileQuery = window.matchMedia('(max-width: 450px)');
-
-    if (!section.dataset.videoResizeBound) {
-      mobileQuery.addEventListener('change', () => {
-        loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle);
-      });
-
-      section.dataset.videoResizeBound = 'true';
-    }
 
   } catch (error) {
     console.error('Error fetching videos:', error);

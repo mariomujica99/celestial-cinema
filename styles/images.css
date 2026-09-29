@@ -25,11 +25,20 @@
 }
 
 .images-container {
-  display: block;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.images-container::-webkit-scrollbar {
+  display: none;
 }
 
 .image-strip-card {
-  width: 100%;
+  flex: 0 0 220px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -188,24 +197,6 @@
 
   .images-title {
     font-size: 1.2rem;
-  }
-
-  .images-container {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .images-container::-webkit-scrollbar {
-    display: none;
-  }
-
-  .image-strip-card {
-    flex: 0 0 220px;
-    width: auto;
   }
 
   .images-grid {

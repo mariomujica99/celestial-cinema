@@ -437,16 +437,6 @@
     padding-bottom: 5px;
   }
 
-  .videos-container {
-    overflow-x: hidden;
-    display: block;
-  }
-
-  .video-strip-card {
-    flex: none;
-    width: 100%;
-  }
-
   .videos-page-header {
     padding: 5px 15px 20px 15px;
   }
@@ -479,5 +469,9 @@
 
   .video-modal-title {
     font-size: 0.75rem;
+  }
+
+  .videos-container.is-single .video-strip-card {
+    flex: 0 0 100%;
   }
 }
