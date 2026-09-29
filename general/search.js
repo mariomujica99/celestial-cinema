@@ -363,6 +363,22 @@
       closeDropdown();
       searchInput.blur();
     });
+
+    function restoreCommittedSearch() {
+      const committedQuery = new URLSearchParams(window.location.search).get('search');
+      if (!committedQuery) return;
+
+      searchInput.value = committedQuery;
+      searchCommitted = true;
+      updateClearBtnVisibility();
+
+      if (window.innerWidth > 650) return;
+      searchTriggerBtn.style.position = 'absolute';
+      searchTriggerBtn.style.opacity = '0';
+      topnav.classList.add('search-active', 'search-form-icon-visible');
+    }
+
+    restoreCommittedSearch();
   }
 
   if (document.readyState === 'loading') {
