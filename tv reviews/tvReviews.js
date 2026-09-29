@@ -143,30 +143,24 @@ function createTVDetailsSection(tvData) {
           <span class="score-value">${userScore}</span>
           <span class="score-label">TMDB</span>
         </a>
-      </div>
-
-      <div class="watchlist-detail-section">
-        <button class="watchlist-detail-btn" id="watchlist-detail-btn">
-          <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
-          Add to Watchlist
-        </button>
+        ${buildUserRatingHTML()}
       </div>
 
       <div class="overview-section">
         <p class="overview-text">${tvData.overview || 'No overview available'}</p>
       </div>
+      <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
     </div>
     
     <div class="credits-section" id="tv-credits-section">
       <div class="credits-loading"></div>
     </div>
-    <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
 
-    ${tvData.external_ids && tvData.external_ids.imdb_id ? `<div class="imdb-link-container">
-      <a href="https://www.imdb.com/title/${tvData.external_ids.imdb_id}/" target="_blank" class="imdb-link">
-          VIEW ON IMDb
-      </a>
-    </div>` : ''}
+    <div class="credits-section" id="tv-credits-section">
+      <div class="credits-loading"></div>
+    </div>
+
+    ${buildDetailActionsHTML(tvData.external_ids?.imdb_id)}
   `;
 
   initWatchlistDetailBtn({
@@ -183,7 +177,12 @@ function createTVDetailsSection(tvData) {
       })()
     });
 
+  initRateThisBtn();
+  initUserRatingToggle();
+  updateRateButtonState(allReviewsData.length > 0);
+  updateUserRating(allReviewsData);
   initMediaCompactToggle();
+
 }
 
 async function loadWatchProviders() {
@@ -394,7 +393,6 @@ function returnTVCredits(url) {
     });
 }
 
-// REPLACE the entire updateCreditsSection function
 function updateCreditsSection(creditsData) {
   const creditsSection = document.getElementById('tv-credits-section');
   if (!creditsSection) return;
@@ -479,6 +477,8 @@ function returnReviews(url) {
     reviewsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     allReviewsData = reviewsData;
     allFilteredReviews = reviewsData;
+    updateRateButtonState(reviewsData.length > 0);
+    updateUserRating(reviewsData);
 
     updateReviewsTitle(reviewsData);
     displayFilteredReviews(reviewsData.slice(0, 8));

@@ -19,6 +19,7 @@
   margin-bottom: 16px;
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .score-value,
@@ -29,12 +30,18 @@
   letter-spacing: 1.1px;
 }
 
-.user-score-pill {
+.score-label {
+  font-weight: normal;
+  padding: 0 14px 0 0;
+  font-size: 0.9rem;
+}
+
+.user-score-pill,
+.user-rating {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   background: #3949ab;
-  padding: 0 0 0 18px;
   border-radius: 40px;
   transition: all 0.3s ease;
 }
@@ -52,15 +59,37 @@ a.user-score-pill {
   }
 }
 
-.score-label {
+.score-value {
   font-weight: normal;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 20px 40px 40px 20px;
-  padding: 2px 14px;
+  border-radius: 40px 20px 20px 40px;
+  padding: 2px 10px 2px 16px;
   font-size: 1.1rem;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
 }
+
+.user-rating {
+  background: #442daa;
+}
+
+.user-rating[hidden] {
+  display: none;
+}
+
+.user-rating .score-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.user-rating-star {
+  width: 0.95em;
+  height: 0.95em;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 
 .overview-section {
   margin-bottom: 25px;
@@ -124,37 +153,78 @@ a.user-score-pill {
   opacity: 1;
 }
 
-.imdb-link-container {
-  margin-top: 20px;
-  padding-top: 20px;
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 12px;
   border-top: 1px solid rgba(106, 90, 205, 0.2);
 }
 
-.imdb-link {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.06);
-  color: #e5e7eb;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(6px);
+.detail-quick-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  padding: 4px 10px;
+  background: none;
+  border: none;
+  color: rgb(245, 245, 245);
   text-decoration: none;
-  padding: 8px 18px;
-  border-radius: 25px;
-  font-size: 1.001rem;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
+  transition: transform 0.2s ease;
 }
 
-.imdb-link:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-  box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.3),
-    0 0 10px rgba(255, 255, 255, 0.08);
+@media (hover: hover) {
+  .detail-quick-action:hover {
+    transform: translateY(-2px);
+  }
 }
 
-.watchlist-detail-section {
-  margin-top: 5px;
+.detail-quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+}
+
+.imdb-wordmark {
+  color: rgb(245, 245, 245);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.detail-quick-action-label {
+  font-size: 0.7rem;
+  color: #CBD5E0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rate-this-star {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  margin-bottom: 5px;
+}
+
+.rate-this-btn.is-rated .rate-this-star {
+  fill: currentColor;
 }
 
 .watchlist-detail-btn {
@@ -164,7 +234,7 @@ a.user-score-pill {
   background: linear-gradient(315deg, #6A5ACD, #4C44C1, #442daa);
   color: rgb(245, 245, 245);
   border: none;
-  padding: 8px 18px 8px 18px;
+  padding: 12px 18px 12px 18px;
   border-radius: 25px;
   font-size: 1.001rem;
   text-transform: uppercase;
@@ -202,7 +272,7 @@ a.user-score-pill {
   background: linear-gradient(135deg, #2f3445, #252a38);
   color: rgb(225, 225, 225);
   border: none;
-  padding: 6px;
+  padding: 4px;
   border-radius: 8px;
   font-size: 0.65rem;
   letter-spacing: 1px;
@@ -215,6 +285,25 @@ a.user-score-pill {
 .toggle-chevron {
   display: inline-block;
   transition: transform 0.3s ease;
+}
+
+@media (max-width: 1111px) {
+  .user-score-container {
+    justify-content: center;
+  }
+  
+  .credits-row {
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .credits-person {
+    text-align: center;
+  }
+
+  .detail-actions {
+    justify-content: center;
+  }  
 }
 
 @media (max-width: 650px) {
@@ -233,13 +322,22 @@ a.user-score-pill {
     font-size: 1rem;
   }
   
-  .user-score-pill {
+  .user-score-pill,
+  .user-rating {
     gap: 8px;
-    padding: 0 0 0 16px;
+  }
+
+  .user-score-container {
+    gap: 8px;
   }
 
   .score-label {
-    padding: 1px 14px;
+    padding: 0 12px 0 0;
+    font-size: 0.8rem;
+  }
+
+  .score-value {
+    padding: 2px 7px 2px 14px;
   }
 
   .overview-title {
@@ -258,32 +356,67 @@ a.user-score-pill {
     font-size: 0.6rem;
   }
 
-  .imdb-link {
-    font-size: 0.8rem;
-    padding: 8px 16px 8px 16px;
+  .watchlist-detail-icon {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .detail-quick-actions {
+    flex: none;
+    align-self: auto;
+    width: 100%;
+    padding: 0 30px;
+  }
+
+  .detail-quick-action {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .detail-quick-action-icon {
+    height: 24px;
+  }
+
+  .imdb-wordmark {
+    font-size: 1.2rem;
+  }
+
+  .rate-this-star {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 3px;
+  }
+
+  .detail-quick-action-label {
+    font-size: 0.6rem;
+  }
+
+  .current-movie-details,
+  .current-tv-details {
+    align-self: stretch;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+    align-content: flex-start;
   }
 
   .watchlist-detail-btn {
     font-size: 0.8rem;
     padding: 8px 16px 8px 16px;
-  }
-  .watchlist-detail-icon {
-    width: 15px;
-    height: 15px;
+    border-radius: 5px;
+    align-self: stretch;
+    justify-content: center;
   }
 }
 
-@media (max-width: 1111px) {
-  .user-score-container {
-    justify-content: center;
+@media (max-width: 450px) {
+  .imdb-wordmark {
+    font-size: 1rem;
   }
-  
-  .credits-row {
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .credits-person {
-    text-align: center;
+
+  .rate-this-star {
+    width: 18px;
+    height: 18px;
   }
 }

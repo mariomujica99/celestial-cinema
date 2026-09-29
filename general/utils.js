@@ -57,6 +57,105 @@ function formatScore(voteAverage) {
   return `${Math.round(voteAverage * 10)}%`;
 }
 
+function calculateAverageRating(reviewsData) {
+  const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+  return (totalRating / reviewsData.length).toFixed(1);
+}
+
+function buildStarSvgHTML(className) {
+  return `
+    <svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    </svg>
+  `;
+}
+
+function buildUserRatingHTML() {
+  return `
+    <div class="user-rating" id="user-rating" hidden>
+      <span class="score-value">
+        ${buildStarSvgHTML('user-rating-star')}
+        <span id="user-rating-value"></span>
+      </span>
+      <span class="score-label">CCMDb</span>
+    </div>
+  `;
+}
+
+function updateUserRating(reviewsData) {
+  const userRatingElement = document.getElementById('user-rating');
+  const userRatingValueElement = document.getElementById('user-rating-value');
+  if (!userRatingElement || !userRatingValueElement) return;
+
+  if (reviewsData.length === 0) {
+    userRatingElement.hidden = true;
+    return;
+  }
+
+  const averageRating = calculateAverageRating(reviewsData);
+  userRatingValueElement.textContent = averageRating;
+  userRatingElement.hidden = false;
+}
+
+function initUserRatingToggle() {
+  const userRatingElement = document.getElementById('user-rating');
+  const userScoreContainer = userRatingElement?.closest('.user-score-container');
+  if (!userRatingElement || !userScoreContainer) return;
+
+  const narrowQuery = window.matchMedia('(max-width: 389px)');
+
+  userRatingElement.addEventListener('click', () => {
+    const mediaContainer = userRatingElement.closest('.current-movie-container, .current-tv-container');
+    if (!narrowQuery.matches || mediaContainer?.classList.contains('is-expanded')) return;
+
+    userScoreContainer.classList.toggle('is-rating-expanded');
+  });
+}
+
+function buildDetailActionsHTML(imdbId) {
+  const imdbLinkHTML = imdbId
+    ? `<a href="https://www.imdb.com/title/${imdbId}/" target="_blank" rel="noopener noreferrer" class="detail-quick-action imdb-link">
+        <span class="detail-quick-action-icon imdb-wordmark">IMDb</span>
+        <span class="detail-quick-action-label">view</span>
+      </a>`
+    : '';
+
+  return `
+    <div class="detail-actions">
+      <button class="watchlist-detail-btn" id="watchlist-detail-btn">
+        <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
+        Add to Watchlist
+      </button>
+      <div class="detail-quick-actions">
+        ${imdbLinkHTML}
+        <button type="button" class="detail-quick-action rate-this-btn" id="rate-this-btn">
+          <span class="detail-quick-action-icon">
+            <svg class="rate-this-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </span>
+          <span class="detail-quick-action-label">rate this</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function initRateThisBtn() {
+  const rateThisBtn = document.getElementById('rate-this-btn');
+  const newReviewBtn = document.getElementById('new-review-btn');
+  if (!rateThisBtn || !newReviewBtn) return;
+
+  rateThisBtn.addEventListener('click', () => newReviewBtn.click());
+}
+
+function updateRateButtonState(hasReviews) {
+  const rateThisBtn = document.getElementById('rate-this-btn');
+  if (!rateThisBtn) return;
+
+  rateThisBtn.classList.toggle('is-rated', hasReviews);
+}
+
 function rankSearchCategories(movieCount, tvCount, peopleCount) {
   return [
     { key: 'movies',  count: movieCount  },
@@ -282,33 +381,46 @@ function showNameModal({ title, confirmText = 'Confirm', onConfirm, onCancel }) 
  * Works on both movie and TV detail pages by finding whichever
  * container is present in the DOM.
  */
+function scrollToTopAfterCollapse() {
+  suppressNextClick();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+/**
+ * Initializes compact/expand toggle for media detail pages.
+ * Works on both movie and TV detail pages by finding whichever
+ * container is present in the DOM. Tapping the expand button,
+ * the overview text, or the poster toggles the compact layout (≤450px only).
+ */
 function initMediaCompactToggle() {
   const expandBtn = document.getElementById('media-expand-btn');
   const container = document.querySelector('.current-movie-container')
     || document.querySelector('.current-tv-container');
   if (!expandBtn || !container) return;
 
-  expandBtn.addEventListener('click', (e) => {
+  const compactQuery = window.matchMedia('(max-width: 450px)');
+
+  const handleCompactToggle = (e) => {
+    if (!compactQuery.matches) return;
     e.preventDefault();
     e.stopPropagation();
 
     const isExpanded = container.classList.toggle('is-expanded');
-
     expandBtn.firstChild.textContent = isExpanded ? 'COLLAPSE ' : 'EXPAND ';
 
-    // If collapsing, scroll to top
-    if (!isExpanded) {
-      suppressNextClick();
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        });
-      });
-    }
-  });
+    if (!isExpanded) scrollToTopAfterCollapse();
+  };
+
+  const toggleTargets = [
+    expandBtn,
+    container.querySelector('.overview-text'),
+    container.querySelector('.movie-poster, .tv-poster')
+  ];
+  toggleTargets.filter(Boolean).forEach(el => el.addEventListener('click', handleCompactToggle));
 }
 
 // Shared watchlist helpers

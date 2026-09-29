@@ -134,31 +134,24 @@ function createMovieDetailsSection(movieData) {
           <span class="score-value">${userScore}</span>
           <span class="score-label">TMDB</span>
         </a>
-      </div>
-
-      <div class="watchlist-detail-section">
-        <button class="watchlist-detail-btn" id="watchlist-detail-btn">
-          <img src="../images/watchlist-add.svg" class="watchlist-detail-icon" alt="">
-          Add to Watchlist
-        </button>
+        ${buildUserRatingHTML()}
       </div>
 
       <div class="overview-section">
         <p class="overview-text">${movieData.overview || 'No overview available'}</p>
       </div>
+      <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
+    </div>
+    
+    <div class="credits-section" id="movie-credits-section">
+      <div class="credits-loading"></div>
     </div>
     
     <div class="credits-section" id="movie-credits-section">
       <div class="credits-loading"></div>
     </div>
 
-    <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
-    
-    ${movieData.imdb_id ? `<div class="imdb-link-container">
-      <a href="https://www.imdb.com/title/${movieData.imdb_id}/" target="_blank" class="imdb-link">
-        VIEW ON IMDb
-      </a>
-    </div>` : ''}
+    ${buildDetailActionsHTML(movieData.imdb_id)}
   `;
 
   initWatchlistDetailBtn({
@@ -178,6 +171,10 @@ function createMovieDetailsSection(movieData) {
       })()
     });
 
+  initRateThisBtn();
+  initUserRatingToggle();
+  updateRateButtonState(allMovieReviews.length > 0);
+  updateUserRating(allMovieReviews);
   initMediaCompactToggle();
 }
 
@@ -445,6 +442,8 @@ returnReviews(API_LINKS.REVIEWS);
 function returnReviews(url) {
   fetch(url + "media/" + movieId).then(res => res.json()).then(function(reviewsData) {
     allMovieReviews = reviewsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    updateRateButtonState(reviewsData.length > 0);
+    updateUserRating(reviewsData);
     updateReviewsTitle(reviewsData);
     
     displayMovieReviews(reviewsData.slice(0, 8));

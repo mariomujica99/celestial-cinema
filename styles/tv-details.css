@@ -212,8 +212,7 @@
       "poster   right"
       "genres   genres"
       "credits  credits"
-      "btn      btn"
-      "imdb     imdb";
+      "actions  actions";
     column-gap: 10px;
     row-gap: 0px;
     padding: 15px;
@@ -269,11 +268,7 @@
   .current-tv-container:not(.is-expanded) .compact-right-col .user-score-container {
     margin: 0;
     justify-content: flex-start;
-  }
-
-  .current-tv-container:not(.is-expanded) .compact-right-col .watchlist-detail-section {
-    margin: 0;
-    text-align: left;
+    gap: 6px;
   }
 
   .current-tv-container:not(.is-expanded) .compact-right-col .overview-section {
@@ -282,16 +277,18 @@
     overflow: hidden;
   }
 
-  .current-tv-container:not(.is-expanded) .user-score-pill {
-    gap: 6px;
-    padding: 0 0 0 14px;
+  .current-tv-container:not(.is-expanded) .user-score-pill,
+  .current-tv-container:not(.is-expanded) .user-rating {
+    gap: 4px;
   }
+
   .current-tv-container:not(.is-expanded) .score-value {
     font-size: 0.7rem;
+    padding: 2px 5px 2px 8px;
   }
   .current-tv-container:not(.is-expanded) .score-label {
-    font-size: 0.7rem;
-    padding: 1px 12px;
+    padding: 0 8px 0 1px;
+    font-size: 0.6rem;
   }
 
   .current-tv-container:not(.is-expanded) .overview-text {
@@ -313,10 +310,11 @@
     color: rgb(245, 245, 245);
   }
 
-  .current-tv-container:not(.is-expanded) .expand-collapse-btn {
-    grid-area: btn;
+  .current-tv-container:not(.is-expanded) .compact-right-col .expand-collapse-btn {
     display: block;
-    margin-top: 2px;
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-bottom: 2.25px;
   }
 
   .current-tv-container:not(.is-expanded) .credits-section {
@@ -354,28 +352,8 @@
     min-width: 0;
   }
 
-  .current-tv-container:not(.is-expanded) .watchlist-detail-btn {
-    justify-content: center;
-    box-sizing: border-box;
-    padding: 4px 12px;
-    font-size: 0.65rem;
-    letter-spacing: 0;
-    gap: 6px;
-  }
-
-  .current-tv-container:not(.is-expanded) .imdb-link-container {
-    grid-area: imdb;
-    margin: 12px 0 0 0;
-    padding: 0 0 0 0;
-    border-top: none;
-  }
-
-  .current-tv-container:not(.is-expanded) .imdb-link {
-    justify-content: center;
-    box-sizing: border-box;
-    padding: 4px 12px;
-    font-size: 0.65rem;
-    letter-spacing: 0;
+  .current-tv-container:not(.is-expanded) .detail-actions {
+    grid-area: actions;
   }
 
   /* ── EXPANDED MODE ── */
@@ -388,11 +366,6 @@
     margin-bottom: 15px;
   }
 
-  .current-tv-container.is-expanded .expand-collapse-btn {
-    display: block;
-    margin-top: 18px;
-  }
-
   .current-tv-container.is-expanded .tv-title {
     letter-spacing: 0;
   }
@@ -401,13 +374,45 @@
     transform: rotate(180deg);
   }
 
+  .current-tv-container.is-expanded .compact-right-col {
+    display: contents;
+  }
+
+  .current-tv-container.is-expanded .expand-collapse-btn {
+    display: block;
+    margin-top: 18px;
+    order: 1;
+  }
+
   .current-tv-container.is-expanded .genres-line {
     text-align: center;
   }
 
-  .current-tv-container.is-expanded .imdb-link-container {
-    margin: 15px 0 0 0;
-    padding: 0 0 0 0;
-    border-top: none;
+  .current-tv-container.is-expanded .detail-actions {
+    order: 2;
+  }
+}
+
+@media (max-width: 389px) {
+  .current-tv-container:not(.is-expanded) .user-rating {
+    cursor: pointer;
+  }
+
+  .current-tv-container:not(.is-expanded) .user-score-container:not(.is-rating-expanded) .user-rating .score-label {
+    display: none;
+  }
+
+  .current-tv-container:not(.is-expanded) .user-score-container:not(.is-rating-expanded) .user-rating .score-value {
+    border-radius: 40px;
+    padding-right: 10px;
+  }
+
+  .current-tv-container:not(.is-expanded) .user-score-container.is-rating-expanded {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .current-tv-container:not(.is-expanded) .compact-right-col:has(.user-score-container.is-rating-expanded) .overview-text {
+    -webkit-line-clamp: 4;
   }
 }
