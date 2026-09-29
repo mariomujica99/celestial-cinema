@@ -244,6 +244,13 @@ function initSearchRedirect(formElement, inputElement, indexPath = '../index.htm
     });
 }
 
+function initBlurOnEnter(inputElement) {
+    if (!inputElement) return;
+    inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') inputElement.blur();
+    });
+}
+
 const WATCHLIST_API = 'https://celestial-cinema-backend.onrender.com/api/v1/watchlist';
 
 async function toggleWatchlistAPI(username, item) {

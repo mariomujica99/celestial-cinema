@@ -27,6 +27,7 @@ castSearchInput.addEventListener("input", (e) => {
     const searchTerm = e.target.value.trim().toLowerCase();
     filterCastAndCrew(searchTerm);
 });
+initBlurOnEnter(castSearchInput);
 
 if (mediaTitle) {
     castListTitle.textContent = `${mediaTitle} - Full Cast & Crew`;

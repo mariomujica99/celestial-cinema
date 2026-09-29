@@ -38,6 +38,7 @@ initSearchRedirect(searchForm, searchQuery);
 searchInput.addEventListener('input', debounce(() => {
   filterFilmography(searchInput.value.trim().toLowerCase());
 }, 250));
+initBlurOnEnter(searchInput);
 
 (async () => { savedMediaIds = await loadSavedMediaIds(); })().then(() => loadFilmography());
 
