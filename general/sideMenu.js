@@ -7,7 +7,11 @@
   // with '../', this page lives one directory below the repo root.
   const scriptSrc = (document.currentScript || {}).getAttribute?.('src') || '';
   const prefix = scriptSrc.startsWith('../') ? '../' : '';
-
+  const MOBILE_MAX_WIDTH_PX = 650;
+  const SWIPE_MIN_DISTANCE_PX = 60;
+  const SWIPE_HORIZONTAL_RATIO = 1.5;
+  const SWIPE_BLOCKED_SELECTOR =
+    'input, textarea, select, .name-modal-overlay, .review-modal-overlay, .video-modal-overlay';
   // ── Genre data ───────────────────────────────────────────────
 const MOVIE_GENRES = [
   { name: 'Action',          id: 28    },
@@ -50,27 +54,37 @@ const TV_GENRES = [
     return btn;
   }
 
-  function buildGenreSection(sectionTitle, genres, mediaType) {
+  function buildMenuSection(sectionTitle, menuItems) {
     const section = document.createElement('div');
     section.className = 'side-menu-section';
 
     const header = document.createElement('p');
     header.className = 'side-menu-header';
     header.textContent = sectionTitle;
+    header.addEventListener('click', () => section.classList.toggle('is-open'));
     section.appendChild(header);
 
-    genres.forEach(genre => {
+    const itemsContainer = document.createElement('div');
+    itemsContainer.className = 'side-menu-items';
+
+    menuItems.forEach(menuItem => {
       const item = document.createElement('p');
       item.className = 'side-menu-item';
-      item.textContent = genre.name;
-      item.addEventListener('click', () => {
-        window.location.href =
-          `${prefix}index.html?genre=${genre.id}&type=${mediaType}&name=${encodeURIComponent(genre.name)}`;
-      });
-      section.appendChild(item);
+      item.textContent = menuItem.name;
+      item.addEventListener('click', () => { window.location.href = menuItem.url; });
+      itemsContainer.appendChild(item);
     });
 
+    section.appendChild(itemsContainer);
     return section;
+  }
+
+  function buildGenreSection(sectionTitle, genres, mediaType) {
+    const menuItems = genres.map(genre => ({
+      name: genre.name,
+      url: `${prefix}index.html?genre=${genre.id}&type=${mediaType}&name=${encodeURIComponent(genre.name)}`
+    }));
+    return buildMenuSection(sectionTitle, menuItems);
   }
 
   function buildSideMenu() {
@@ -81,28 +95,66 @@ const TV_GENRES = [
     const panel = document.createElement('div');
     panel.className = 'side-menu-panel';
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'side-menu-close-btn';
-    closeBtn.setAttribute('aria-label', 'Close menu');
-    closeBtn.textContent = '✕';
-    panel.appendChild(closeBtn);
-
     panel.appendChild(buildGenreSection('Movies', MOVIE_GENRES, 'movie'));
     panel.appendChild(buildGenreSection('TV Shows', TV_GENRES, 'tv'));
 
-    const peopleSection = document.createElement('div');
-    peopleSection.className = 'side-menu-section';
-    const peopleHeader = document.createElement('p');
-    peopleHeader.className = 'side-menu-header side-menu-header--link';
-    peopleHeader.textContent = 'Popular People';
-    peopleHeader.addEventListener('click', () => {
-      window.location.href = `${prefix}people/popularPeople.html`;
-    });
-    peopleSection.appendChild(peopleHeader);
-    panel.appendChild(peopleSection);
+    panel.appendChild(buildMenuSection('People', [
+      { name: 'Popular People', url: `${prefix}people/popularPeople.html` }
+    ]));
 
     overlay.appendChild(panel);
-    return { overlay, closeBtn };
+    return overlay;
+  }
+
+  // ── Swipe gesture ────────────────────────────────────────────
+  function isInsideHorizontalScroller(element) {
+    let node = element;
+    while (node && node !== document.body) {
+      const { overflowX } = getComputedStyle(node);
+      const canScrollX = overflowX === 'auto' || overflowX === 'scroll';
+      if (canScrollX && node.scrollWidth > node.clientWidth) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function isSwipeBlocked(target) {
+    return Boolean(target.closest(SWIPE_BLOCKED_SELECTOR)) || isInsideHorizontalScroller(target);
+  }
+
+  function initSwipeGesture(overlay, openMenu, closeMenu) {
+    const mobileQuery = window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH_PX}px)`);
+    let swipeStart = null;
+
+    document.addEventListener('touchstart', (e) => {
+      const isOpen = overlay.classList.contains('is-open');
+      const canStart = mobileQuery.matches
+        && e.touches.length === 1
+        && (isOpen || !isSwipeBlocked(e.target));
+      const touch = e.touches[0];
+      swipeStart = canStart ? { x: touch.clientX, y: touch.clientY, isOpen } : null;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!swipeStart) return;
+      const deltaX = e.touches[0].clientX - swipeStart.x;
+      const deltaY = e.touches[0].clientY - swipeStart.y;
+
+      if (Math.abs(deltaY) > SWIPE_MIN_DISTANCE_PX) {
+        swipeStart = null;
+        return;
+      }
+      if (Math.abs(deltaX) < SWIPE_MIN_DISTANCE_PX) return;
+      if (Math.abs(deltaX) < Math.abs(deltaY) * SWIPE_HORIZONTAL_RATIO) return;
+
+      if (deltaX > 0 && !swipeStart.isOpen) openMenu();
+      if (deltaX < 0 && swipeStart.isOpen) closeMenu();
+      swipeStart = null;
+    }, { passive: true });
+
+    const resetSwipe = () => { swipeStart = null; };
+    document.addEventListener('touchend', resetSwipe, { passive: true });
+    document.addEventListener('touchcancel', resetSwipe, { passive: true });
   }
 
   // ── Init ─────────────────────────────────────────────────────
@@ -111,8 +163,7 @@ const TV_GENRES = [
     if (!topnav) return;
 
     const hamburgerBtn = buildHamburgerBtn();
-    const { overlay, closeBtn } = buildSideMenu();
-
+    const overlay = buildSideMenu();
     // Append hamburger after search-container so it groups with it on desktop
     topnav.appendChild(hamburgerBtn);
     document.body.appendChild(overlay);
@@ -128,13 +179,13 @@ const TV_GENRES = [
     };
 
     hamburgerBtn.addEventListener('click', openMenu);
-    closeBtn.addEventListener('click', closeMenu);
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeMenu();
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeMenu();
     });
+    initSwipeGesture(overlay, openMenu, closeMenu);
   }
 
   if (document.readyState === 'loading') {

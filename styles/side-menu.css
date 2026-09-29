@@ -72,11 +72,10 @@
   width: 280px;
   max-width: 85vw;
   background: linear-gradient(180deg, #1a2332 0%, #131720 100%);
-  border-right: 1px solid rgba(106, 90, 205, 0.25);
   transform: translateX(-100%);
   transition: transform 0.28s ease;
   overflow-y: auto;
-  padding: 0 0 calc(40px + env(safe-area-inset-bottom)) 0;
+  padding: calc(env(safe-area-inset-top) + 53px) 0 calc(40px + env(safe-area-inset-bottom)) 0;   /* REPLACE: was padding: 0 0 calc(40px + env(safe-area-inset-bottom)) 0; */
   box-sizing: border-box;
 }
 
@@ -93,28 +92,8 @@
   transform: translateX(0);
 }
 
-.side-menu-close-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.2rem;
-  text-transform: none;
-  cursor: pointer;
-  display: block;
-  margin-left: auto;
-  padding: calc(env(safe-area-inset-top) + 30px) 30px 4px 4px;
-  line-height: 1;
-}
-
-@media (hover: hover) {
-  .side-menu-close-btn:hover {
-    color: white;
-  }
-}
-
 .side-menu-section {
-  padding: 0 0 16px 0;
-  border-bottom: 1px solid rgba(106, 90, 205, 0.12);
+  padding: 0 0 4px 0;
   margin-bottom: 4px;
 }
 
@@ -131,15 +110,12 @@
   cursor: default;
 }
 
-.side-menu-header--link {
-  cursor: pointer;
-  transition: color 0.2s ease;
+.side-menu-items {
+  display: none;
 }
 
-@media (hover: hover) {
-  .side-menu-header--link:hover {
-    color: #9d8ff0;
-  }
+.side-menu-section.is-open .side-menu-items {
+  display: block;
 }
 
 .side-menu-item {
@@ -170,8 +146,8 @@
     padding: 9px 24px 9px 36px;
   }
 
-  .side-menu-close-btn {
-    padding: calc(env(safe-area-inset-top) + 20px) 20px 2px 4px;
+  .side-menu-panel {
+    padding-top: calc(env(safe-area-inset-top) + 41px);
   }
 
   .hamburger-bar {
@@ -197,11 +173,7 @@
   .side-menu-panel {
     width: 215px;
     max-width: 85vw;
-    padding: 0 0 calc(40px + env(safe-area-inset-bottom)) 0;
-  }
-
-  .side-menu-close-btn {
-    padding: calc(env(safe-area-inset-top) + 20px) 20px 2px 4px;
+    padding: calc(env(safe-area-inset-top) + 41px) 0 calc(40px + env(safe-area-inset-bottom)) 0;   /* REPLACE: was padding: 0 0 calc(40px + env(safe-area-inset-bottom)) 0; */
   }
 
   .side-menu-section {

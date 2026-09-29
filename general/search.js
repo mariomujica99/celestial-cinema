@@ -168,7 +168,7 @@
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-query');
     if (!topnav || !searchContainer || !searchForm || !searchInput) return;
-
+    searchInput.setAttribute('enterkeyhint', 'search');
     const searchTriggerBtn = document.createElement('button');
     searchTriggerBtn.className = 'search-trigger-btn';
     searchTriggerBtn.setAttribute('aria-label', 'Open search');
