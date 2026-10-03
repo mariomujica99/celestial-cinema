@@ -55,7 +55,7 @@ function renderCastMemberMeta(birthday, department, gender) {
   })();
 
   metaEl.innerHTML = `
-    <span class="meta-department">${departmentLabel}</span>
+    <span class="meta-department">${escapeHtml(departmentLabel)}</span>
     <span class="meta-born">
       ${formattedDate ? `<strong>Born</strong> ${formattedDate}` : ''}
     </span>
@@ -96,20 +96,21 @@ function returnCastDetails(url) {
       castMemberPhotoElement.onload = () =>
         castMemberPhotoElement.classList.add('loaded');
 
-      castMemberNameElement.innerHTML =
+      castMemberNameElement.textContent =
         castData.name || castName || 'Unknown Name';
 
       renderCastMemberMeta(castData.birthday, castData.known_for_department, castData.gender);
 
-      biographyTextElement.innerHTML =
+      biographyTextElement.textContent =
         castData.biography || 'No biography available';
 
       returnCastCredits(API_LINKS.CAST_CREDITS, castData.known_for_department || '', castData.gender ?? 0);
     })
-    .catch(() => {
-      castMemberNameElement.innerHTML = castName || 'Unknown Name';
+    .catch(error => {
+      console.error('Error fetching cast details:', error);
+      castMemberNameElement.textContent = castName || 'Unknown Name';
       castMemberPhotoElement.src = '../images/no-image-cast.jpg';
-      biographyTextElement.innerHTML = 'Biography unavailable.';
+      biographyTextElement.textContent = 'Biography unavailable.';
     });
 }
 
@@ -118,7 +119,8 @@ function returnCastCredits(url, knownForDepartment = '', gender = 0) {
   fetch(url)
     .then(res => res.json())
     .then(data => displayKnownFor(data, knownForDepartment, gender))
-    .catch(() => {
+    .catch(error => {
+      console.error('Error fetching cast credits:', error);
       knownForContainer.innerHTML =
         '<div class="known-for-loading">Unavailable</div>';
     });
@@ -195,7 +197,7 @@ function buildKnownForCard(c) {
   const posterImg = document.createElement('img');
   posterImg.className = 'known-for-poster';
   posterImg.src = posterSrc;
-  posterImg.alt = escapeHtml(title);
+  posterImg.alt = title;
   posterImg.onerror = function() { this.src = '../images/no-image-season.jpg'; };
 
   const watchlistBtn = document.createElement('button');
@@ -252,11 +254,12 @@ function buildKnownForCard(c) {
   el.appendChild(posterWrapper);
 
   const detailsDiv = document.createElement('div');
+  detailsDiv.className = 'known-for-details card-info';
   detailsDiv.innerHTML = `
+    <div class="user-score-grid">${formatScore(c.vote_average)}</div>
     <div class="known-for-title-text">${escapeHtml(title)}</div>
     <div class="cast-credit">${escapeHtml(castCredit)}</div>
     <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
-    <div class="user-score-grid">${formatScore(c.vote_average)}</div>
   `;
   el.appendChild(detailsDiv);
 

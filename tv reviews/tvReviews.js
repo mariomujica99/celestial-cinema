@@ -96,7 +96,7 @@ function returnTVDetails(url) {
     })
     .catch(error => {
       console.error('Error fetching TV details:', error);
-      tvTitleElement.innerHTML = tvTitle || '';
+      tvTitleElement.textContent = tvTitle || '';
       tvPosterElement.src = '../images/no-image.jpg';
       showErrorMessage('Failed to load | Please try again later', document.querySelector('.current-tv-container'));
     });
@@ -157,10 +157,6 @@ function createTVDetailsSection(tvData) {
         <p class="overview-text">${tvData.overview || 'No overview available'}</p>
       </div>
       <button class="expand-collapse-btn" id="media-expand-btn">EXPAND <span class="toggle-chevron">▾</span></button>
-    </div>
-    
-    <div class="credits-section" id="tv-credits-section">
-      <div class="credits-loading"></div>
     </div>
 
     <div class="credits-section" id="tv-credits-section">
@@ -579,101 +575,6 @@ function editReview(reviewId) {
   });
 }
 
-function saveReview(reviewInputId, userInputId, reviewId="", ratingInputId="", seasonInputId="", episodeInputId="") {
-  const reviewTextElement = document.getElementById(reviewInputId);
-  const userNameElement = document.getElementById(userInputId);
-  const ratingElement = ratingInputId ? document.getElementById(ratingInputId) : null;  
-  const reviewText = reviewTextElement.value;
-  const userName = userNameElement.value;
-  const rating = ratingElement ? parseInt(ratingElement.value) : 0;
-  
-  let season = null;
-  let episode = null;
-  
-  if (!userName || userName.length < 1) {
-    showValidateMessage('Please enter your name', document.querySelector('.reviews-header'));
-    return;
-  }
-
-  if (rating === null || isNaN(rating)) {
-    showValidateMessage('Please select a rating', document.querySelector('.reviews-header'));
-    return;
-  }
-
-  if (!reviewTextElement || !userNameElement) {
-    console.error('Required form elements not found');
-    showErrorMessage('Form elements missing. Please try again.');
-    return;
-  }
-
-  if (seasonInputId) {
-    const seasonElement = document.getElementById(seasonInputId);
-    if (seasonElement) {
-      const seasonValue = seasonElement.value;
-      season = seasonValue ? parseInt(seasonValue) : null;
-    }
-  }
-  
-  if (episodeInputId && season) {
-    const episodeElement = document.getElementById(episodeInputId);
-    if (episodeElement) {
-      const episodeValue = episodeElement.value;
-      episode = episodeValue === "all" ? null : parseInt(episodeValue);
-    }
-  }
-
-  const requestBody = {
-    "user": userName, 
-    "review": reviewText, 
-    "rating": rating, 
-    "mediaType": "tv"
-  };
-  
-  if (season !== null) {
-    requestBody.season = season;
-  }
-  
-  if (episode !== null) {
-    requestBody.episode = episode;
-  }
-
-  if (reviewId) {
-    fetch(API_LINKS.REVIEWS + reviewId, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    }).then(res => res.json()).then(res => {
-      console.log(res);
-      location.reload();
-    })
-    .catch(error => {
-      console.error('Error saving review:', error);
-      showErrorMessage('Failed to save review. Please try again.', document.querySelector('.current-tv-container'));
-    });
-  } else {
-    requestBody.movieId = tvId;
-    
-    fetch(API_LINKS.REVIEWS + "new", {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    }).then(res => res.json()).then(res => {
-      console.log(res);
-      location.reload();
-    })
-    .catch(error => {
-      console.error('Error saving review:', error);
-      showErrorMessage('Failed to save review. Please try again.', document.querySelector('.current-tv-container'));
-    });
-  }
-}
-
 function deleteReview(reviewId) {
   fetch(API_LINKS.REVIEWS + reviewId, {
     method: 'DELETE'
@@ -714,28 +615,6 @@ async function fetchEpisodesAsync(seasonNumber) {
     console.error('Error fetching episodes:', err);
     return [];
   }
-}
-
-function fetchEpisodesForSeason(seasonNumber) {
-    if (episodesData[seasonNumber]) {
-        populateEpisodeDropdown(seasonNumber);
-        return;
-    }
-    
-    fetch(API_LINKS.TV_EPISODES + seasonNumber)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            return res.json();
-        })
-        .then(function(data) {
-            episodesData[seasonNumber] = data.episodes || [];
-            populateEpisodeDropdown(seasonNumber);
-        })
-        .catch(error => {
-            console.error('Error fetching episodes:', error);
-        });
 }
 
 let allReviewsData = [];
@@ -809,7 +688,7 @@ function displayFilteredReviews(reviewsData, append = false) {
       <div class="review-item">
         <div class="review-column">
           <div class="review-card" id="${reviewData._id}">
-            <p class="user-review">${reviewData.user}</p>
+            <p class="user-review">${escapedUser}</p>
             ${seasonEpisodeDisplay}
             <div class="rating-display">
                 <div class="rating-left">
@@ -820,7 +699,7 @@ function displayFilteredReviews(reviewsData, append = false) {
                     ${formatTimestamp(reviewData.createdAt)}
                 </div>
             </div>
-            <p class="review-review">${reviewData.review}</p>                
+            <p class="review-review">${escapedReview}</p>
             <div class="review-actions">
                 <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
                 <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>

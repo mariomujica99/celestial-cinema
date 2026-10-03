@@ -5,8 +5,16 @@
 
     <script>
       (function () {
-        var t = localStorage.getItem('ccMediaToggle') || 'movie';
-        document.documentElement.classList.add('media-toggle-' + t);
+        var params = new URLSearchParams(location.search);
+        if (params.has('search') || params.has('genre')) {
+          location.replace('browse.html' + location.search);
+          return;
+        }
+        var legacyFilter = params.get('filter');
+        if (legacyFilter) {
+          var isShows = legacyFilter === 'shows';
+          location.replace('browse.html?list=' + (isShows ? 'trending' : legacyFilter) + '&type=' + (isShows ? 'tv' : 'movie'));
+        }
       })();
     </script>
 
@@ -31,15 +39,23 @@
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/topnav.css">
     <link rel="stylesheet" href="styles/media-grid.css">
-    <link rel="stylesheet" href="styles/filters.css">
     <link rel="stylesheet" href="styles/status-messages.css">
     <link rel="stylesheet" href="styles/modal.css">
     <link rel="stylesheet" href="styles/side-menu.css">
     <link rel="stylesheet" href="styles/search-dropdown.css">
+    <link rel="stylesheet" href="styles/skeleton.css">
+    <link rel="stylesheet" href="styles/home-hero.css">
+    <link rel="stylesheet" href="styles/videos.css">
+    <link rel="stylesheet" href="styles/home-rails.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="index.html">Celestial Cinema</a>
+
+      <div class="topnav-links">
+        <a class="topnav-link" href="all reviews/allReviews.html">Reviews</a>
+        <a class="topnav-link" href="watchlist/watchlist.html">Watchlist</a>
+      </div>
 
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
@@ -48,47 +64,135 @@
       </div>
     </nav>
 
-    <div class="filters-container">
-      <nav class="filters" id="filters-nav">
-        <div class="media-toggle" id="media-toggle">
-          <button class="toggle-option" id="toggle-movies">Movies</button>
-          <button class="toggle-option" id="toggle-tv">Shows</button>
+    <section class="home-hero" id="home-hero" aria-label="Featured trailers">
+      <div class="hero-layout">
+        <div class="hero-main">
+          <div class="hero-skeleton" id="hero-skeleton">
+            <div class="skeleton-block hero-skeleton-stage"></div>
+          </div>
+
+          <div class="hero-track" id="hero-track" hidden></div>
+
+          <div class="hero-nav-layer" id="hero-nav-layer" hidden>
+            <button class="hero-nav" id="hero-prev-btn" type="button" aria-label="Previous trailer">‹</button>
+            <button class="hero-nav" id="hero-next-btn" type="button" aria-label="Next trailer">›</button>
+          </div>
         </div>
-        <button class="trending-today-button">Trending</button>
-        <button class="popular-button">Popular</button>
-        <button class="now-playing-button">Now Playing</button>
-        <button class="top-rated-button">Top Rated</button>
-        <button class="reviews-button secondary-nav-btn special-btn">Reviews</button>
-        <button class="watchlist-button secondary-nav-btn special-btn">Watchlist</button>
-      </nav>
-      <div class="action-row" id="action-row">
-        <button class="reviews-action-button action-row-btn">Reviews</button>
-        <button class="watchlist-action-button action-row-btn">Watchlist</button>
+
+        <aside class="hero-up-next" id="hero-up-next" aria-label="Up next" hidden>
+          <p class="hero-up-next-title">Up next</p>
+          <div class="hero-up-next-list" id="hero-up-next-list"></div>
+        </aside>
       </div>
-      <div class="category-tabs" id="category-tabs" style="display: none;">
-        <button class="category-tab" id="tab-movies" data-category="movies">
-          Movies <span class="tab-badge" id="count-movies">0</span>
-        </button>
-        <button class="category-tab" id="tab-tvshows" data-category="tvshows">
-          Shows <span class="tab-badge" id="count-tvshows">0</span>
-        </button>
-        <button class="category-tab" id="tab-people" data-category="people">
-          People <span class="tab-badge" id="count-people">0</span>
-        </button>
-      </div>
+    </section>
+
+    <div class="home-action-row">
+      <a class="home-action-btn" href="all reviews/allReviews.html">Reviews</a>
+      <a class="home-action-btn" href="watchlist/watchlist.html">Watchlist</a>
     </div>
 
-    <p id="genre-page-title" class="genre-page-title" style="display: none;"></p>
+    <main class="home-rails">
+      <section class="home-rail" id="rail-theaters">
+        <header class="home-rail-header">
+          <a class="home-rail-title-link" href="browse.html?list=now-playing&amp;type=movie">
+            <h2 class="home-rail-title">In theaters</h2>
+            <span class="home-rail-chevron" aria-hidden="true"></span>
+          </a>
+          <p class="home-rail-subtitle">Now playing in the US</p>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
 
-    <section id="media-grid"></section>
+      <section class="home-rail" id="rail-upcoming">
+        <header class="home-rail-header home-rail-header--with-controls">
+          <div class="home-rail-heading">
+            <a class="home-rail-title-link" href="browse.html?list=upcoming&amp;type=movie">
+              <h2 class="home-rail-title">Coming soon</h2>
+              <span class="home-rail-chevron" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
 
-    <div class="load-more-container" id="load-more-container" style="display: none;">
-      <button class="load-more-btn" id="load-more-btn">Load More</button>
-    </div>
+      <section class="home-rail" id="rail-trending-shows">
+        <header class="home-rail-header">
+          <a class="home-rail-title-link" href="browse.html?list=trending&amp;type=tv">
+            <h2 class="home-rail-title">Trending shows</h2>
+            <span class="home-rail-chevron" aria-hidden="true"></span>
+          </a>
+          <p class="home-rail-subtitle">Most watched this week</p>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
+
+      <section class="home-rail" id="rail-streaming">
+        <header class="home-rail-header home-rail-header--with-controls">
+          <div class="home-rail-heading">
+            <a class="home-rail-title-link" href="browse.html?provider=8&amp;type=movie&amp;name=Netflix">
+              <h2 class="home-rail-title">What's streaming</h2>
+              <span class="home-rail-chevron" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
+
+      <section class="home-rail" id="rail-interests">
+        <header class="home-rail-header home-rail-header--with-controls">
+          <div class="home-rail-heading">
+            <div class="home-rail-title-link">
+              <h2 class="home-rail-title">Browse Genres</h2>
+              <span class="home-rail-chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
+
+      <section class="home-rail" id="rail-top-rated">
+        <header class="home-rail-header home-rail-header--with-controls">
+          <div class="home-rail-heading">
+            <a class="home-rail-title-link" href="browse.html?list=top-rated&amp;type=movie">
+              <h2 class="home-rail-title">Top rated</h2>
+              <span class="home-rail-chevron" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
+      
+      <section class="home-rail" id="rail-box-office">
+        <header class="home-rail-header">
+          <a class="home-rail-title-link" href="browse.html?list=box-office&amp;type=movie">
+            <h2 class="home-rail-title">Top box office</h2>
+            <span class="home-rail-chevron" aria-hidden="true"></span>
+          </a>
+          <p class="home-rail-subtitle">Worldwide gross, last 90 days</p>
+        </header>
+        <div class="box-office-layout"></div>
+      </section>
+
+      <section class="home-rail" id="rail-popular-people">
+        <header class="home-rail-header">
+          <a class="home-rail-title-link" href="people/popularPeople.html">
+            <h2 class="home-rail-title">Popular people</h2>
+            <span class="home-rail-chevron" aria-hidden="true"></span>
+          </a>
+          <p class="home-rail-subtitle">Trending in film and TV</p>
+        </header>
+        <div class="home-rail-track"></div>
+      </section>
+    </main>
+
+
     
     <script src="general/sideMenu.js"></script>
     <script src="general/utils.js"></script>
     <script src="general/search.js"></script>
-    <script src="index.js"></script>
+    <script src="general/videos.js"></script>
+    <script src="general/watchlistButton.js"></script>
+    <script src="general/skeleton.js"></script>
+    <script type="module" src="index.js"></script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 const YOUTUBE_THUMB_BASE = 'https://img.youtube.com/vi';
 const YOUTUBE_WATCH_BASE = 'https://www.youtube.com/watch?v=';
 const PRIMARY_VIDEO_KEYWORDS = ['official', 'final', 'main', 'theatrical', 'teaser'];
+const VIDEO_PLAYER_PAGE = `${(document.currentScript?.getAttribute('src') || '').startsWith('../') ? '../' : ''}media videos/mediaVideoPlayer.html`;
 
 function getPrimaryVideo(videos) {
   if (!videos || videos.length === 0) return null;
@@ -35,7 +36,6 @@ async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
     const data = await res.json();
     const allTrailers = data.results || [];
 
-// REPLACE inside loadVideoStrip, from the empty-check down to the container loop
     if (allTrailers.length === 0) return;
 
     const container = document.getElementById('videos-container');
@@ -46,7 +46,8 @@ async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
     const primaryVideo = getPrimaryVideo(allTrailers);
     const orderedTrailers = [primaryVideo, ...allTrailers.filter(video => video !== primaryVideo)];
 
-    orderedTrailers.forEach(video => container.appendChild(createVideoStripCard(video)));
+    const playerContext = { mediaId, mediaType };
+    orderedTrailers.forEach(video => container.appendChild(createVideoStripCard(video, playerContext)));
 
     const viewAllBtn = document.querySelector('.view-all-btn');
     if (viewAllBtn && allTrailers.length > 1) {
@@ -66,129 +67,112 @@ async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
   }
 }
 
-/**
- * Creates a thumbnail card for the horizontal strip.
- * @param {object} video - TMDB video object
- * @returns {HTMLElement}
- */
-function createVideoStripCard(video) {
-  const card = document.createElement('div');
-  card.className = 'video-strip-card';
-
-  const thumbUrl = `${YOUTUBE_THUMB_BASE}/${video.key}/mqdefault.jpg`;
-
-  card.innerHTML = `
-    <div class="video-strip-link">
-      <div class="video-thumb-wrap">
-        <img class="video-thumb"
-             src="${thumbUrl}"
-             alt="${escapeHtml(video.name)}"
-             onerror="this.parentElement.style.background='linear-gradient(135deg,#2d3748,#1a2332)'">
-        <div class="video-play-overlay"></div>
-      </div>
-      <p class="video-strip-title">${escapeHtml(video.name)}</p>
-    </div>
-  `;
-
-  card.querySelector('.video-strip-link').addEventListener('click', () => {
-    openVideoModal(video.key, video.name);
-  });
-
-  return card;
+function getVideoThumbUrl(videoKey) {
+  return `${YOUTUBE_THUMB_BASE}/${encodeURIComponent(videoKey)}/hqdefault.jpg`;
 }
 
 /**
- * Creates a video card for the full-page 2-column grid.
- * @param {object} video - TMDB video object
+ * Builds the URL of the video player page.
+ *
+ * @param {object} options
+ * @param {string} options.mediaId
+ * @param {string} options.mediaType - 'movie' | 'tv'
+ * @param {string} [options.videoKey] - YouTube key; the player picks the primary trailer when omitted
+ * @param {string} [options.source] - 'media' (up next = this media's videos) | 'hero' (up next = hero trailers)
+ * @returns {string}
+ */
+function buildVideoPlayerUrl({ mediaId, mediaType, videoKey, source = 'media' }) {
+  const playerParams = new URLSearchParams({ id: mediaId, type: mediaType, from: source });
+  if (videoKey) playerParams.set('key', videoKey);
+  return `${VIDEO_PLAYER_PAGE}?${playerParams.toString()}`;
+}
+
+function createVideoThumb(thumbUrl, title) {
+  const thumbWrap = document.createElement('div');
+  thumbWrap.className = 'video-thumb-wrap';
+
+  const thumbImage = document.createElement('img');
+  thumbImage.className = 'video-thumb';
+  thumbImage.src = thumbUrl;
+  thumbImage.alt = title;
+  thumbImage.addEventListener('error', () => {
+    thumbWrap.style.background = 'linear-gradient(135deg, #2d3748, #1a2332)';
+  }, { once: true });
+
+  const playOverlay = document.createElement('div');
+  playOverlay.className = 'video-play-overlay';
+
+  thumbWrap.append(thumbImage, playOverlay);
+  return thumbWrap;
+}
+
+/**
+ * Creates a thumbnail card for the horizontal strip (detail pages, player up next).
+ * @param {object} options
+ * @param {string} options.title
+ * @param {string} options.thumbUrl
+ * @param {string} options.playerUrl - Where the card links to
  * @returns {HTMLElement}
  */
-function createVideoGridCard(video) {
-  const card = document.createElement('div');
-  card.className = 'video-grid-card';
+function buildVideoStripCard({ title, thumbUrl, playerUrl }) {
+  const stripLink = document.createElement('a');
+  stripLink.className = 'video-strip-link';
+  stripLink.href = playerUrl;
+  stripLink.append(createVideoThumb(thumbUrl, title), createTextElement('p', 'video-strip-title', title));
 
-  const thumbUrl = `${YOUTUBE_THUMB_BASE}/${video.key}/mqdefault.jpg`;
+  const stripCard = document.createElement('div');
+  stripCard.className = 'video-strip-card';
+  stripCard.appendChild(stripLink);
+  return stripCard;
+}
 
+/**
+ * Creates a strip card for one of a media item's videos.
+ * @param {object} video - TMDB video object
+ * @param {{ mediaId: string, mediaType: string }} playerContext
+ * @returns {HTMLElement}
+ */
+function createVideoStripCard(video, playerContext) {
+  return buildVideoStripCard({
+    title: video.name,
+    thumbUrl: getVideoThumbUrl(video.key),
+    playerUrl: buildVideoPlayerUrl({ ...playerContext, videoKey: video.key })
+  });
+}
+
+function createVideoGridInfo(video) {
   const publishedDate = video.published_at
     ? new Date(video.published_at).toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric'
       })
     : '';
 
-  card.innerHTML = `
-    <div class="video-grid-link">
-      <div class="video-thumb-wrap">
-        <img class="video-thumb"
-             src="${thumbUrl}"
-             alt="${escapeHtml(video.name)}"
-             onerror="this.parentElement.style.background='linear-gradient(135deg,#2d3748,#1a2332)'">
-        <div class="video-play-overlay"></div>
-      </div>
-      <div class="video-grid-info">
-        <p class="video-grid-title">${escapeHtml(video.name)}</p>
-        <p class="video-grid-meta">${escapeHtml(video.type)}${publishedDate ? ` • ${publishedDate}` : ''}</p>
-      </div>
-    </div>
-  `;
-
-  card.querySelector('.video-grid-link').addEventListener('click', () => {
-    openVideoModal(video.key, video.name);
-  });
-
-  return card;
+  const gridInfo = document.createElement('div');
+  gridInfo.className = 'video-grid-info';
+  gridInfo.append(
+    createTextElement('p', 'video-grid-title', video.name),
+    createTextElement('p', 'video-grid-meta', `${video.type}${publishedDate ? ` • ${publishedDate}` : ''}`)
+  );
+  return gridInfo;
 }
 
 /**
- * Opens a centered modal with an embedded YouTube player.
- * Clears the iframe src on close to stop playback.
- *
- * @param {string} videoKey   - YouTube video ID
- * @param {string} videoTitle - Display title shown in the modal header
+ * Creates a video card for the full-page 2-column grid.
+ * @param {object} video - TMDB video object
+ * @param {{ mediaId: string, mediaType: string }} playerContext
+ * @returns {HTMLElement}
  */
-function openVideoModal(videoKey, videoTitle) {
-  const existing = document.getElementById('video-modal-overlay');
-  if (existing) existing.remove();
+function createVideoGridCard(video, playerContext) {
+  const gridLink = document.createElement('a');
+  gridLink.className = 'video-grid-link';
+  gridLink.href = buildVideoPlayerUrl({ ...playerContext, videoKey: video.key });
+  gridLink.append(
+    createVideoThumb(getVideoThumbUrl(video.key), video.name),
+    createVideoGridInfo(video)
+  );
 
-  const overlay = document.createElement('div');
-  overlay.id = 'video-modal-overlay';
-  overlay.className = 'video-modal-overlay';
-
-  overlay.innerHTML = `
-    <div class="video-modal">
-      <div class="video-modal-header">
-        <p class="video-modal-title">${escapeHtml(videoTitle)}</p>
-        <button class="video-modal-close" aria-label="Close video">✕</button>
-      </div>
-      <div class="video-modal-body">
-        <iframe
-          class="video-modal-iframe"
-          src="https://www.youtube.com/embed/${videoKey}?autoplay=1"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-  document.body.style.overflow = 'hidden';
-
-  const closeModal = () => {
-    overlay.querySelector('iframe').src = '';
-    overlay.remove();
-    document.body.style.overflow = '';
-  };
-
-  overlay.querySelector('.video-modal-close').addEventListener('click', closeModal);
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
-
-  const handleEsc = (e) => {
-    if (e.key === 'Escape') {
-      closeModal();
-      document.removeEventListener('keydown', handleEsc);
-    }
-  };
-  document.addEventListener('keydown', handleEsc);
+  const gridCard = document.createElement('div');
+  gridCard.className = 'video-grid-card';
+  gridCard.appendChild(gridLink);
+  return gridCard;
 }

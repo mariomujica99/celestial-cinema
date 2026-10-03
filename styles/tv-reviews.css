@@ -31,67 +31,6 @@
   background: rgba(25, 38, 59, 1);
 }
 
-.review-card:has(.episodes-line) .new-review {
-  margin-bottom: 0px;
-}
-
-.episodes-line {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  margin-bottom: 6px;
-  width: 100%;
-  max-width: 100%;
-}
-
-.season-line,
-.episode-line {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
-.season-text,
-.episode-text {
-  color: rgb(225, 225, 225);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.season-select,
-.episode-select {
-  text-transform: uppercase;
-  padding: 10px 14px;
-  border: 1px solid rgba(106, 90, 205, 0.3);
-  border-radius: 8px;
-  background: rgba(25, 38, 59, 0.8);
-  color: rgb(225, 225, 225);
-  font-size: 0.8rem;
-  cursor: pointer;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.season-select:focus,
-.episode-select:focus {
-  outline: none;
-  border-color: #6A5ACD;
-  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
-  background: rgba(25, 38, 59, 1);
-}
-
-.season-select:disabled,
-.episode-select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: rgba(25, 38, 59, 0.5);
-}
-
 .season-episode-info {
   color: #6A5ACD;
   font-size: 0.85rem;
@@ -114,12 +53,6 @@
     padding: 8px 12px;
     font-size: 0.7rem;
     min-width: 128px;
-  }
-
-  .season-select,
-  .episode-select {
-    padding: 8px 12px;
-    font-size: 0.7rem;
   }
 }
 

@@ -136,3 +136,27 @@
     height: 143px;
   }
 }
+
+/* Home rails: size follows the rail variables in home-rails.css */
+.skeleton-card--rail {
+  flex: 0 0 var(--rail-card-width);
+  width: var(--rail-card-width);
+}
+
+.skeleton-card--rail .skeleton-poster {
+  aspect-ratio: 2 / 3;
+}
+
+.skeleton-card--backdrop {
+  flex: 0 0 var(--rail-backdrop-width);
+  width: var(--rail-backdrop-width);
+  padding: 0 0 10px 0;
+}
+
+.skeleton-card--backdrop .skeleton-poster {
+  aspect-ratio: 16 / 9;
+}
+
+.skeleton-card--backdrop .skeleton-score {
+  display: none;
+}

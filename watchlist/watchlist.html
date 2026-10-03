@@ -2,14 +2,6 @@
 <html lang="en">
   <head>
     <title>Celestial Cinema</title>
-
-    <script>
-      (function () {
-        var t = localStorage.getItem('ccMediaToggle') || 'movie';
-        document.documentElement.classList.add('media-toggle-' + t);
-      })();
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#7345cc">
@@ -30,8 +22,6 @@
 
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
-    <link rel="stylesheet" href="../styles/filters.css">
-    <link rel="stylesheet" href="../styles/status-messages.css">
     <link rel="stylesheet" href="../styles/watchlist.css">
     <link rel="stylesheet" href="../styles/modal.css">
     <link rel="stylesheet" href="../styles/side-menu.css">
@@ -47,25 +37,6 @@
         </form>
       </div>
     </nav>
-
-    <div class="filters-container">
-      <nav class="filters" id="filters-nav">
-        <div class="media-toggle" id="media-toggle">
-          <button class="toggle-option" id="toggle-movies">Movies</button>
-          <button class="toggle-option" id="toggle-tv">Shows</button>
-        </div>
-        <button class="trending-today-button">Trending</button>
-        <button class="popular-button">Popular</button>
-        <button class="now-playing-button">Now Playing</button>
-        <button class="top-rated-button">Top Rated</button>
-        <button class="reviews-button secondary-nav-btn special-btn">Reviews</button>
-        <button class="watchlist-button secondary-nav-btn special-btn">Watchlist</button>
-      </nav>
-      <div class="action-row" id="action-row">
-        <button class="reviews-action-button action-row-btn">Reviews</button>
-        <button class="watchlist-action-button action-row-btn">Watchlist</button>
-      </div>
-    </div>
 
     <p class="watchlist-page-title">Watchlist <span id="watchlist-count"></span></p>
     <p class="watchlist-page-sub-title">Movies and Shows Saved to Watch Later</p>

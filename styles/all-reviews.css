@@ -136,6 +136,7 @@
   width: 50px;
   height: 75px;
   border-radius: 8px;
+  color: transparent;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
 }

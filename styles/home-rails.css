@@ -1,0 +1,772 @@
+/* ── Section ── */
+.home-rails {
+  --rail-card-width: 160px;
+  --rail-backdrop-width: 240px;
+  --rail-tile-width: 180px;
+  --rail-header-height: 28px;
+  --rail-chevron-size: 7px;
+}
+
+.home-rail {
+  margin: 0 12px 28px 12px;
+}
+
+.home-rail-header {
+  margin: 0 0 10px 0;
+}
+
+.home-rail-title-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--rail-header-height);
+  padding-left: 10px;
+  border-left: 4px solid #6A5ACD;
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-rail-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.home-rail-chevron {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--rail-chevron-size) * 1.6);
+  height: calc(var(--rail-chevron-size) * 1.6);
+  transition: transform 0.2s ease;
+}
+
+.home-rail-chevron::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--rail-chevron-size);
+  height: var(--rail-chevron-size);
+  border-top: 2px solid #9d8ff0;
+  border-right: 2px solid #9d8ff0;
+  transform: translate(-70%, -50%) rotate(45deg);
+}
+
+@media (hover: hover) {
+  .home-rail-title-link:hover .home-rail-chevron {
+    transform: translateX(3px);
+  }
+}
+
+.home-rail-subtitle {
+  margin: 0 0 0 14px;
+  font-size: 0.8rem;
+  color: #CBD5E0;
+  text-transform: none;
+}
+
+.home-rail-header--with-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.home-rail-heading {
+  min-width: 0;
+}
+
+.home-rail-track .no-media {
+  flex: 1;
+  margin: 0;
+}
+
+.home-rail-track {
+  display: flex;
+  gap: 12px;
+  padding-top: 5px;
+  margin-top: -5px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.home-rail-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Poster card ── */
+
+.rail-card {
+  flex: 0 0 var(--rail-card-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 5px 10px 5px;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .rail-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.rail-card-poster-wrap {
+  position: relative;
+}
+
+.rail-card-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--card-poster-radius) var(--card-poster-radius) 0 0;
+  color: transparent;
+}
+
+.rail-card-poster-wrap .watchlist-card-btn {
+  width: 36px;
+  height: 56px;
+  border-radius: var(--card-poster-radius) 0 8px 0;
+}
+
+.rail-card-poster-wrap .watchlist-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.rail-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.rail-card-body .user-score-grid {
+  align-self: flex-start;
+  padding: 2px 10px 2px 12px;
+  font-size: 0.8rem;
+}
+
+.rail-card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2.4em;
+  margin: 6px 0 4px 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: white;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.rail-card-trailer {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px 0 8px 0;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #2f3445, #252a38);
+  color: rgb(245, 245, 245);
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.rail-card-trailer::before {
+  content: '';
+  border-style: solid;
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent currentColor;
+}
+
+@media (hover: hover) {
+  .rail-card-trailer:hover {
+    background: linear-gradient(135deg, #3a3f55, #2e3447);
+  }
+}
+
+/* ── Backdrop card (Coming soon) ── */
+
+.rail-card.rail-card--backdrop {
+  flex-basis: var(--rail-backdrop-width);
+  padding: 0 0 10px 0;
+  margin-right: 10px;
+}
+
+.rail-card--backdrop .rail-card-title {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  min-height: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.rail-card-date {
+  margin: 8px 0 2px 0;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #CBD5E0;
+  text-transform: uppercase;
+}
+
+/* ── Person card (Popular people) ── */
+
+.rail-person {
+  flex: 0 0 var(--rail-card-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 5px 10px 5px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .rail-person:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.rail-person-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  margin-bottom: 0;
+  border-radius: var(--card-poster-radius) var(--card-poster-radius) 0 0;
+  object-fit: cover;
+  object-position: top center;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  color: transparent;
+}
+
+.rail-person-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2.4em;
+  margin: 4px 0 4px 0;
+  font-size: 0.8rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: white;
+  text-align: left;
+  text-transform: none;
+}
+
+.rail-person-known-for-label {
+  margin: 0 0 2px 0;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: #9d8ff0;
+  text-transform: uppercase;
+}
+
+.rail-person-known-for-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: #CBD5E0;
+  text-transform: none;
+}
+
+/* ── Movies / Shows toggle ── */
+
+.rail-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: var(--rail-header-height);
+  margin-left: auto;
+  overflow: hidden;
+  border: 1px solid rgba(106, 90, 205, 0.35);
+  border-radius: 5px;
+  background: #656565;
+}
+
+.rail-toggle-option {
+  padding: 0 7px 0 7px;
+  border: none;
+  background: transparent;
+  color: rgb(225, 225, 225);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.rail-toggle-option.is-active {
+  background: #13172099;
+}
+
+@media (hover: hover) {
+  .rail-toggle-option:not(.is-active):hover {
+    background: #57575799;
+  }
+}
+
+/* ── Provider tabs ── */
+
+.rail-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 14px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(106, 90, 205, 0.2);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rail-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.rail-tab {
+  flex-shrink: 0;
+  margin-bottom: -1px;
+  padding: 8px 12px 8px 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: #CBD5E0;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rail-tab.is-active {
+  border-bottom-color: #6A5ACD;
+  color: white;
+}
+
+@media (hover: hover) {
+  .rail-tab:not(.is-active):hover {
+    color: white;
+  }
+}
+
+/* ── Interest tile ── */
+
+.interest-tile {
+  flex: 0 0 var(--rail-tile-width);
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(106, 90, 205, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(45, 27, 61, 0.3), rgba(25, 38, 59, 0.3));
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .interest-tile:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.interest-tile-image-wrap {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+}
+
+.interest-tile-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.interest-tile-image.is-loaded {
+  opacity: 1;
+}
+
+.interest-tile-label {
+  margin: 0;
+  padding: 8px 10px 8px 10px;
+  font-size: 0.75rem;
+  color: white;
+  text-transform: none;
+}
+
+/* ── Top box office ── */
+
+.box-office-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.box-office-skeleton {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+}
+
+.box-office-featured {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(106, 90, 205, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(45, 27, 61, 0.3), rgba(25, 38, 59, 0.3));
+}
+
+.box-office-featured-top {
+  display: flex;
+  gap: 12px;
+}
+
+.box-office-poster-wrap {
+  position: relative;
+  flex: 0 0 100px;
+}
+
+.box-office-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
+  color: transparent;
+}
+
+.box-office-poster-wrap .watchlist-card-btn {
+  width: 24px;
+  height: 36px;
+  border-radius: 8px 0 6px 0;
+}
+
+.box-office-poster-wrap .watchlist-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.box-office-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.box-office-title {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: white;
+  text-decoration: none;
+}
+
+.box-office-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.box-office-meta span {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  color: #CBD5E0;
+  text-transform: uppercase;
+}
+
+.box-office-meta span + span::before {
+  content: '|';
+  margin-right: 8px;
+  color: rgba(106, 90, 205, 0.6);
+}
+
+.box-office-money {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #CBD5E0;
+  text-transform: none;
+}
+
+.box-office-gross {
+  color: white;
+}
+
+.box-office-info .rail-card-trailer {
+  align-self: flex-start;
+  padding: 6px 14px 6px 14px;
+}
+
+.box-office-overview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  margin: 0;
+  font-family: "Montserrat";
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #e7e6e6;
+  text-transform: none;
+}
+
+.box-office-list {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.box-office-row {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #CBD5E0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.box-office-row.is-active {
+  color: white;
+}
+
+.box-office-row-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  text-transform: none;
+}
+
+.box-office-row-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.box-office-row.is-active .box-office-row-title::before {
+  content: '▸ ';
+}
+
+.box-office-bar {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.box-office-bar-fill {
+  display: block;
+  width: var(--bar-width);
+  height: 100%;
+  border-radius: 3px;
+  background: #656565;
+}
+
+.box-office-row.is-active .box-office-bar-fill {
+  background: white;
+}
+
+@media (hover: hover) {
+  .box-office-row:not(.is-active):hover {
+    color: white;
+  }
+}
+
+/* ── Responsive (mobile-first) ── */
+
+@media (min-width: 451px) {
+  .home-rails {
+    --rail-card-width: 170px;
+    --rail-backdrop-width: 260px;
+    --rail-tile-width: 220px;
+    --rail-header-height: 32px;
+    --rail-chevron-size: 8px;
+  }
+
+  .home-rail-header {
+    margin-bottom: 14px;
+  }
+
+  .home-rail {
+    margin: 0 22px 32px 22px;
+  }
+
+  .home-rail-title {
+    font-size: 1.05rem;
+  }
+
+  .home-rail-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .rail-card-title,
+  .rail-person-name {
+    font-size: 0.85rem;
+  }
+
+  .rail-card-body .user-score-grid {
+    font-size: 0.8rem;
+  }
+
+  .rail-person-known-for-title {
+    font-size: 0.75rem;
+  }
+
+  .rail-tab {
+    font-size: 0.8rem;
+  }
+
+  .rail-toggle-option {
+    padding: 0 14px 0 14px;
+    font-size: 0.72rem;
+  }
+
+  .box-office-featured {
+    padding: 16px;
+  }
+
+  .box-office-poster-wrap {
+    flex-basis: 120px;
+  }
+}
+
+@media (min-width: 651px) {
+  .home-rails {
+    --rail-backdrop-width: 300px;
+    --rail-tile-width: 260px;
+    --rail-header-height: 38px;
+    --rail-chevron-size: 10px;
+  }
+
+  .home-rail-chevron::before {
+    border-width: 3px;
+  }
+
+  .rail-toggle-option {
+    font-size: 0.8rem;
+  }
+
+  .home-rail-title {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+
+  .home-rail-track {
+    gap: 10px;
+  }
+
+  .rail-card-title,
+  .rail-person-name {
+    font-size: 0.95rem;
+  }
+
+  .rail-card-body .user-score-grid {
+    font-size: 0.85rem;
+  }
+
+  .rail-card-trailer,
+  .rail-person-known-for-title {
+    font-size: 0.8rem;
+  }
+
+  .rail-person-known-for-label {
+    font-size: 0.65rem;
+  }
+
+  .rail-card-poster-wrap .watchlist-card-btn {
+    width: 38px;
+    height: 58px;
+  }
+
+  .rail-card-poster-wrap .watchlist-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .interest-tile-label {
+    font-size: 0.85rem;
+  }
+
+  .box-office-poster-wrap {
+    flex-basis: 140px;
+  }
+
+  .box-office-title {
+    font-size: 1.3rem;
+  }
+
+  .box-office-meta span {
+    font-size: 0.8rem;
+  }
+
+  .box-office-money,
+  .box-office-overview,
+  .box-office-row-head {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 841px) {
+  .home-rails {
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .box-office-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 25px;
+  }
+
+  .box-office-featured {
+    flex: 0 0 min(46%, 520px);
+  }
+
+  .box-office-list {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1112px) {
+  .home-rails {
+    --rail-card-width: 190px;
+    --rail-backdrop-width: 340px;
+    --rail-tile-width: 300px;
+  }
+}

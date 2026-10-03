@@ -3,7 +3,7 @@
  *
  * @param {HTMLElement} container - The flex container to inject into
  * @param {number}      count     - Number of skeleton cards to show
- * @param {string}      variant   - CSS variant suffix: 'similar' | 'cast' | 'season' | 'known-for'
+ * @param {string}      variant   - CSS variant suffix: 'similar' | 'cast' | 'season' | 'known-for' | 'rail' | 'backdrop'
  */
 function showSkeletonCards(container, count = 10, variant = 'similar') {
   if (!container) return;

@@ -64,8 +64,9 @@ async function loadAllVideos() {
     }
 
     videosGrid.innerHTML = '';
-    trailers.forEach(video => videosGrid.appendChild(createVideoGridCard(video)));
-
+    const playerContext = { mediaId, mediaType };
+    trailers.forEach(video => videosGrid.appendChild(createVideoGridCard(video, playerContext)));
+    
   } catch (error) {
     console.error('Error fetching videos:', error);
     videosGrid.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';

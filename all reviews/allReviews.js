@@ -19,19 +19,7 @@ const searchFiltersToggleBtn = document.getElementById("search-filters-toggle");
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 const reviewCountSpan = document.getElementById("review-count");
-
-const trendingTodayButton = document.querySelector(".trending-today-button");
-const popularButton = document.querySelector(".popular-button");
-const nowPlayingButton = document.querySelector(".now-playing-button");
-const topRatedButton = document.querySelector(".top-rated-button");
-const reviewsButton = document.querySelector(".reviews-button");
-const watchlistButton = document.querySelector(".watchlist-button");
-const reviewsActionButton = document.querySelector(".reviews-action-button");
-const watchlistActionButton = document.querySelector(".watchlist-action-button");
 const sortFilterInput = document.getElementById("sort-filter");
-const filtersNav = document.getElementById('filters-nav');
-const moviesToggleBtn = document.getElementById('toggle-movies');
-const tvToggleBtn = document.getElementById('toggle-tv');
 
 let currentPage = 1;
 let hasMoreReviews = true;
@@ -99,89 +87,6 @@ loadMoreBtn.addEventListener("click", () => {
     loadMoreReviews();
   }
 });
-
-function setActiveButton(activeButton) {
-  document.querySelectorAll('.filters button:not(.toggle-option), .action-row button').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  activeButton.classList.add('active');
-}
-
-function updateToggleUI() {
-  const currentToggle = localStorage.getItem('ccMediaToggle') || 'movie';
-  moviesToggleBtn.classList.toggle('active', currentToggle === 'movie');
-  tvToggleBtn.classList.toggle('active', currentToggle === 'tv');
-  document.documentElement.classList.toggle('media-toggle-movie', currentToggle === 'movie');
-  document.documentElement.classList.toggle('media-toggle-tv', currentToggle === 'tv');
-}
-
-updateToggleUI();
-
-moviesToggleBtn.addEventListener('click', () => {
-  localStorage.setItem('ccMediaToggle', 'movie');
-  window.location.href = '../index.html?filter=trending';
-});
-
-tvToggleBtn.addEventListener('click', () => {
-  localStorage.setItem('ccMediaToggle', 'tv');
-  window.location.href = '../index.html?filter=shows';
-});
-
-setActiveButton(reviewsButton);
-reviewsActionButton.classList.add('active');
-
-trendingTodayButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=trending";
-});
-
-popularButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=popular";
-});
-
-nowPlayingButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=now-playing";
-});
-
-topRatedButton.addEventListener("click", () => {
-    storeScrollPosition();
-    window.location.href = "../index.html?filter=top-rated";
-});
-
-reviewsButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    setActiveButton(reviewsButton);
-    reviewsActionButton.classList.add('active');
-    requestAnimationFrame(() => {
-        location.reload();
-    });
-});
-
-watchlistButton.addEventListener("click", () => {
-  storeScrollPosition();
-  window.location.href = "../watchlist/watchlist.html";
-});
-
-reviewsActionButton.addEventListener("click", () => {
-  storeScrollPosition();
-  requestAnimationFrame(() => {
-    location.reload();
-  });
-});
-
-watchlistActionButton.addEventListener("click", () => {
-  storeScrollPosition();
-  window.location.href = "../watchlist/watchlist.html";
-});
-
-function storeScrollPosition() {
-  const filtersNav = document.getElementById('filters-nav');
-  if (filtersNav) {
-    sessionStorage.setItem('filtersScrollPosition', filtersNav.scrollLeft);
-  }
-}
 
 loadInitialReviews();
 
@@ -466,11 +371,11 @@ async function displayReviews(reviews, append = false) {
       <div class="review-column">
         <div class="review-card" id="${reviewData._id}">
           <div class="review-header">
-            <p class="user-review">${reviewData.user}</p>
+            <p class="user-review">${escapedUser}</p>
             <div class="media-info" onclick="navigateToMediaDetails('${mediaId}', '${actualMediaType}')">
-              <img class="media-thumbnail-small" src="${mediaInfo.posterUrl}" alt="${mediaInfo.title}" onerror="this.src='images/no-image.jpg'">
+              <img class="media-thumbnail-small" src="${mediaInfo.posterUrl}" alt="" onerror="this.src='../images/no-image.jpg'">
               <div class="media-details">
-                <p class="media-title-small">${mediaInfo.title}</p>
+                <p class="media-title-small">${escapeHtml(mediaInfo.title)}</p>
                 <p class="media-year">${mediaInfo.year}</p>
               </div>
             </div>
@@ -485,7 +390,7 @@ async function displayReviews(reviews, append = false) {
               ${formatTimestamp(reviewData.createdAt)}
             </div>
           </div>
-          <p class="review-review">${reviewData.review}</p>
+          <p class="review-review">${escapedReview}</p>
           <div class="review-actions">
             <button type="button" onclick="editReview('${reviewData._id}')">Edit</button> 
             <button type="button" onclick="deleteReview('${reviewData._id}')">Delete</button>
@@ -569,7 +474,7 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
           : '',
         posterUrl: data.poster_path 
           ? `${API_LINKS.IMG_PATH}${data.poster_path}`
-          : 'images/no-image.jpg',
+          : '../images/no-image.jpg',
         mediaType: detectedMediaType,
         backdropPath: data.backdrop_path || null
       };
@@ -583,7 +488,7 @@ async function getMediaInfo(mediaId, mediaType = 'movie') {
     const fallbackInfo = {
       title: '',
       year: '',
-      posterUrl: 'images/no-image.jpg',
+      posterUrl: '../images/no-image.jpg',
       mediaType: mediaType,
       backdropPath: null
     };
@@ -709,17 +614,4 @@ function deleteReview(reviewId) {
     console.error('Error deleting review:', error);
     showErrorMessage('Failed to delete review. Please try again.');
   });
-}
-
-function restoreScrollPosition() {
-  const savedPosition = sessionStorage.getItem('filtersScrollPosition');
-  if (savedPosition !== null) {
-    const filtersNav = document.getElementById('filters-nav');
-    if (filtersNav) {
-      requestAnimationFrame(() => {
-        filtersNav.scrollLeft = parseInt(savedPosition);
-        sessionStorage.removeItem('filtersScrollPosition');
-      });
-    }
-  }
 }

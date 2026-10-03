@@ -24,14 +24,17 @@
     <link rel="stylesheet" href="../styles/general.css">
     <link rel="stylesheet" href="../styles/topnav.css">
     <link rel="stylesheet" href="../styles/media-grid.css">
-    <link rel="stylesheet" href="../styles/filters.css">
+    <link rel="stylesheet" href="../styles/videos.css">
+    <link rel="stylesheet" href="../styles/video-player.css">
     <link rel="stylesheet" href="../styles/status-messages.css">
+    <link rel="stylesheet" href="../styles/modal.css">
     <link rel="stylesheet" href="../styles/side-menu.css">
     <link rel="stylesheet" href="../styles/search-dropdown.css">
   </head>
   <body>
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
+
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
           <input class="search-input" type="search" id="search-query" name="q" placeholder="Search movies | shows | people" autocomplete="off">
@@ -39,17 +42,42 @@
       </div>
     </nav>
 
-    <p class="genre-page-title">Popular People</p>
+    <main class="video-player-page">
+      <div class="video-player-header">
+        <button class="video-player-close" id="video-player-close">✕ Close</button>
+      </div>
 
-    <section id="media-grid"></section>
+      <div class="video-player-layout">
+        <div class="video-player-stage">
+          <iframe
+            class="video-player-iframe"
+            id="video-player-iframe"
+            title="Video player"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen>
+          </iframe>
+          <div class="video-player-empty" id="video-player-empty" hidden>
+            <p class="video-player-empty-text" id="video-player-empty-text"></p>
+            <button class="video-player-empty-btn" id="video-player-empty-btn">Back</button>
+          </div>
+        </div>
 
-    <div class="load-more-container" id="load-more-container" style="display: none;">
-      <button class="load-more-btn" id="load-more-btn">Load More</button>
-    </div>
+        <div class="video-player-info" id="video-player-info"></div>
+      </div>
 
+      <section class="videos-section" id="up-next-section" hidden>
+        <div class="videos-header">
+          <h2 class="videos-title">Up Next</h2>
+        </div>
+        <div class="videos-container" id="up-next-container"></div>
+      </section>
+    </main>
+
+    <script src="../general/sideMenu.js"></script>
     <script src="../general/utils.js"></script>
     <script src="../general/search.js"></script>
-    <script src="../general/sideMenu.js"></script>
-    <script type="module" src="popularPeople.js"></script>
+    <script src="../general/videos.js"></script>
+    <script src="../general/watchlistButton.js"></script>
+    <script src="mediaVideoPlayer.js"></script>
   </body>
 </html>

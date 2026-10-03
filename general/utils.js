@@ -31,6 +31,13 @@ function buildInfoLineHTML(parts) {
     return parts.filter(Boolean).map(p => `<span>${escapeHtml(String(p))}</span>`).join('');
 }
 
+function createTextElement(tagName, className, text) {
+  const textElement = document.createElement(tagName);
+  textElement.className = className;
+  textElement.textContent = text;
+  return textElement;
+}
+
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -43,19 +50,49 @@ function debounce(func, wait) {
     };
 }
 
-function generateRatingOptions(selectedRating) {
-    let options = '';
-    for (let i = 0; i <= 10; i++) {
-        const selected = i == selectedRating ? 'selected' : '';
-        options += `<option value="${i}" ${selected}>${i}</option>`;
-    }
-    return options;
-}
-
 function formatScore(voteAverage) {
   if (!voteAverage) return 'NR';
   return `${Math.round(voteAverage * 10)}%`;
 }
+
+function getMediaYear(mediaItem) {
+  const dateString = mediaItem.release_date || mediaItem.first_air_date || '';
+  return dateString ? new Date(dateString).getFullYear() : '';
+}
+
+async function fetchJsonOrThrow(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+  return response.json();
+}
+
+const MOVIE_GENRES = [
+  { name: 'Action',          id: 28    },
+  { name: 'Animation',       id: 16    },
+  { name: 'Comedy',          id: 35    },
+  { name: 'Crime',           id: 80    },
+  { name: 'Documentary',     id: 99    },
+  { name: 'Drama',           id: 18    },
+  { name: 'Family',          id: 10751 },
+  { name: 'Horror',          id: 27    },
+  { name: 'Mystery',         id: 9648  },
+  { name: 'Romance',         id: 10749 },
+  { name: 'Science Fiction', id: 878   },
+];
+
+const TV_GENRES = [
+  { name: 'Action',          id: 10759 },
+  { name: 'Animation',       id: 16    },
+  { name: 'Comedy',          id: 35    },
+  { name: 'Crime',           id: 80    },
+  { name: 'Documentary',     id: 99    },
+  { name: 'Drama',           id: 18    },
+  { name: 'Family',          id: 10751 },
+  { name: 'Mystery',         id: 9648  },
+  { name: 'Reality',         id: 10764 },
+  { name: 'Romance',         id: 10749 },
+  { name: 'Science Fiction', id: 10765 },
+];
 
 function calculateAverageRating(reviewsData) {
   const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
@@ -195,22 +232,6 @@ function showErrorMessage(message, anchorElement = null) {
     }, 5000);
 }
 
-function showValidateMessage(message, anchorElement = null) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'validate-message';
-    errorDiv.textContent = message;
-
-    if (anchorElement) {
-        anchorElement.parentNode.insertBefore(errorDiv, anchorElement.nextSibling);
-    } else {
-        document.body.appendChild(errorDiv);
-    }
-
-    setTimeout(() => {
-        if (errorDiv.parentNode) errorDiv.remove();
-    }, 5000);
-}
-
 /**
  * @param {HTMLElement} containerEl
  * @param {string|null} backdropPath - TMDB path string
@@ -244,14 +265,14 @@ function setBackdropBackground(
 
 /**
  * Registers the standard search-redirect submit handler used on all detail pages.
- * Defaults to ../index.html
+ * Defaults to ../browse.html
  */
-function initSearchRedirect(formElement, inputElement, indexPath = '../index.html') {
+function initSearchRedirect(formElement, inputElement, browsePath = '../browse.html') {
     formElement.addEventListener('submit', (e) => {
         e.preventDefault();
         const searchTerm = inputElement.value.trim();
         if (searchTerm) {
-            window.location.href = `${indexPath}?search=${encodeURIComponent(searchTerm)}`;
+            window.location.href = `${browsePath}?search=${encodeURIComponent(searchTerm)}`;
         }
     });
 }
@@ -515,12 +536,11 @@ async function hydrateGridWatchlistItem(item) {
 }
 
 // Register Service Worker
+const UTILS_SCRIPT_URL = document.currentScript.src;
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Pages are either at repo root or exactly one level deep.
-    const swPath = location.pathname.split('/').filter(Boolean).length > 2
-      ? '../sw.js'
-      : './sw.js';
+    const swPath = new URL('../sw.js', UTILS_SCRIPT_URL).href;
     navigator.serviceWorker.register(swPath).catch((error) => {
       console.error('Service Worker registration failed:', error);
     });

@@ -111,8 +111,8 @@ function buildImageGalleryOverlay() {
   overlay.className = 'image-gallery-overlay';
   overlay.innerHTML = `
     <div class="image-gallery-header">
-      <span class="image-gallery-counter"></span>
       <button class="image-gallery-close" aria-label="Close gallery">✕ Close</button>
+      <span class="image-gallery-counter"></span>
     </div>
     <button class="image-gallery-nav image-gallery-prev" aria-label="Previous image">‹</button>
     <div class="image-gallery-stage">

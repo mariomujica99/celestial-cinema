@@ -59,19 +59,6 @@
   box-shadow: 0 4px 20px rgba(106, 90, 205, 0.2);
 }
 
-.new-review {
-  color: rgb(225, 225, 225);
-  font-size: 1.1rem;
-  margin: 0 0 10px 0;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 1px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .user-review {
   font-size: 1.1rem;
   color: rgb(225, 225, 225);
@@ -138,84 +125,6 @@
   word-wrap: break-word;
 }
 
-.user-line {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 5px;
-  gap: 57px;
-}
-
-.review-text, .user-text, .rating-text {
-  color: rgb(225, 225, 225);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.user-text input{
-  margin: 0 0 2px 0;
-}
-
-.rating-line {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
-}
-
-.rating-line .star-icon{
-  margin: 0 0 2px 0;
-}
-
-.rating-text {
-  margin-top: 2px;
-}
-
-.review-text {
-  flex-grow: 1;
-}
-
-.review-input,
-.user-input,
-.rating-select {
-  font-family: "Montserrat", sans-serif, arial;
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid rgba(106, 90, 205, 0.3);
-  border-radius: 8px;
-  background: rgba(25, 38, 59, 0.8);
-  color: rgb(225, 225, 225);
-  font-size: 0.9rem;
-}
-
-.rating-select {
-  cursor: pointer;
-}
-
-.review-input {
-  margin: 0;
-  height: 100%;
-  resize: none;
-  vertical-align: top;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  font-family: "Montserrat", sans-serif, arial;
-}
-
-.review-input:focus, .user-input:focus, .rating-select:focus {
-  outline: none;
-  border-color: #6A5ACD;
-  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
-  background: rgba(25, 38, 59, 1);
-}
-
 .review-card button {
   border: none;
   color: rgba(245, 245, 245, 0.854);
@@ -233,17 +142,6 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: 0 4px 15px rgba(106, 90, 205, 0.1);
   transform: translateY(-1px);
-}
-
-.review-card:has(.new-review) {
-  background: linear-gradient(135deg, #2d1b3d 0%, #3d2a4f 50%, #2d1b3d 100%);
-}
-
-.review-card:has(.new-review):hover {
-  border-color: rgba(106, 90, 205, 0.6);
-  box-shadow: 
-    0 8px 32px rgba(106, 90, 205, 0.3),
-    0 0 0 1px rgba(106, 90, 205, 0.5);
 }
 
 .review-item .review-card {
@@ -284,24 +182,13 @@
   transform: translateY(-1px);
 }
 
-.review-card:hover,
-.review-card:has(select:focus),
-.review-card:has(.review-input:focus),
-.review-card:has(.user-input:focus) {
-  box-shadow: 0 4px 20px rgba(106, 90, 205, 0.2);
-}
-
-.review-card:has(.new-review):hover,
-.review-card:has(.new-review):has(select:focus),
-.review-card:has(.new-review):has(.review-input:focus),
-.review-card:has(.new-review):has(.user-input:focus) {
-  border-color: rgba(106, 90, 205, 0.6);
-  box-shadow: 
-    0 8px 32px rgba(106, 90, 205, 0.3),
-    0 0 0 1px rgba(106, 90, 205, 0.5);
-}
-
 @media (max-width: 650px) {
+  #reviews-container .review-item .review-card {
+    height: auto;
+    min-height: unset;
+    max-height: 370px;
+  }
+
   #reviews-container {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -330,17 +217,6 @@
     min-height: 280px;
   }
 
-  .review-item .review-card:not(:has(.new-review)) {
-    height: auto;
-    min-height: unset;
-    max-height: 370px;
-  }
-
-  .new-review {
-    font-size: 1rem;
-    margin-bottom: 8px;
-  }
-
   .user-review {
     margin-bottom: 12px;
   }
@@ -348,13 +224,6 @@
   .review-review {
     font-size: 0.9rem;
     max-height: 150px;
-  }
-
-  .review-input,
-  .user-input,
-  .rating-select {
-    font-size: 0.85rem;
-    padding: 9px 13px;
   }
 
   .review-card button {
@@ -435,12 +304,6 @@
     border-radius: 15px;
   }
 
-  .new-review {
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-  }
-
   .user-review {
     margin-bottom: 10px;
   }
@@ -463,32 +326,6 @@
     font-size: 0.85rem;
     max-height: 140px;
     line-height: 1.4;
-  }
-
-  .user-line {
-    gap: 45px;
-  }
-
-  .review-text,
-  .user-text,
-  .rating-text {
-    font-size: 0.8rem;
-  }
-
-  .rating-line {
-    gap: 8px;
-    margin-bottom: 5px;
-  }
-
-  .review-input,
-  .user-input,
-  .rating-select {
-    font-size: 0.8rem;
-    padding: 8px 12px;
-  }
-
-  .user-input {
-    margin-left: 3px;
   }
 
   .review-actions {

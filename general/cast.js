@@ -28,9 +28,11 @@ function displayTopCast(creditsData, mediaId, imgPath) {
 
         const character = member.roles?.[0]?.character || member.character || 'Unknown Role';
         castMember.innerHTML = `
-            <img class="cast-photo" src="${photoUrl}" alt="${member.name}" onerror="this.src='../images/no-image-cast.jpg'">
-            <div class="cast-name">${member.name}</div>
-            <div class="cast-character">${character}</div>
+            <img class="cast-photo" src="${photoUrl}" alt="" onerror="this.src='../images/no-image-cast.jpg'">
+            <div class="cast-info card-info">
+                <div class="cast-name">${escapeHtml(member.name)}</div>
+                <div class="cast-character">${escapeHtml(character)}</div>
+            </div>
         `;
 
         castMember.addEventListener('click', () => {

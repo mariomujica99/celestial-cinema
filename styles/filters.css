@@ -1,46 +1,6 @@
-.filters {
-  margin: 0px 22px 10px 22px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  display: flex;
-  padding: 5px 2px 5px 2px;
-  gap: 8px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.filters::-webkit-scrollbar {
-  display: none;
-}
-
-.filters button {
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #6A5ACD, #5B4FC7, #4C44C1);
-  padding: 6px 15px 6px 15px;
-  flex-shrink: 0;
-  white-space: nowrap;
-  box-shadow: 0 0 0 1px transparent;
-}
-
-.filters button:hover:not(.active) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  cursor: pointer;
-}
-
-.filters button.active {
-  background: linear-gradient(135deg, #0F0C29, #24243e, #302b63, #4a41a7);
-  box-shadow: 0 0 0 1px rgba(106, 90, 205, 0.5);
-}
-
 .filters-container {
   position: relative;
   margin: 0px 22px 10px 22px;
-}
-
-.filters {
-  margin: 0;
 }
 
 .category-tabs {
@@ -94,89 +54,12 @@
   font-size: 0.8em;
 }
 
-.filters button.special-btn {
-  background: linear-gradient(135deg, #3b82f6, #4f46e5);
-}
-
-.filters button.special-btn:hover:not(.active) {
-  background: linear-gradient(135deg, #60a5fa, #6366f1);
-}
-
-.filters button.special-btn.active {
-  background: linear-gradient(135deg, #0b1f3a, #1e1b4b, #312e81);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
-}
-
-.action-row {
-  margin-top: 10px;
-  display: none;
-  gap: 8px;
-  padding: 0 2px 8px 2px;
-}
-
-.action-row-btn {
-  flex: 1;
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #2563eb, #4338ca);
-  color: rgb(225, 225, 225);
-  font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
-  text-transform: uppercase;
-  padding: 6px 15px 6px 15px;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px transparent;
-}
-
-.action-row-btn:hover:not(.active) {
-  background: linear-gradient(135deg, #3b82f6, #4f46e5);
-}
-
-.action-row-btn.active {
-  background: linear-gradient(135deg, #0a1a33, #1e1b4b, #312e81);
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.5);
-}
-
-.media-toggle {
-  display: inline-flex;
-  background: #656565;
-  border-radius: 5px;
-  border: 1px solid rgba(106, 90, 205, 0.35);
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.filters .toggle-option {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  color: rgb(225, 225, 225);
-  padding: 6px 13px 6px 13px;
-  cursor: pointer;
-  box-shadow: none;
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.filters .toggle-option.active {
-  background:#13172099;
-  box-shadow: none;
-}
-
-html.media-toggle-movie #toggle-movies,
-html.media-toggle-tv #toggle-tv {
-  background: #13172099;
-}
-
-.filters .toggle-option:hover:not(.active) {
-  background: #57575799;
-  color: rgb(225, 225, 225);
-}
-
 .genre-page-title {
   font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase;
   color: rgb(225, 225, 225);
-  margin: 5px 25px 0 25px;
+  margin: 5px 25px 15px 25px;
   padding: 0 0 10px 0;
   letter-spacing: 1.5px;
   position: relative;
@@ -197,24 +80,9 @@ html.media-toggle-tv #toggle-tv {
     position: relative;
     margin: 0px 22px 0px 22px;
   }
-
-  .secondary-nav-btn {
-    display: none;
-  }
-
-  .action-row {
-    display: flex;
-    padding: 2px 2px 8px 2px;
-    margin-top: 8px;
-  }
 }
 
 @media (max-width: 650px) {
-  .filters button {
-    font-size: 0.78rem;
-    padding: 4px 12px 4px 12px;
-  }
-
   .category-tab {
     flex: 1;
     flex-shrink: 1;
@@ -230,16 +98,6 @@ html.media-toggle-tv #toggle-tv {
     font-size: 0.58rem;
   }
 
-  .action-row-btn {
-    font-size: 0.78rem;
-    padding: 4px 12px 4px 12px;
-  }
-
-  .filters .toggle-option {
-    font-size: 0.78rem;
-    padding: 4px 10px 4px 10px;
-  }
-
   .genre-page-title {
     font-size: 1.1rem;
     letter-spacing: 0.5px;
@@ -249,10 +107,6 @@ html.media-toggle-tv #toggle-tv {
 @media (max-width: 450px) {
   .filters-container {
     margin: 0px 12px 0px 12px;
-  }
-
-  .action-row {
-    padding: 0 0px 8px 0px;
   }
 
   .category-tabs {
@@ -267,7 +121,7 @@ html.media-toggle-tv #toggle-tv {
 
   .genre-page-title {
     font-size: 1rem;
-    margin: 5px 15px 0 15px;
+    margin: 5px 15px 15px 15px;
     padding: 0 0 5px 0;
     letter-spacing: 0.5px;
   }

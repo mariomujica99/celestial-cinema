@@ -45,12 +45,12 @@
 }
 
 .similar-section .known-for-poster {
+  display: block;
   width: 100%;
   height: 200px;
-  border-radius: 12px;
+  border-radius: var(--card-poster-radius) var(--card-poster-radius) 0 0;
   object-fit: cover;
   background: linear-gradient(135deg, #2d3748 0%, #1a2332 100%);
-  margin-bottom: 10px;
   color: transparent;
 }
 
@@ -58,7 +58,7 @@
   font-size: 0.8rem;
   font-weight: bold;
   color: white;
-  margin: 0 0 5px 0;
+  margin: 4px 0 4px 0;
   text-transform: none;
   letter-spacing: 0.5px;
   line-height: 1.2;
@@ -74,7 +74,7 @@
 .similar-section .known-for-info {
   font-size: 0.6rem;
   color: #CBD5E0;
-  margin: 0;
+  margin-bottom: 2px;
   text-transform: uppercase;
   line-height: 1.2;
 }
@@ -91,7 +91,7 @@
   }
 
   .similar-container {
-    gap: 12px;
+    gap: 5px;
   }
 }
 
@@ -106,15 +106,15 @@
   }
 
   .similar-container {
-    gap: 12px;
+    gap: 5px;
   }
 
   .similar-section .known-for-item {
-    flex: 0 0 100px;
+    flex: 0 0 110px;
   }
 
   .similar-section .known-for-poster {
-    height: 143px;
+    height: 159px;
   }
 
   .similar-section .known-for-title-text {

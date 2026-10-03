@@ -10,36 +10,23 @@
   const MOBILE_MAX_WIDTH_PX = 650;
   const SWIPE_MIN_DISTANCE_PX = 60;
   const SWIPE_HORIZONTAL_RATIO = 1.5;
-  const SWIPE_BLOCKED_SELECTOR =
-    'input, textarea, select, .name-modal-overlay, .review-modal-overlay, .video-modal-overlay';
-  // ── Genre data ───────────────────────────────────────────────
-const MOVIE_GENRES = [
-  { name: 'Action',          id: 28    },
-  { name: 'Animation',       id: 16    },
-  { name: 'Comedy',          id: 35    },
-  { name: 'Crime',           id: 80    },
-  { name: 'Documentary',     id: 99    },
-  { name: 'Drama',           id: 18    },
-  { name: 'Family',          id: 10751 },
-  { name: 'Horror',          id: 27    },
-  { name: 'Mystery',         id: 9648  },
-  { name: 'Romance',         id: 10749 },
-  { name: 'Science Fiction', id: 878   },
-];
+  const SWIPE_BLOCKED_SELECTOR = 'input, textarea, select, .name-modal-overlay, .review-modal-overlay';
+  
+  // ── Menu data ────────────────────────────────────────────────
+  const MOVIE_LISTS = [
+    { name: 'Trending',    key: 'trending' },
+    { name: 'Popular',     key: 'popular' },
+    { name: 'Now Playing', key: 'now-playing' },
+    { name: 'Upcoming',    key: 'upcoming' },
+    { name: 'Top Rated',   key: 'top-rated' }
+  ];
 
-const TV_GENRES = [
-  { name: 'Action',          id: 10759 },
-  { name: 'Animation',       id: 16    },
-  { name: 'Comedy',          id: 35    },
-  { name: 'Crime',           id: 80    },
-  { name: 'Documentary',     id: 99    },
-  { name: 'Drama',           id: 18    },
-  { name: 'Family',          id: 10751 },
-  { name: 'Mystery',         id: 9648  },
-  { name: 'Reality',         id: 10764 },
-  { name: 'Romance',         id: 10749 },
-  { name: 'Science Fiction', id: 10765 },
-];
+  const TV_LISTS = [
+    { name: 'Trending',     key: 'trending' },
+    { name: 'Popular',      key: 'popular' },
+    { name: 'Airing Today', key: 'airing-today' },
+    { name: 'Top Rated',    key: 'top-rated' }
+  ];
 
   // ── DOM builders ─────────────────────────────────────────────
   function buildHamburgerBtn() {
@@ -54,6 +41,20 @@ const TV_GENRES = [
     return btn;
   }
 
+  function buildMenuItem(menuItem) {
+    const item = document.createElement('p');
+    item.textContent = menuItem.name;
+
+    if (menuItem.isSubheader) {
+      item.className = 'side-menu-subheader';
+      return item;
+    }
+
+    item.className = 'side-menu-item';
+    item.addEventListener('click', () => { window.location.href = menuItem.url; });
+    return item;
+  }
+
   function buildMenuSection(sectionTitle, menuItems) {
     const section = document.createElement('div');
     section.className = 'side-menu-section';
@@ -66,25 +67,30 @@ const TV_GENRES = [
 
     const itemsContainer = document.createElement('div');
     itemsContainer.className = 'side-menu-items';
-
-    menuItems.forEach(menuItem => {
-      const item = document.createElement('p');
-      item.className = 'side-menu-item';
-      item.textContent = menuItem.name;
-      item.addEventListener('click', () => { window.location.href = menuItem.url; });
-      itemsContainer.appendChild(item);
-    });
+    menuItems.forEach(menuItem => itemsContainer.appendChild(buildMenuItem(menuItem)));
 
     section.appendChild(itemsContainer);
     return section;
   }
 
-  function buildGenreSection(sectionTitle, genres, mediaType) {
-    const menuItems = genres.map(genre => ({
+  function buildGenreMenuItems(genres, mediaType) {
+    return genres.map(genre => ({
       name: genre.name,
-      url: `${prefix}index.html?genre=${genre.id}&type=${mediaType}&name=${encodeURIComponent(genre.name)}`
+      url: `${prefix}browse.html?genre=${genre.id}&type=${mediaType}&name=${encodeURIComponent(genre.name)}`
     }));
-    return buildMenuSection(sectionTitle, menuItems);
+  }
+
+  function buildMediaSection({ title, mediaType, lists, genres }) {
+    const listItems = lists.map(list => ({
+      name: list.name,
+      url: `${prefix}browse.html?list=${list.key}&type=${mediaType}`
+    }));
+
+    return buildMenuSection(title, [
+      ...listItems,
+      { name: 'Genres', isSubheader: true },
+      ...buildGenreMenuItems(genres, mediaType)
+    ]);
   }
 
   function buildSideMenu() {
@@ -95,9 +101,18 @@ const TV_GENRES = [
     const panel = document.createElement('div');
     panel.className = 'side-menu-panel';
 
-    panel.appendChild(buildGenreSection('Movies', MOVIE_GENRES, 'movie'));
-    panel.appendChild(buildGenreSection('TV Shows', TV_GENRES, 'tv'));
-
+    panel.appendChild(buildMenuSection('Reviews', [
+      { name: 'Reviews', url: `${prefix}all reviews/allReviews.html` }
+    ]));
+    panel.appendChild(buildMenuSection('Watchlist', [
+      { name: 'Watchlist', url: `${prefix}watchlist/watchlist.html` }
+    ]));
+    panel.appendChild(buildMediaSection({
+      title: 'Movies', mediaType: 'movie', lists: MOVIE_LISTS, genres: MOVIE_GENRES
+    }));
+    panel.appendChild(buildMediaSection({
+      title: 'TV Shows', mediaType: 'tv', lists: TV_LISTS, genres: TV_GENRES
+    }));
     panel.appendChild(buildMenuSection('People', [
       { name: 'Popular People', url: `${prefix}people/popularPeople.html` }
     ]));

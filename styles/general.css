@@ -36,6 +36,23 @@
 
 :root {
   --topnav-height: 70px;
+  --card-poster-radius: 10px;
+}
+
+.card-info {
+  flex: 1;
+  align-self: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 2px 6px 8px 6px;
+  background: rgba(56, 82, 123, 0.3);
+  border-radius: 0 0 var(--card-poster-radius) var(--card-poster-radius);
+}
+
+@media (min-width: 451px) {
+  .card-info {
+    padding: 6px 8px 10px 8px;
+  }
 }
 
 body {

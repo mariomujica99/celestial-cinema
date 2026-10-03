@@ -58,7 +58,7 @@ async function loadSimilarSection(mediaId, mediaType, imgPath, savedMediaIds = n
       const posterImg = document.createElement('img');
       posterImg.className = 'known-for-poster';
       posterImg.src = posterUrl;
-      posterImg.alt = escapeHtml(title);
+      posterImg.alt = title;
       posterImg.onerror = function() { this.src = '../images/no-image.jpg'; };
 
       const watchlistBtn = document.createElement('button');
@@ -115,10 +115,11 @@ async function loadSimilarSection(mediaId, mediaType, imgPath, savedMediaIds = n
       el.appendChild(posterWrapper);
 
       const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'known-for-details card-info';
       detailsDiv.innerHTML = `
+        <div class="user-score-grid">${formatScore(item.voteAverage)}</div>
         <div class="known-for-title-text">${escapeHtml(title)}</div>
         <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
-        <div class="user-score-grid">${formatScore(item.voteAverage)}</div>
       `;
       el.appendChild(detailsDiv);
 

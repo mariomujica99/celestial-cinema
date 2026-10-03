@@ -13,6 +13,27 @@ const API_LINKS = {
     BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
 
+const DEPARTMENT_ORDER = [
+    mediaType === 'tv' ? 'Series Cast' : 'Cast',
+    'Directing',
+    'Production',
+    'Writing',
+    'Art',
+    'Camera',
+    'Costume & Make-Up',
+    'Crew',
+    'Editing',
+    'Lighting',
+    'Location Management',
+    'Music',
+    'Script and Continuity',
+    'Sound',
+    'Special Effects',
+    'Stunts',
+    'Transportation',
+    'Visual Effects'
+];
+
 const castListContainer = document.getElementById("cast-list-container");
 const castListTitle = document.getElementById("cast-list-title");
 const searchForm = document.getElementById("search-form");
@@ -52,7 +73,8 @@ function fetchCredits(url) {
         })
         .catch(error => {
             console.error('Error fetching credits:', error);
-            showErrorMessage('Failed to load | Please try again later');
+            castListContainer.innerHTML = '';
+            showErrorMessage('Failed to load | Please try again later', castListContainer);
         });
 }
 
@@ -94,28 +116,7 @@ function displayCastAndCrew(creditsData) {
 
     allCastAndCrew = departments;
 
-    const departmentOrder = [
-        mediaType === 'tv' ? 'Series Cast' : 'Cast',
-        'Directing',
-        'Production',
-        'Writing',
-        'Art',
-        'Camera',
-        'Costume & Make-Up',
-        'Crew',
-        'Editing',
-        'Lighting',
-        'Location Management',
-        'Music',
-        'Script and Continuity',
-        'Sound',
-        'Special Effects',
-        'Stunts',
-        'Transportation',
-        'Visual Effects'
-    ];
-
-    departmentOrder.forEach(departmentName => {
+    DEPARTMENT_ORDER.forEach(departmentName => {
         const people = departments[departmentName];
         if (people && people.length > 0) {
             displayDepartment(departmentName, people);
@@ -241,10 +242,10 @@ function displayDepartment(departmentName, people) {
         }
         
         personCard.innerHTML = `
-            <img class="person-photo" src="${photoUrl}" alt="${person.name}" onerror="this.src='../images/no-image-cast.jpg'">
+            <img class="person-photo" src="${photoUrl}" alt="" onerror="this.src='../images/no-image-cast.jpg'">
             <div class="person-details">
-                <div class="person-name">${person.name}</div>
-                <div class="person-role">${role}</div>
+                <div class="person-name">${escapeHtml(person.name)}</div>
+                <div class="person-role">${escapeHtml(role)}</div>
             </div>
         `;
         
@@ -310,31 +311,10 @@ function filterCastAndCrew(searchTerm) {
 
 function displayFilteredResults(departments) {
     castListContainer.innerHTML = '';
-    
-    const departmentOrder = [
-        mediaType === 'tv' ? 'Series Cast' : 'Cast',
-        'Directing',
-        'Production',
-        'Writing',
-        'Art',
-        'Camera',
-        'Costume & Make-Up',
-        'Crew',
-        'Editing',
-        'Lighting',
-        'Location Management',
-        'Music',
-        'Script and Continuity',
-        'Sound',
-        'Special Effects',
-        'Stunts',
-        'Transportation',
-        'Visual Effects'
-    ];
 
     let hasResults = false;
     
-    departmentOrder.forEach(departmentName => {
+    DEPARTMENT_ORDER.forEach(departmentName => {
         const people = departments[departmentName];
         if (people && people.length > 0) {
             displayDepartment(departmentName, people);
@@ -379,15 +359,4 @@ function loadMediaDetails() {
                 [0.8, 0.9]
             );
         });
-}
-
-function showErrorMessage(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message-red';
-    errorDiv.textContent = message;
-    castListContainer.innerHTML = '';
-    castListContainer.appendChild(errorDiv);
-    setTimeout(() => {
-        if (errorDiv.parentNode) errorDiv.remove();
-    }, 5000);
 }

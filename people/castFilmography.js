@@ -8,7 +8,6 @@ const API_LINKS = {
   CAST_CREDITS:  `https://celestial-cinema-backend.onrender.com/api/v1/movies/person/${castId}/credits`,
   MOVIE_DETAILS: 'https://celestial-cinema-backend.onrender.com/api/v1/movies/details/',
   TV_DETAILS:    'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/',
-  WATCHLIST:     'https://celestial-cinema-backend.onrender.com/api/v1/watchlist',
   IMG_PATH:      'https://image.tmdb.org/t/p/w1280',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces'
 };
@@ -35,9 +34,7 @@ filmographyTitle.textContent = castName
 backButton.addEventListener('click', () => history.back());
 initSearchRedirect(searchForm, searchQuery);
 
-searchInput.addEventListener('input', debounce(() => {
-  filterFilmography(searchInput.value.trim().toLowerCase());
-}, 250));
+searchInput.addEventListener('input', debounce(renderFilmography, 250));
 initBlurOnEnter(searchInput);
 
 (async () => { savedMediaIds = await loadSavedMediaIds(); })().then(() => loadFilmography());
@@ -315,20 +312,16 @@ async function loadFilmography() {
 
     // Hydrate in batches of 10, render each batch as it resolves
     const chunks = chunkArray(allCredits, 10);
-    let backdropSet = false;
 
     // Clear loading state before first batch renders
     filmographyContainer.innerHTML = '';
 
     for (const chunk of chunks) {
-      const hydratedChunk = await Promise.all(chunk.map(c => fetchDetails(c)));
-
-      // Re-render all departments with now-cached detail data
-      renderAllDepartments(orderedNames);
+      await Promise.all(chunk.map(c => fetchDetails(c)));
+      renderFilmography();
     }
 
-    // Final render pass after all hydration complete
-    renderAllDepartments(orderedNames);
+    if (chunks.length === 0) renderFilmography();
 
   } catch (e) {
     console.error('Failed to load filmography:', e);
@@ -339,6 +332,10 @@ async function loadFilmography() {
 }
 
 // ── Render all departments ────────────────────────────────────────────────────
+
+function renderFilmography() {
+  filterFilmography(searchInput.value.trim().toLowerCase());
+}
 
 function renderAllDepartments(orderedNames) {
   filmographyContainer.innerHTML = '';
@@ -449,7 +446,7 @@ function buildFilmographyCard(credit) {
   const posterImg = document.createElement('img');
   posterImg.className = 'watchlist-item-poster';
   posterImg.src = posterUrl;
-  posterImg.alt = escapeHtml(title);
+  posterImg.alt = title;
   posterImg.onerror = function() { this.src = '../images/no-image.jpg'; };
 
   // Watchlist toggle button (replaces remove button)

@@ -50,11 +50,11 @@ function loadTVDetails() {
       const firstAirYear = tvData.first_air_date ? new Date(tvData.first_air_date).getFullYear() : '';
       const showTitle = `${tvData.name || tvTitle || 'Unknown Title'} ${firstAirYear ? `(${firstAirYear})` : ''}`;
       
-      seasonTitleElement.innerHTML = `${showTitle} - Season ${seasonNumber}`;
+      seasonTitleElement.textContent = `${showTitle} - Season ${seasonNumber}`;
     })
     .catch(error => {
       console.error('Error fetching TV details:', error);
-      seasonTitleElement.innerHTML = `${tvTitle || 'Unknown Title'} - Season ${seasonNumber}`;
+      seasonTitleElement.textContent = `${tvTitle || 'Unknown Title'} - Season ${seasonNumber}`;
     });
 }
 
