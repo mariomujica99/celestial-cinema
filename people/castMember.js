@@ -256,7 +256,7 @@ function buildKnownForCard(c) {
   const detailsDiv = document.createElement('div');
   detailsDiv.className = 'known-for-details card-info';
   detailsDiv.innerHTML = `
-    <div class="user-score-grid">${formatScore(c.vote_average)}</div>
+    ${createCardScoreRow(c.vote_average, { mediaId: c.id, mediaType }).outerHTML}
     <div class="known-for-title-text">${escapeHtml(title)}</div>
     <div class="cast-credit">${escapeHtml(castCredit)}</div>
     <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
@@ -419,4 +419,5 @@ function displayKnownFor(data, knownForDepartment = '', gender = 0) {
   knownForContainer.innerHTML = '';
 
   top.forEach(c => buildKnownForCard(c));
+  loadCcmdbPills(knownForContainer);
 }

@@ -125,6 +125,21 @@ function buildMetaLine(slide) {
   return metaLine;
 }
 
+async function addCcmdbRatings() {
+  try {
+    const getRatingKey = slide => `${slide.mediaType}:${slide.id}`;
+    const ratingsByKey = await fetchCcmdbRatings(heroSlides.map(getRatingKey));
+    const metaLines = heroTrack.querySelectorAll('.hero-slide-meta');
+
+    heroSlides.forEach((slide, slideIndex) => {
+      const averageRating = ratingsByKey[getRatingKey(slide)]?.average ?? null;
+      metaLines[slideIndex].insertAdjacentHTML('beforeend', buildCcmdbMetaItemHTML(averageRating));
+    });
+  } catch (error) {
+    console.error('Failed to load CCMDb ratings:', error);
+  }
+}
+
 function buildSlideText(slide, detailUrl) {
   const titleLink = createTextElement('a', 'hero-slide-title', slide.title);
   titleLink.href = detailUrl;
@@ -306,6 +321,7 @@ function showSlides(savedMediaIds) {
   heroTrack.replaceChildren(...slideElements);
   heroSkeleton.hidden = true;
   heroTrack.hidden = false;
+  addCcmdbRatings();
 
   if (heroSlides.length < 2) return;
   heroNavLayer.hidden = false;

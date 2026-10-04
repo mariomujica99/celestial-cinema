@@ -76,11 +76,11 @@ function buildPosterWrap(itemData, mediaType, detailUrl, savedMediaIds) {
   return posterWrap;
 }
 
-function buildPosterBody(itemData, detailUrl) {
+function buildPosterBody(itemData, mediaType, detailUrl) {
   const cardBody = document.createElement('div');
   cardBody.className = 'rail-card-body card-info';
   cardBody.append(
-    createTextElement('div', 'user-score-grid', formatScore(itemData.vote_average)),
+    createCardScoreRow(itemData.vote_average, { mediaId: itemData.id, mediaType }),
     buildTitleLink(itemData, detailUrl)
   );
   return cardBody;
@@ -94,7 +94,7 @@ function buildTrailerLink(mediaId, mediaType) {
 
 export function buildPosterCard(itemData, mediaType, savedMediaIds) {
   const detailUrl = buildDetailPageUrl(itemData.id, mediaType, getItemTitle(itemData));
-  const cardBody = buildPosterBody(itemData, detailUrl);
+  const cardBody = buildPosterBody(itemData, mediaType, detailUrl);
   cardBody.appendChild(buildTrailerLink(itemData.id, mediaType));
 
   const posterCard = document.createElement('article');
@@ -223,6 +223,7 @@ async function loadRail(railSection, railConfig, savedMediaIdsPromise) {
       return;
     }
     railSection.querySelector('.home-rail-track').replaceChildren(...railCards);
+    loadCcmdbPills(railSection);
   } catch (error) {
     console.error(`Error loading ${railConfig.sectionId}:`, error);
     railSection.hidden = true;

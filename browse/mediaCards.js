@@ -23,13 +23,6 @@ function createCardTitle(titleText) {
   return cardTitle;
 }
 
-function createScoreBadge(voteAverage) {
-  const scoreBadge = document.createElement('div');
-  scoreBadge.className = 'user-score-grid';
-  scoreBadge.textContent = formatScore(voteAverage);
-  return scoreBadge;
-}
-
 function createCardInfo(...infoElements) {
   const cardInfo = document.createElement('div');
   cardInfo.className = 'card-info';
@@ -67,7 +60,10 @@ export function createMediaCard(itemData, mediaType, savedMediaIds) {
   mediaCard.className = 'media-card';
   mediaCard.append(
     createCardImage(itemData.poster_path, FALLBACK_IMAGES.POSTER),
-    createCardInfo(createScoreBadge(itemData.vote_average), createCardTitle(title))
+    createCardInfo(
+      createCardScoreRow(itemData.vote_average, { mediaId: itemData.id, mediaType }),
+      createCardTitle(title)
+    )
   );
 
   const cardLink = createCardLink(mediaCard, buildDetailPageUrl(itemData.id, mediaType, title));

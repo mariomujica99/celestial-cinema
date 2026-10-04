@@ -117,7 +117,7 @@ async function loadSimilarSection(mediaId, mediaType, imgPath, savedMediaIds = n
       const detailsDiv = document.createElement('div');
       detailsDiv.className = 'known-for-details card-info';
       detailsDiv.innerHTML = `
-        <div class="user-score-grid">${formatScore(item.voteAverage)}</div>
+        ${createCardScoreRow(item.voteAverage, { mediaId: item.id, mediaType: item.mediaType }).outerHTML}
         <div class="known-for-title-text">${escapeHtml(title)}</div>
         <div class="known-for-info">${year ? year + ' \u2022 ' : ''}${typeLabel}</div>
       `;
@@ -130,6 +130,7 @@ async function loadSimilarSection(mediaId, mediaType, imgPath, savedMediaIds = n
       container.appendChild(el);
     });
 
+    loadCcmdbPills(container);
   } catch (error) {
     console.error('Error fetching similar media:', error);
     hideSkeletonCards(container);

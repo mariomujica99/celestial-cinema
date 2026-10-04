@@ -35,7 +35,7 @@
   align-items:flex-start;
   text-align: left;
   border-radius: 12px;
-  padding: 5px 5px 10px 5px;
+  padding: 5px 3.5px 10px 3.5px;
   transition: transform 0.3s ease;
   cursor: pointer;
 }
@@ -107,14 +107,6 @@
 
   .similar-container {
     gap: 5px;
-  }
-
-  .similar-section .known-for-item {
-    flex: 0 0 110px;
-  }
-
-  .similar-section .known-for-poster {
-    height: 159px;
   }
 
   .similar-section .known-for-title-text {

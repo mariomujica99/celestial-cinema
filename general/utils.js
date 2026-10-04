@@ -285,6 +285,117 @@ function initBlurOnEnter(inputElement) {
 }
 
 const WATCHLIST_API = 'https://celestial-cinema-backend.onrender.com/api/v1/watchlist';
+const CCMDB_RATINGS_API = 'https://celestial-cinema-backend.onrender.com/api/v1/reviews/ratings';
+const CCMDB_RATINGS_TIMEOUT_MS = 10000;
+
+function buildCcmdbRatingHTML(averageRating, starClassName = 'user-score-star') {
+  return `${buildStarSvgHTML(starClassName).trim()}${Number(averageRating).toFixed(1)}`;
+}
+
+function buildCcmdbMetaItemHTML(averageRating) {
+  if (averageRating === null) return '';
+  return `<span title="CCMDb rating">${buildCcmdbRatingHTML(averageRating)}</span>`;
+}
+
+function createCcmdbPill(averageRating) {
+  const ratingPill = document.createElement('div');
+  ratingPill.className = 'user-score-grid user-score-grid--ccmdb';
+  ratingPill.title = 'CCMDb rating';
+  ratingPill.innerHTML = buildCcmdbRatingHTML(averageRating);
+  return ratingPill;
+}
+
+function createCcmdbBadgePill(averageRating, classPrefix) {
+  const ratingPill = document.createElement('div');
+  ratingPill.className = `${classPrefix}-score-pill ${classPrefix}-score-pill--ccmdb`;
+  ratingPill.title = 'CCMDb rating';
+
+  const ratingValue = document.createElement('span');
+  ratingValue.className = `${classPrefix}-score-value`;
+  ratingValue.innerHTML = buildCcmdbRatingHTML(averageRating, `${classPrefix}-score-star`);
+  ratingPill.appendChild(ratingValue);
+  return ratingPill;
+}
+
+function createCcmdbPillSlot(mediaId, mediaType, badgeClassPrefix = '') {
+  const pillSlot = document.createElement('div');
+  pillSlot.className = 'ccmdb-pill-slot';
+  pillSlot.dataset.ccmdbKey = `${mediaType}:${mediaId}`;
+  if (badgeClassPrefix) pillSlot.dataset.badgePrefix = badgeClassPrefix;
+  return pillSlot;
+}
+
+function createCardScoreRow(voteAverage, { mediaId, mediaType }) {
+  const scoreBadge = document.createElement('div');
+  scoreBadge.className = 'user-score-grid';
+  scoreBadge.textContent = formatScore(voteAverage);
+
+  const scoreRow = document.createElement('div');
+  scoreRow.className = 'card-score-row';
+  scoreRow.append(scoreBadge, createCcmdbPillSlot(mediaId, mediaType));
+  return scoreRow;
+}
+
+async function fetchCcmdbRatings(ratingKeys) {
+  const response = await fetch(
+    `${CCMDB_RATINGS_API}?items=${encodeURIComponent(ratingKeys.join(','))}`,
+    { signal: AbortSignal.timeout(CCMDB_RATINGS_TIMEOUT_MS) }
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+  const ratingsData = await response.json();
+  return ratingsData.ratings || {};
+}
+
+// Remembers each rating request by key, so re-rendered cards reuse it instead of refetching
+const ccmdbRatingRequests = new Map();
+
+function requestCcmdbRatings(ratingKeys) {
+  const batchRequest = fetchCcmdbRatings(ratingKeys);
+  batchRequest.catch(error => {
+    console.error('Failed to load CCMDb ratings:', error);
+    ratingKeys.forEach(ratingKey => ccmdbRatingRequests.delete(ratingKey));
+  });
+  ratingKeys.forEach(ratingKey => {
+    ccmdbRatingRequests.set(ratingKey, batchRequest.then(ratingsByKey => ratingsByKey[ratingKey] ?? null));
+  });
+}
+
+function applyCcmdbRating(pillSlot, ratingData) {
+  if (!ratingData) {
+    pillSlot.remove();
+    return;
+  }
+  const { badgePrefix } = pillSlot.dataset;
+  pillSlot.replaceWith(
+    badgePrefix
+      ? createCcmdbBadgePill(ratingData.average, badgePrefix)
+      : createCcmdbPill(ratingData.average)
+  );
+}
+
+async function resolveCcmdbPillSlot(pillSlot) {
+  try {
+    const ratingData = await ccmdbRatingRequests.get(pillSlot.dataset.ccmdbKey);
+    applyCcmdbRating(pillSlot, ratingData);
+  } catch {
+    // The failed request is already logged in requestCcmdbRatings
+    pillSlot.remove();
+  }
+}
+
+async function loadCcmdbPills(rootElement = document) {
+  const pillSlots = Array.from(rootElement.querySelectorAll('.ccmdb-pill-slot:not([data-is-loading])'));
+  if (pillSlots.length === 0) return;
+
+  pillSlots.forEach(pillSlot => { pillSlot.dataset.isLoading = 'true'; });
+
+  const uncachedKeys = [...new Set(pillSlots.map(pillSlot => pillSlot.dataset.ccmdbKey))]
+    .filter(ratingKey => !ccmdbRatingRequests.has(ratingKey));
+  if (uncachedKeys.length > 0) requestCcmdbRatings(uncachedKeys);
+
+  pillSlots.forEach(resolveCcmdbPillSlot);
+}
 
 async function toggleWatchlistAPI(username, item) {
   try {

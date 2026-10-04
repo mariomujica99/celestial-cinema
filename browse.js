@@ -138,6 +138,7 @@ function renderMediaPage(pageData, shouldShowEmptyMessage) {
       renderedMediaIds.add(itemData.id);
       mediaGridContainer.appendChild(createMediaCard(itemData, mediaType, savedMediaIds));
     });
+    loadCcmdbPills(mediaGridContainer);
 }
 
 function loadFollowUpMediaPages(pageData, firstTmdbPage, requestToken) {

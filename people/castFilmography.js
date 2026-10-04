@@ -360,6 +360,7 @@ function renderAllDepartments(orderedNames) {
     empty.textContent = 'No filmography found.';
     filmographyContainer.appendChild(empty);
   }
+  loadCcmdbPills(filmographyContainer);
 }
 
 // ── Build one department section ──────────────────────────────────────────────
@@ -540,15 +541,10 @@ function buildFilmographyCard(credit) {
     ${roleText ? `<p class="watchlist-item-added-by">${escapeHtml(roleText)}</p>` : ''}
     <div class="watchlist-item-info">
       <span class="watchlist-item-type">${typeLabel}</span>
-      ${scorePct ? `
       <div class="watchlist-score-pill">
-        <span class="watchlist-score-value">${scorePct}</span>
-        <span class="watchlist-score-label">TMDB</span>
-      </div>` : `
-      <div class="watchlist-score-pill">
-        <span class="watchlist-score-value">NR</span>
-        <span class="watchlist-score-label">TMDB</span>
-      </div>`}
+        <span class="watchlist-score-value">${scorePct || 'NR'}</span>
+      </div>
+      ${createCcmdbPillSlot(mediaId, mediaType, 'watchlist').outerHTML}
     </div>
   `;
 
@@ -610,4 +606,5 @@ function filterFilmography(searchTerm) {
     noResults.textContent = 'No results found';
     filmographyContainer.appendChild(noResults);
   }
+  loadCcmdbPills(filmographyContainer);
 }

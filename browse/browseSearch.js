@@ -72,6 +72,7 @@ function appendSearchCards(items, category) {
       : createMediaCard(itemData, mediaType, savedMediaIds);
     mediaGridContainer.appendChild(card);
   });
+  loadCcmdbPills(mediaGridContainer);
 }
 
 function appendNewSearchItems(searchData) {

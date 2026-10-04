@@ -151,8 +151,7 @@
 }
 
 .rail-card-body .user-score-grid {
-  align-self: flex-start;
-  padding: 2px 10px 2px 12px;
+  padding: 2px 0;
   font-size: 0.8rem;
 }
 

@@ -81,6 +81,7 @@ export function createPosterLoader(railSection, savedMediaIdsPromise, skeletonVa
       if (requestId !== latestRequestId) return;
 
       renderRailCards(railTrack, buildCards(resultsCache.get(cacheKey), mediaType, savedMediaIds));
+      loadCcmdbPills(railTrack);    
     } catch (error) {
       console.error(`Error loading ${railSection.id}:`, error);
       if (requestId !== latestRequestId) return;

@@ -34,6 +34,20 @@ function hasPlaceholderBudget(entry) {
   return entry.budget > 0 && entry.budget < PLACEHOLDER_BUDGET_LIMIT;
 }
 
+async function attachCcmdbRatings(entries) {
+  try {
+    const ratingKeys = entries.map(entry => `movie:${entry.id}`);
+    const ratingsByKey = await fetchCcmdbRatings(ratingKeys);
+    return entries.map(entry => ({
+      ...entry,
+      ccmdbRating: ratingsByKey[`movie:${entry.id}`]?.average ?? null
+    }));
+  } catch (error) {
+    console.error('Failed to load CCMDb ratings:', error);
+    return entries.map(entry => ({ ...entry, ccmdbRating: null }));
+  }
+}
+
 function selectRankedEntries(boxOfficeData) {
   return (boxOfficeData.results || [])
     .map(normalizeEntry)
@@ -72,11 +86,11 @@ function buildMetaLine(entry) {
   const releaseYear = getMediaYear({ release_date: entry.releaseDate });
   const metaLine = document.createElement('div');
   metaLine.className = 'box-office-meta';
-  metaLine.innerHTML = buildInfoLineHTML([
-    formatScore(entry.voteAverage),
-    releaseYear,
-    formatRuntime(entry.runtime)
-  ]);
+  metaLine.innerHTML = [
+    buildInfoLineHTML([formatScore(entry.voteAverage)]),
+    buildCcmdbMetaItemHTML(entry.ccmdbRating),
+    buildInfoLineHTML([releaseYear, formatRuntime(entry.runtime)])
+  ].join('');
   return metaLine;
 }
 
@@ -183,7 +197,7 @@ async function loadBoxOffice(railSection, layoutElement, savedMediaIdsPromise) {
       fetchJsonOrThrow(API_LINKS.BOX_OFFICE),
       savedMediaIdsPromise
     ]);
-    const entries = selectRankedEntries(boxOfficeData);
+    const entries = await attachCcmdbRatings(selectRankedEntries(boxOfficeData));
 
     if (entries.length === 0) {
       railSection.hidden = true;

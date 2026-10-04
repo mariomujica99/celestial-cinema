@@ -165,11 +165,19 @@
   line-height: 1;
 }
 
-.search-result-score-value,
-.search-result-score-label {
+.search-result-score-value {
   font-size: 0.55rem;
   color: #CBD5E0;
   font-weight: bold;
+}
+
+.search-result-score-star {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 1px;
+  vertical-align: -0.1em;
+  fill: currentColor;
 }
 
 .search-result-person-badge {

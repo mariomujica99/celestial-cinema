@@ -172,27 +172,27 @@
     rgba(25, 38, 59, 0.25)
   );
   border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 0 0 0 12px;
+  padding: 1px 12px;
   border-radius: 40px;
   transition: all 0.3s ease;
   margin: 6px 0 6px 0;
 }
 
-.watchlist-score-value,
-.watchlist-score-label {
+.watchlist-score-value {
   color: #CBD5E0;
   font-weight: bold;
   font-size: 0.9rem;
   letter-spacing: 1.1px;
   font-family: "Science Gothic", "Rollbox", "Montserrat", sans-serif, arial;
-
 }
 
-.watchlist-score-label {
-  color: rgba(255, 255, 255, 0.5);
-  border-radius: 15px 30px 30px 15px;
-  padding: 1px 10px 1px 0;
-  text-transform: uppercase;
+.watchlist-score-star {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 2px;
+  vertical-align: -0.1em;
+  fill: currentColor;
 }
 
 .watchlist-item-type {
@@ -260,14 +260,13 @@
   }
 
   .watchlist-score-value,
-  .watchlist-score-label,
   .watchlist-item-type,
   .watchlist-media-info-line span {
     font-size: 0.75rem;
   }
 
   .watchlist-score-pill {
-    padding: 0 0 0 11px;
+    padding: 1px 11px;
     margin: 5px 0 5px 0;
   }
 
@@ -335,14 +334,13 @@
   }
 
   .watchlist-score-value,
-  .watchlist-score-label,
   .watchlist-item-type,
   .watchlist-media-info-line span {
     font-size: 0.6rem;
   }
 
   .watchlist-score-pill {
-    padding: 0 0 0 10px;
+    padding: 1px 10px;
     margin: 4px 0 4px 0;
   }
 

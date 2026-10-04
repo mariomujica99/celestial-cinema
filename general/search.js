@@ -98,6 +98,7 @@
     const posterUrl = item.poster_path
       ? `${API_LINKS.IMG_PATH}${item.poster_path}`
       : `${prefix}images/no-image.jpg`;
+    const mediaType = item.media_type === 'tv' ? 'tv' : 'movie';
     const typeLabel = item.media_type === 'tv' ? 'Show' : 'Movie';
     const infoLineParts = [getYear(item) || null];
 
@@ -112,8 +113,8 @@
           <span class="search-result-type">${typeLabel}</span>
           <div class="search-result-score-pill">
             <span class="search-result-score-value">${formatScore(item.vote_average)}</span>
-            <span class="search-result-score-label">TMDB</span>
           </div>
+          ${createCcmdbPillSlot(item.id, mediaType, 'search-result').outerHTML}
         </div>
       </div>
     `;
@@ -301,6 +302,7 @@
             dropdown.innerHTML = '<p class="search-dropdown-empty">No results found</p>';
           } else {
             combined.forEach(item => dropdown.appendChild(buildRow(item)));
+            loadCcmdbPills(dropdown);          
           }
           openDropdown();
         })

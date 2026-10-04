@@ -61,7 +61,7 @@
   text-align: left;
 }
 
-.media-card .user-score-grid + p {
+.media-card .card-score-row + p {
   margin-top: 2px;
 }
 
@@ -79,6 +79,40 @@
   margin-left: 0;
 }
 
+/* ── Card score row: TMDB pill + CCMDb pill ── */
+.card-score-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.card-score-row .user-score-grid {
+  margin-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+  white-space: nowrap;
+}
+
+.user-score-grid--ccmdb {
+  background: linear-gradient(315deg, #6a5acd, #442daa);
+}
+
+.user-score-star {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 1px;
+  vertical-align: -0.1em;
+  fill: currentColor;
+}
+
+@media (min-width: 651px) {
+  .card-score-row {
+    gap: 6px;
+  }
+}
 
 .person-department-badge {
   display: flex;
@@ -191,6 +225,11 @@
   .media-column {
     margin-bottom: 10px;
   }
+
+  .user-score-star {
+    width: 0.95em;
+    height: 0.95em;
+  }
 }
 
 @media (min-width: 451px) and (max-width: 650px) {
@@ -270,7 +309,7 @@
   }
 
   .user-score-grid {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding: 2px 9px 2px 11px;
   }
 
@@ -280,6 +319,11 @@
 
   .person-department-main {
     font-size: 0.75rem;
+  }
+
+  .user-score-star {
+    width: 1em;
+    height: 1em;
   }
 }
 
@@ -298,7 +342,7 @@
   }
 
   .user-score-grid {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .person-knownfor {
@@ -307,6 +351,11 @@
 
   .person-department-main {
     font-size: 0.75rem;
+  }
+  
+  .user-score-star {
+    width: 0.98em;
+    height: 0.98em;
   }
 }
 
@@ -337,6 +386,11 @@
   .person-department-main {
     font-size: 0.85rem;
   }
+
+  .user-score-star {
+    width: 1em;
+    height: 1em;
+  }
 }
 
 @media (min-width: 1851px) {
@@ -364,5 +418,10 @@
 
   .person-department-main {
     font-size: 0.95rem;
+  }
+
+  .user-score-star {
+    width: 1em;
+    height: 1em;
   }
 }

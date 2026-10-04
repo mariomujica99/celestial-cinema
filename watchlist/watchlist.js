@@ -45,6 +45,7 @@ function renderWatchlist(items) {
   items.forEach(item => {
     watchlistContainer.appendChild(createWatchlistItem(item));
   });
+  loadCcmdbPills(watchlistContainer);
 }
 
 function createWatchlistItem(item) {
@@ -129,15 +130,10 @@ function createWatchlistItem(item) {
     ${displayName ? `<p class="watchlist-item-added-by">Added by ${escapeHtml(displayName)}</p>` : ''}
     <div class="watchlist-item-info">
       <span class="watchlist-item-type">${typeLabel}</span>
-      ${scorePct ? `
       <div class="watchlist-score-pill">
-        <span class="watchlist-score-value">${scorePct}</span>
-        <span class="watchlist-score-label">TMDB</span>
-      </div>` : `
-      <div class="watchlist-score-pill">
-        <span class="watchlist-score-value">NR</span>
-        <span class="watchlist-score-label">TMDB</span>
-      </div>`}
+        <span class="watchlist-score-value">${scorePct || 'NR'}</span>
+      </div>
+      ${createCcmdbPillSlot(item.mediaId, item.mediaType, 'watchlist').outerHTML}
     </div>
   `;
 
