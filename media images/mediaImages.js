@@ -12,6 +12,7 @@ const API_LINKS = {
 };
 
 const imagesGrid = document.getElementById('images-grid');
+const postersGrid = document.getElementById('posters-grid');
 const imagesPageTitle = document.getElementById('images-page-title');
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
@@ -53,14 +54,16 @@ async function loadAllImages() {
   try {
     const res = await fetch(imagesUrl);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const { backdrops = [] } = await res.json();
+    const { backdrops = [], posters = [] } = await res.json();
+    const galleryImages = [...backdrops, ...posters];
 
-    if (backdrops.length === 0) {
+    if (galleryImages.length === 0) {
       imagesGrid.innerHTML = '<div class="videos-loading">No images available</div>';
       return;
     }
 
-    renderImageGrid(imagesGrid, backdrops);
+    renderImageGrid(imagesGrid, galleryImages, { end: backdrops.length });
+    renderImageGrid(postersGrid, galleryImages, { start: backdrops.length });
   } catch (error) {
     console.error('Error fetching images:', error);
     imagesGrid.innerHTML = '';

@@ -23,6 +23,7 @@ const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-query");
 
 const loadMoreBtn = document.getElementById("load-more-btn");
+const seasonsSection = document.querySelector('.seasons-section');
 
 let currentPage = 1;
 let hasMoreReviews = true;
@@ -37,6 +38,13 @@ let savedMediaIds = new Set();
 
 initSearchRedirect(searchForm, searchInput);
 
+loadVideoStrip(API_LINKS.TV_VIDEOS, tvId, 'tv', tvTitle || '');
+loadImageStrip({
+  imagesUrl: API_LINKS.IMAGES,
+  mediaId: tvId,
+  mediaType: 'tv',
+  mediaTitle: tvTitle || ''
+});
 returnTVDetails(API_LINKS.TV_DETAILS);
 
 function returnTVDetails(url) {
@@ -82,13 +90,6 @@ function returnTVDetails(url) {
       
       returnTVCredits(API_LINKS.TV_CREDITS);
       loadWatchProviders();
-      loadVideoStrip(API_LINKS.TV_VIDEOS, tvId, 'tv', tvData.name || '');
-      loadImageStrip({
-        imagesUrl: API_LINKS.IMAGES,
-        mediaId: tvId,
-        mediaType: 'tv',
-        mediaTitle: tvData.name || ''
-      });
       loadSavedMediaIds().then(ids => {
         savedMediaIds = ids;
         loadSimilarSection(tvId, 'tv', API_LINKS.IMG_PATH, savedMediaIds);
@@ -340,7 +341,7 @@ function displaySeasons(tvData) {
   }
 
   if (filteredSeasons.length === 0) {
-    seasonsContainer.innerHTML = '<div class="seasons-loading">No seasons information available</div>';
+    if (seasonsSection) seasonsSection.style.display = 'none';
     return;
   }
 
@@ -389,10 +390,7 @@ function returnTVCredits(url) {
       if (creditsSection) {
         creditsSection.innerHTML = '<div class="credits-loading">Credits unavailable</div>';
       }
-      const castContainer = document.getElementById('cast-container');
-      if (castContainer) {
-        castContainer.innerHTML = '<div class="cast-loading">Cast information unavailable</div>';
-      }
+      hideTopCastSection();
     });
 }
 

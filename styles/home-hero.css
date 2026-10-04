@@ -39,6 +39,37 @@
   border-radius: 12px;
 }
 
+.hero-skeleton .hero-skeleton-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  background-color: #1a2332;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.hero-skeleton-title {
+  width: 70%;
+  height: 22px;
+}
+
+.hero-skeleton-subtitle {
+  width: 50%;
+  height: 14px;
+  margin-top: 6px;
+}
+
+.hero-skeleton-meta {
+  width: 60%;
+  height: 12px;
+  margin-top: 8px;
+}
+
+/* REPLACE inside @media (min-width: 841px) */
+  .hero-slide,
+  .hero-skeleton {
+    position: relative;
+  }
+
 /* ── Stage ── */
 
 .hero-stage {

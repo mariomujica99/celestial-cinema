@@ -79,7 +79,7 @@ function startResolvedVideo(playlist) {
     return;
   }
   if (!playlist.currentVideo) {
-    showEmptyState('No trailer available');
+    showEmptyState('No video available');
     return;
   }
   playVideo(playlist.currentVideo.key);
@@ -101,7 +101,7 @@ function fetchMediaDetails() {
 async function fetchMediaTrailers() {
   const videosUrl = mediaType === 'tv' ? API_LINKS.TV_VIDEOS : API_LINKS.MOVIE_VIDEOS;
   const videosData = await fetchJsonOrThrow(videosUrl);
-  return videosData.results || [];
+  return sortVideos(videosData.results || []);
 }
 
 async function fetchHeroSlides() {

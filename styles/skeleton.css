@@ -160,3 +160,52 @@
 .skeleton-card--backdrop .skeleton-score {
   display: none;
 }
+
+/* Video strip cards: same footprint as .video-strip-card (16:9 thumb + title line) */
+.skeleton-card--video {
+  flex: 0 0 220px;
+  width: 220px;
+  padding: 0;
+}
+
+.skeleton-card--video .skeleton-poster {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 8px;
+}
+
+.skeleton-card--video .skeleton-info,
+.skeleton-card--video .skeleton-score {
+  display: none;
+}
+
+@media (min-width: 651px) {
+  .skeleton-card--video {
+    flex: 0 0 280px;
+    width: 280px;
+  }
+}
+
+/* Image strip cards: same footprint as .image-strip-card (bare 16:9 thumb) */
+.skeleton-card--image {
+  flex: 0 0 220px;
+  width: 220px;
+  padding: 0;
+}
+
+.skeleton-card--image .skeleton-poster {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0;
+}
+
+.skeleton-card--image .skeleton-title,
+.skeleton-card--image .skeleton-info,
+.skeleton-card--image .skeleton-score {
+  display: none;
+}
+
+@media (min-width: 651px) {
+  .skeleton-card--image {
+    flex: 0 0 280px;
+    width: 280px;
+  }
+}

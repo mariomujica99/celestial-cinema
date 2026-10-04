@@ -1,3 +1,8 @@
+function hideTopCastSection() {
+    const castSection = document.querySelector('.cast-section');
+    if (castSection) castSection.style.display = 'none';
+}
+
 /**
  * Renders the top-cast scrollable strip
  *
@@ -12,7 +17,7 @@ function displayTopCast(creditsData, mediaId, imgPath) {
     const cast = creditsData.cast.slice(0, 10);
 
     if (cast.length === 0) {
-        castContainer.innerHTML = '<div class="cast-loading">No cast information available</div>';
+        hideTopCastSection();
         return;
     }
 

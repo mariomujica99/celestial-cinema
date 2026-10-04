@@ -47,9 +47,14 @@
 }
 
 .view-all-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+}
+
+.view-all-btn[hidden] {
+  display: none;
 }
 
 .view-all-count {
@@ -61,6 +66,8 @@
 .videos-container {
   display: flex;
   gap: 20px;
+  padding-top: 5px;
+  margin-top: -5px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -161,8 +168,10 @@
   transition: transform 0.3s ease;
 }
 
-.video-strip-link:hover {
-  transform: translateY(-3px);
+@media (hover: hover) {
+  .video-strip-link:hover {
+    transform: translateY(-3px);
+  }
 }
 
 .video-strip-title {
@@ -295,7 +304,7 @@
   }
 
   .view-all-btn {
-    padding: 8px 15px;
+    padding: 6px 12px;
     font-size: 0.7rem;
   }
 

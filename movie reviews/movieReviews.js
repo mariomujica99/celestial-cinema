@@ -31,6 +31,13 @@ let savedMediaIds = new Set();
 
 initSearchRedirect(searchForm, searchInput);
 
+loadVideoStrip(API_LINKS.MOVIE_VIDEOS, movieId, 'movie', movieTitle || '');
+loadImageStrip({
+  imagesUrl: API_LINKS.IMAGES,
+  mediaId: movieId,
+  mediaType: 'movie',
+  mediaTitle: movieTitle || ''
+});
 returnMovieDetails(API_LINKS.MOVIE_DETAILS);
 
 function returnMovieDetails(url) {
@@ -74,13 +81,6 @@ function returnMovieDetails(url) {
       
       returnMovieCredits(API_LINKS.MOVIE_CREDITS);
       loadWatchProviders();
-      loadVideoStrip(API_LINKS.MOVIE_VIDEOS, movieId, 'movie', movieData.title || '');
-      loadImageStrip({
-        imagesUrl: API_LINKS.IMAGES,
-        mediaId: movieId,
-        mediaType: 'movie',
-        mediaTitle: movieData.title || ''
-      });
       loadSavedMediaIds().then(ids => {
         savedMediaIds = ids;
         loadSimilarSection(movieId, 'movie', API_LINKS.IMG_PATH, savedMediaIds);
@@ -334,10 +334,7 @@ function returnMovieCredits(url) {
       if (creditsSection) {
         creditsSection.innerHTML = '<div class="credits-loading">Credits unavailable</div>';
       }
-      const castContainer = document.getElementById('cast-container');
-      if (castContainer) {
-        castContainer.innerHTML = '<div class="cast-loading">Cast information unavailable</div>';
-      }
+      hideTopCastSection();
     });
 }
 

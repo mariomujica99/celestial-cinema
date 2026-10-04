@@ -1,19 +1,57 @@
 const YOUTUBE_THUMB_BASE = 'https://img.youtube.com/vi';
 const YOUTUBE_WATCH_BASE = 'https://www.youtube.com/watch?v=';
 const PRIMARY_VIDEO_KEYWORDS = ['official', 'final', 'main', 'theatrical', 'teaser'];
+const MAX_STRIP_VIDEOS = 6;
+const VIDEO_TYPE_ORDER = ['Trailer', 'Clip', 'Teaser', 'Featurette', 'Behind the Scenes'];
 const VIDEO_PLAYER_PAGE = `${(document.currentScript?.getAttribute('src') || '').startsWith('../') ? '../' : ''}media videos/mediaVideoPlayer.html`;
+
+function findKeywordMatch(videos) {
+  for (const keyword of PRIMARY_VIDEO_KEYWORDS) {
+    const match = videos.find(video => video.name?.toLowerCase().includes(keyword));
+    if (match) return match;
+  }
+  return null;
+}
+
+function moveKeywordMatchFirst(videos) {
+  const primaryVideo = findKeywordMatch(videos) || videos[0];
+  if (!primaryVideo) return [];
+  return [primaryVideo, ...videos.filter(video => video !== primaryVideo)];
+}
+
+/**
+ * Orders videos by VIDEO_TYPE_ORDER, horizontal videos first and vertical
+ * (letterboxed) videos last. Within each horizontal type group the keyword
+ * match goes first; TMDB order is kept for the rest and for vertical groups.
+ *
+ * @param {object[]} videos - TMDB video objects (non-trailers may carry isVertical)
+ * @returns {object[]}
+ */
+function sortVideos(videos) {
+  const horizontalVideos = videos.filter(video => !video.isVertical);
+  const verticalVideos = videos.filter(video => video.isVertical);
+
+  const orderedHorizontal = VIDEO_TYPE_ORDER.flatMap(type =>
+    moveKeywordMatchFirst(horizontalVideos.filter(video => video.type === type))
+  );
+  const orderedVertical = VIDEO_TYPE_ORDER.flatMap(type =>
+    verticalVideos.filter(video => video.type === type)
+  );
+  return [...orderedHorizontal, ...orderedVertical];
+}
 
 function getPrimaryVideo(videos) {
   if (!videos || videos.length === 0) return null;
+  return sortVideos(videos)[0];
+}
 
-  const trailers = videos.filter(v => v.type === "Trailer");
+function showVideoStripSkeleton(section, container) {
+  const viewAllBtn = section.querySelector('.view-all-btn');
+  if (viewAllBtn) viewAllBtn.hidden = true;
 
-  for (const keyword of PRIMARY_VIDEO_KEYWORDS) {
-    const match = trailers.find(v => v.name?.toLowerCase().includes(keyword));
-    if (match) return match;
-  }
-
-  return trailers[0] || videos[0];
+  container.classList.remove('is-single');
+  showSkeletonCards(container, MAX_STRIP_VIDEOS, 'video');
+  section.style.display = 'block';
 }
 
 /**
@@ -28,42 +66,42 @@ function getPrimaryVideo(videos) {
  */
 async function loadVideoStrip(videosUrl, mediaId, mediaType, mediaTitle) {
   const section = document.querySelector('.videos-section');
-  if (!section) return;
+  const container = document.getElementById('videos-container');
+  if (!section || !container) return;
+
+  showVideoStripSkeleton(section, container);
 
   try {
     const res = await fetch(videosUrl);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    const allTrailers = data.results || [];
+    const allVideos = data.results || [];
 
-    if (allTrailers.length === 0) return;
+    if (allVideos.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
 
-    const container = document.getElementById('videos-container');
-    if (!container) return;
     container.innerHTML = '';
-    container.classList.toggle('is-single', allTrailers.length === 1);
+    container.classList.toggle('is-single', allVideos.length === 1);
 
-    const primaryVideo = getPrimaryVideo(allTrailers);
-    const orderedTrailers = [primaryVideo, ...allTrailers.filter(video => video !== primaryVideo)];
+    const orderedVideos = sortVideos(allVideos).slice(0, MAX_STRIP_VIDEOS);
 
     const playerContext = { mediaId, mediaType };
-    orderedTrailers.forEach(video => container.appendChild(createVideoStripCard(video, playerContext)));
+    orderedVideos.forEach(video => container.appendChild(createVideoStripCard(video, playerContext)));
 
-    const viewAllBtn = document.querySelector('.view-all-btn');
-    if (viewAllBtn && allTrailers.length > 1) {
-      setViewAllLabel(viewAllBtn, allTrailers.length);
+    const viewAllBtn = section.querySelector('.view-all-btn');
+    if (viewAllBtn && allVideos.length > 1) {
+      setViewAllLabel(viewAllBtn, allVideos.length);
+      viewAllBtn.hidden = false;
       viewAllBtn.onclick = () => {
         window.location.href =
           `../media videos/mediaVideos.html?id=${mediaId}&type=${mediaType}&title=${encodeURIComponent(mediaTitle)}`;
       };
-    } else if (viewAllBtn) {
-      viewAllBtn.style.display = 'none';
     }
-
-    section.style.display = 'block';
-
   } catch (error) {
     console.error('Error fetching videos:', error);
+    section.style.display = 'none';
   }
 }
 
@@ -95,6 +133,7 @@ function createVideoThumb(thumbUrl, title) {
   thumbImage.className = 'video-thumb';
   thumbImage.src = thumbUrl;
   thumbImage.alt = title;
+  thumbImage.loading = 'lazy';
   thumbImage.addEventListener('error', () => {
     thumbWrap.style.background = 'linear-gradient(135deg, #2d3748, #1a2332)';
   }, { once: true });

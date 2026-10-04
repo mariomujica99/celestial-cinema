@@ -56,17 +56,17 @@ async function loadAllVideos() {
     const res = await fetch(videosUrl);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    const trailers = data.results || [];
+    const videos = sortVideos(data.results || []);
 
-    if (trailers.length === 0) {
-      videosGrid.innerHTML = '<div class="videos-loading">No trailers available</div>';
+    if (videos.length === 0) {
+      videosGrid.innerHTML = '<div class="videos-loading">No videos available</div>';
       return;
     }
 
     videosGrid.innerHTML = '';
     const playerContext = { mediaId, mediaType };
-    trailers.forEach(video => videosGrid.appendChild(createVideoGridCard(video, playerContext)));
-    
+    videos.forEach(video => videosGrid.appendChild(createVideoGridCard(video, playerContext)));
+
   } catch (error) {
     console.error('Error fetching videos:', error);
     videosGrid.innerHTML = '<div class="error-message">Failed to load | Please try again later</div>';

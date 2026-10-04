@@ -1,12 +1,25 @@
 const IMAGES_TMDB_BASE_URL = 'https://image.tmdb.org/t/p';
 const IMAGES_THUMB_SIZE = 'w500';
 const IMAGES_GRID_SIZE = 'w780';
+const IMAGES_POSTER_GRID_SIZE = 'w500';
 const IMAGES_GALLERY_SIZE = 'w1280';
-const IMAGES_STRIP_LIMIT = 10;
+const IMAGES_STRIP_LIMIT = 6;
 const IMAGES_SWIPE_THRESHOLD_PX = 50;
 
 function buildImageUrl(filePath, size) {
   return `${IMAGES_TMDB_BASE_URL}/${size}${filePath}`;
+}
+
+function isPosterImage(image) {
+  return image.height > image.width;
+}
+
+function showImageStripSkeleton(section) {
+  const container = section.querySelector('.images-container');
+  if (!container) return;
+
+  showSkeletonCards(container, IMAGES_STRIP_LIMIT, 'image');
+  section.style.display = 'block';
 }
 
 /**
@@ -24,17 +37,28 @@ async function loadImageStrip({ imagesUrl, mediaId, mediaType, mediaTitle }) {
   const section = document.querySelector('.images-section');
   if (!section) return;
 
+  showImageStripSkeleton(section);
+
   try {
     const res = await fetch(imagesUrl);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const { backdrops = [] } = await res.json();
-    if (backdrops.length === 0) return;
+    const { backdrops = [], posters = [] } = await res.json();
+
+    if (backdrops.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
 
     renderImageStrip(section, backdrops);
-    bindImagesViewAll(section, { imageCount: backdrops.length, mediaId, mediaType, mediaTitle });
-    section.style.display = 'block';
+    bindImagesViewAll(section, {
+      imageCount: backdrops.length + posters.length,
+      mediaId,
+      mediaType,
+      mediaTitle
+    });
   } catch (error) {
     console.error('Error fetching images:', error);
+    section.style.display = 'none';
   }
 }
 
@@ -53,20 +77,22 @@ function bindImagesViewAll(section, { imageCount, mediaId, mediaType, mediaTitle
   if (!viewAllBtn) return;
 
   setViewAllLabel(viewAllBtn, imageCount);
+  viewAllBtn.style.display = '';
   viewAllBtn.addEventListener('click', () => {
     window.location.href =
       `../media images/mediaImages.html?id=${mediaId}&type=${mediaType}&title=${encodeURIComponent(mediaTitle)}`;
   });
 }
 
-function createImageThumb(backdrop, size) {
+function createImageThumb(image, size) {
   const thumbWrap = document.createElement('div');
   thumbWrap.className = 'image-thumb-wrap';
+  thumbWrap.classList.toggle('is-poster', isPosterImage(image));
 
   const thumbImg = document.createElement('img');
   thumbImg.className = 'image-thumb';
-  thumbImg.src = buildImageUrl(backdrop.file_path, size);
-  thumbImg.alt = 'Backdrop';
+  thumbImg.src = buildImageUrl(image.file_path, size);
+  thumbImg.alt = isPosterImage(image) ? 'Poster' : 'Backdrop';
   thumbImg.loading = 'lazy';
 
   thumbWrap.appendChild(thumbImg);
@@ -85,22 +111,30 @@ function createImageStripCard(backdrops, index) {
   return card;
 }
 
-function createImageGridCard(backdrops, index) {
+function createImageGridCard(galleryImages, index) {
+  const image = galleryImages[index];
+  const thumbSize = isPosterImage(image) ? IMAGES_POSTER_GRID_SIZE : IMAGES_GRID_SIZE;
+
   const card = document.createElement('div');
   card.className = 'image-grid-card';
-  card.appendChild(createImageThumb(backdrops[index], IMAGES_GRID_SIZE));
-  card.addEventListener('click', () => openImageGallery(backdrops, index));
+  card.appendChild(createImageThumb(image, thumbSize));
+  card.addEventListener('click', () => openImageGallery(galleryImages, index));
   return card;
 }
 
 /**
- * Renders every backdrop into the full-page grid (used by mediaImages.js).
+ * Renders a slice of the gallery images into a full-page grid (used by mediaImages.js).
+ * The gallery always navigates the full list, so cards keep their index in it.
+ *
  * @param {HTMLElement} gridContainer
- * @param {object[]} backdrops
+ * @param {object[]} galleryImages - Backdrops followed by posters
+ * @param {{ start?: number, end?: number }} [range] - Slice of galleryImages to render
  */
-function renderImageGrid(gridContainer, backdrops) {
+function renderImageGrid(gridContainer, galleryImages, { start = 0, end = galleryImages.length } = {}) {
   const fragment = document.createDocumentFragment();
-  backdrops.forEach((_, index) => fragment.appendChild(createImageGridCard(backdrops, index)));
+  for (let index = start; index < end; index++) {
+    fragment.appendChild(createImageGridCard(galleryImages, index));
+  }
   gridContainer.innerHTML = '';
   gridContainer.appendChild(fragment);
 }
