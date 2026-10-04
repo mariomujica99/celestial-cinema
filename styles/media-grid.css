@@ -187,6 +187,10 @@
   .person-department-main {
     font-size: 0.55rem;
   }
+
+  .media-column {
+    margin-bottom: 10px;
+  }
 }
 
 @media (min-width: 451px) and (max-width: 650px) {
