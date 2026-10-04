@@ -324,7 +324,7 @@
 .home-action-row {
   display: flex;
   gap: 8px;
-  margin: 0 12px 20px 12px;
+  margin: 20px 12px 20px 12px;
 }
 
 .home-action-btn,
@@ -341,7 +341,7 @@
 
 .home-action-btn {
   flex: 1;
-  padding: 4px 12px 4px 12px;
+  padding: 6px 12px 6px 12px;
   font-size: 0.78rem;
 }
 
@@ -367,7 +367,7 @@
   }
 
   .home-action-row {
-    margin: 0 22px 20px 22px;
+    margin: 20px 22px 20px 22px;
   }
 
   .hero-slide-info {
