@@ -278,7 +278,7 @@
   #reviews-container {
     grid-template-columns: 1fr;
     gap: 8px;
-    margin: 15px 15px 30px 15px;
+    margin: 15px 12px 30px 12px;
   }
 
   .reviews-title {
@@ -290,7 +290,7 @@
   .rating-info {
     font-size: 1rem;
     letter-spacing: 0.5px;
-    margin: 0 18px 0 18px;
+    margin: 0 15px 0 15px;
   }
 
   .rating-info {

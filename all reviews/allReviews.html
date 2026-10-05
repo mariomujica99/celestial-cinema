@@ -37,8 +37,14 @@
     <link rel="stylesheet" href="../styles/search-dropdown.css">
   </head>
   <body>
+<!-- REPLACE the <nav class="topnav"> ... </nav> block and add the row after it -->
     <nav class="topnav">
       <a class="active" href="../index.html">Celestial Cinema</a>
+
+      <div class="topnav-links">
+        <a class="topnav-link is-active" href="allReviews.html" aria-current="page">Reviews</a>
+        <a class="topnav-link" href="../watchlist/watchlist.html">Watchlist</a>
+      </div>
 
       <div class="search-container">
         <form class="search-form" role="search" id="search-form">
@@ -47,6 +53,11 @@
       </div>
     </nav>
 
+    <div class="home-action-row">
+      <a class="home-action-btn is-active" href="allReviews.html" aria-current="page">Reviews</a>
+      <a class="home-action-btn" href="../watchlist/watchlist.html">Watchlist</a>
+    </div>
+
     <div class="search-filters" id="search-filters">
       <button class="search-filters-toggle" id="search-filters-toggle">
         Filter Reviews <span class="toggle-chevron">▾</span>
@@ -54,12 +65,12 @@
       <div class="search-filters-body" id="search-filters-body">
         <div class="filter-input-container">
           <label for="user-filter">User</label>
-          <input type="text" id="user-filter" placeholder="Search name" class="filter-input">
+          <input type="search" id="user-filter" placeholder="Search name" class="filter-input" enterkeyhint="search" autocomplete="off">
         </div>
 
         <div class="filter-input-container">
           <label for="media-filter">Media</label>
-          <input type="text" id="media-filter" placeholder="Search movie | show" class="filter-input">
+          <input type="search" id="media-filter" placeholder="Search movie | show" class="filter-input" enterkeyhint="search" autocomplete="off">
         </div>
 
         <div class="filter-input-container">
@@ -71,8 +82,10 @@
             <option value="rating-lowest">Rating | lowest first</option>
           </select>
         </div>
-        <button id="search-filters-btn" class="search-filters-btn">Filter</button>
-        <button id="clear-filters" class="clear-filters-btn">Clear</button>
+        <div class="search-filters-actions">
+          <button id="clear-filters" class="clear-filters-btn">Clear</button>
+          <button id="search-filters-btn" class="search-filters-btn">Filter</button>
+        </div>
       </div>
     </div>
 
