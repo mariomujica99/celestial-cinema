@@ -18,6 +18,10 @@
   gap: 10px;
 }
 
+.reviews-title {
+  scroll-margin-top: calc(var(--topnav-height) + 12px);
+}
+
 .reviews-left {
   display: flex;
   flex-direction: column;

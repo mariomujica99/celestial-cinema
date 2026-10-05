@@ -94,14 +94,23 @@ function buildMetaLine(entry) {
   return metaLine;
 }
 
+function buildMoneyItem(amountText, labelText) {
+  const moneyItem = document.createElement('span');
+  moneyItem.className = 'box-office-money-item';
+  moneyItem.append(
+    createTextElement('strong', 'box-office-amount', amountText),
+    ` ${labelText}`
+  );
+  return moneyItem;
+}
+
 function buildMoneyLine(entry) {
-  const budgetText = entry.budget ? ` · Budget ${formatMoney(entry.budget)}` : '';
   const moneyLine = document.createElement('p');
   moneyLine.className = 'box-office-money';
-  moneyLine.append(
-    createTextElement('strong', 'box-office-gross', formatMoney(entry.revenue)),
-    ` worldwide${budgetText}`
-  );
+  moneyLine.appendChild(buildMoneyItem(formatMoney(entry.revenue), 'Worldwide'));
+  if (entry.budget) {
+    moneyLine.appendChild(buildMoneyItem(formatMoney(entry.budget), 'Budget'));
+  }
   return moneyLine;
 }
 
@@ -118,6 +127,37 @@ function buildInfoColumn(entry, detailUrl) {
   return infoColumn;
 }
 
+function toggleOverview(overviewWrap) {
+  const isExpanded = overviewWrap.classList.toggle('is-expanded');
+  overviewWrap.setAttribute('aria-expanded', String(isExpanded));
+}
+
+function buildOverview(overviewText) {
+  const overviewWrap = document.createElement('div');
+  overviewWrap.className = 'box-office-overview-wrap';
+  overviewWrap.append(
+    createTextElement('p', 'box-office-overview', overviewText),
+    createTextElement('span', 'box-office-overview-chevron', '▾')
+  );
+  overviewWrap.addEventListener('click', () => toggleOverview(overviewWrap));
+  overviewWrap.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    toggleOverview(overviewWrap);
+  });
+  return overviewWrap;
+}
+
+function enableOverviewIfClamped(overviewWrap) {
+  const overviewText = overviewWrap.querySelector('.box-office-overview');
+  if (overviewText.scrollHeight <= overviewText.clientHeight + 1) return;
+
+  overviewWrap.classList.add('is-expandable');
+  overviewWrap.setAttribute('role', 'button');
+  overviewWrap.setAttribute('tabindex', '0');
+  overviewWrap.setAttribute('aria-expanded', 'false');
+}
+
 function renderFeatured(featuredPanel, entry, savedMediaIds) {
   const detailUrl = buildDetailPageUrl(entry.id, 'movie', entry.title);
   const topRow = document.createElement('div');
@@ -126,7 +166,9 @@ function renderFeatured(featuredPanel, entry, savedMediaIds) {
 
   featuredPanel.replaceChildren(topRow);
   if (entry.overview) {
-    featuredPanel.appendChild(createTextElement('p', 'box-office-overview', entry.overview));
+    const overviewWrap = buildOverview(entry.overview);
+    featuredPanel.appendChild(overviewWrap);
+    enableOverviewIfClamped(overviewWrap);
   }
 }
 

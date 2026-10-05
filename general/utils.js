@@ -146,6 +146,10 @@ function updateUserRating(reviewsData) {
   userRatingElement.hidden = false;
 }
 
+function scrollToReviews() {
+  document.querySelector('.reviews-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function initUserRatingToggle() {
   const userRatingElement = document.getElementById('user-rating');
   const userScoreContainer = userRatingElement?.closest('.user-score-container');
@@ -155,8 +159,12 @@ function initUserRatingToggle() {
 
   userRatingElement.addEventListener('click', () => {
     const mediaContainer = userRatingElement.closest('.current-movie-container, .current-tv-container');
-    if (!narrowQuery.matches || mediaContainer?.classList.contains('is-expanded')) return;
+    const isCollapsedOnNarrow = narrowQuery.matches && !mediaContainer?.classList.contains('is-expanded');
 
+    if (!isCollapsedOnNarrow) {
+      scrollToReviews();
+      return;
+    }
     userScoreContainer.classList.toggle('is-rating-expanded');
   });
 }
