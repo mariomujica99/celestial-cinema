@@ -16,6 +16,8 @@ const IMAGES_WHEEL_IDLE_MS = 150;
 const IMAGES_WHEEL_NEW_SWIPE_MIN_DELTA = 8;
 const IMAGES_WHEEL_DECAY_RATIO = 0.5;
 const IMAGES_ZOOMED_MIN_SCALE = 1.05;
+const IMAGES_DISMISS_LOCK_PX = 10;
+const IMAGES_DISMISS_DISTANCE_PX = 120;
 
 function buildImageUrl(filePath, size) {
   return `${IMAGES_TMDB_BASE_URL}/${size}${filePath}`;
@@ -185,6 +187,8 @@ function createGalleryView(overlay, { onPrevious, onNext }) {
   return {
     overlay,
     imageElement: overlay.querySelector('.image-gallery-image'),
+    stageElement: overlay.querySelector('.image-gallery-stage'),
+    imageElement: overlay.querySelector('.image-gallery-image'),
     onPrevious,
     onNext,
     scale: 1,
@@ -203,7 +207,9 @@ function createGalleryView(overlay, { onPrevious, onNext }) {
     hasWheelDecayed: false,
     isWheelSwiping: false,
     isWheelSwipeLocked: false,
-    wheelIdleTimer: null
+    wheelIdleTimer: null,
+    gestureAxis: null,
+    dismissOffset: 0
   };
 }
 
@@ -273,6 +279,8 @@ function startGalleryPinch(galleryView) {
   galleryView.pinchDistance = getPointerDistance(galleryView.pointers);
   galleryView.pinchScale = galleryView.scale;
   galleryView.pinchCenter = getPointerCenter(galleryView.pointers);
+  galleryView.gestureAxis = 'multi';
+  setGalleryDismissOffset(galleryView, 0);
 }
 
 function pinchGalleryView(galleryView) {
@@ -293,6 +301,41 @@ function toggleGalleryChrome(overlay) {
 
 function isGalleryZoomed(galleryView) {
   return galleryView.scale > IMAGES_ZOOMED_MIN_SCALE;
+}
+
+function setGalleryDismissOffset(galleryView, offset) {
+  const { overlay, stageElement } = galleryView;
+  const dimProgress = Math.min(offset / (overlay.clientHeight / 2), 1);
+
+  galleryView.dismissOffset = offset;
+  overlay.classList.toggle('is-dismiss-dragging', offset > 0);
+  overlay.style.setProperty('--gallery-dim', 1 - dimProgress);
+  stageElement.style.transform = offset > 0 ? `translateY(${offset}px)` : '';
+}
+
+function dragGalleryToDismiss(event, galleryView) {
+  if (event.pointerType !== 'touch') return;
+
+  const deltaX = event.clientX - galleryView.startPoint.x;
+  const deltaY = event.clientY - galleryView.startPoint.y;
+  if (!galleryView.gestureAxis && Math.hypot(deltaX, deltaY) > IMAGES_DISMISS_LOCK_PX) {
+    galleryView.gestureAxis = Math.abs(deltaY) > Math.abs(deltaX) ? 'y' : 'x';
+  }
+  if (galleryView.gestureAxis === 'y') {
+    setGalleryDismissOffset(galleryView, Math.max(0, deltaY));
+  }
+}
+
+function finishGalleryDismissDrag(event, galleryView) {
+  if (galleryView.gestureAxis !== 'y') return;
+
+  const shouldClose = event.type === 'pointerup'
+    && galleryView.dismissOffset > IMAGES_DISMISS_DISTANCE_PX;
+  if (shouldClose) {
+    galleryView.onClose();
+    return;
+  }
+  setGalleryDismissOffset(galleryView, 0);
 }
 
 function handleGalleryTap(galleryView, point) {
@@ -333,6 +376,7 @@ function handleGesturePointerDown(event, galleryView) {
   if (galleryView.pointers.size === 1) {
     galleryView.startPoint = { x: event.clientX, y: event.clientY };
     galleryView.wasMultiTouch = false;
+    galleryView.gestureAxis = null;
   } else if (galleryView.pointers.size === 2) {
     startGalleryPinch(galleryView);
   }
@@ -347,6 +391,8 @@ function handleGesturePointerMove(event, galleryView) {
     pinchGalleryView(galleryView);
   } else if (isGalleryZoomed(galleryView)) {
     panGalleryView(galleryView, { x: event.clientX - previous.x, y: event.clientY - previous.y });
+  } else {
+    dragGalleryToDismiss(event, galleryView);
   }
 }
 
@@ -355,6 +401,7 @@ function handleGesturePointerEnd(event, galleryView) {
 
   const wasSinglePointer = galleryView.pointers.size === 1;
   galleryView.pointers.delete(event.pointerId);
+  if (wasSinglePointer) finishGalleryDismissDrag(event, galleryView);
   if (event.type === 'pointercancel' || !wasSinglePointer || galleryView.wasMultiTouch) return;
 
   const delta = {
@@ -365,6 +412,7 @@ function handleGesturePointerEnd(event, galleryView) {
     handleGalleryTap(galleryView, { x: event.clientX, y: event.clientY });
     return;
   }
+  if (galleryView.gestureAxis === 'y') return;
   handleGallerySwipe(galleryView, delta);
 }
 

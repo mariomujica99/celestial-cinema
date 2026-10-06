@@ -38,6 +38,30 @@
   display: block;
 }
 
+.video-player-swipe-zone {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  touch-action: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .video-player-swipe-zone {
+    display: block;
+  }
+}
+
+.video-player-page {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.video-player-page.is-swipe-dragging {
+  transition: none;
+}
+
 .video-player-empty {
   position: absolute;
   inset: 0;

@@ -25,6 +25,71 @@ function clampValue(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+const SWIPE_DISMISS_LOCK_PX = 10;
+const SWIPE_DISMISS_DISTANCE_PX = 120;
+const SWIPE_DISMISS_FADE_PX = 300;
+
+function resetSwipeDrag(dragElement) {
+  dragElement.classList.remove('is-swipe-dragging');
+  dragElement.style.transform = '';
+  dragElement.style.opacity = '';
+}
+
+function moveSwipeDown(event, swipe, dragElement) {
+  if (event.pointerId !== swipe.pointerId) return;
+
+  const deltaX = event.clientX - swipe.startX;
+  const deltaY = event.clientY - swipe.startY;
+  if (!swipe.isVertical) {
+    swipe.isVertical = deltaY > SWIPE_DISMISS_LOCK_PX && deltaY > Math.abs(deltaX);
+  }
+  if (!swipe.isVertical) return;
+
+  swipe.offset = Math.max(0, deltaY);
+  dragElement.classList.add('is-swipe-dragging');
+  dragElement.style.transform = `translateY(${swipe.offset}px)`;
+  dragElement.style.opacity = 1 - Math.min(swipe.offset / SWIPE_DISMISS_FADE_PX, 1) / 2;
+}
+
+function endSwipeDown(event, swipe, { dragElement, onDismiss }) {
+  if (event.pointerId !== swipe.pointerId) return;
+  swipe.pointerId = null;
+
+  const shouldDismiss = event.type === 'pointerup' && swipe.offset > SWIPE_DISMISS_DISTANCE_PX;
+  if (shouldDismiss) {
+    onDismiss();
+    return;
+  }
+  resetSwipeDrag(dragElement);
+}
+
+/**
+ * Touch-only "swipe down to close". Dragging down on `zoneElement` moves `dragElement`
+ * with the finger; releasing past SWIPE_DISMISS_DISTANCE_PX calls `onDismiss`.
+ * Needs `touch-action: none` on the zone. Returns a function that resets the drag.
+ */
+function bindSwipeDownToDismiss(zoneElement, { dragElement, onDismiss }) {
+  const swipe = { pointerId: null, startX: 0, startY: 0, isVertical: false, offset: 0 };
+  const endOptions = { dragElement, onDismiss };
+
+  zoneElement.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch' || swipe.pointerId !== null) return;
+    zoneElement.setPointerCapture(event.pointerId);
+    Object.assign(swipe, {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      isVertical: false,
+      offset: 0
+    });
+  });
+  zoneElement.addEventListener('pointermove', (event) => moveSwipeDown(event, swipe, dragElement));
+  zoneElement.addEventListener('pointerup', (event) => endSwipeDown(event, swipe, endOptions));
+  zoneElement.addEventListener('pointercancel', (event) => endSwipeDown(event, swipe, endOptions));
+
+  return () => resetSwipeDrag(dragElement);
+}
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;

@@ -117,8 +117,7 @@
 .image-gallery-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.95);
-  z-index: 1000;
+  background: rgba(0, 0, 0, calc(0.95 * var(--gallery-dim, 1)));  z-index: 1000;
   overflow: hidden;
   overscroll-behavior: contain;
   touch-action: none;
@@ -183,6 +182,16 @@
   align-items: center;
   justify-content: center;
   padding: 0;
+  transition: transform 0.2s ease;
+}
+
+.image-gallery-overlay.is-dismiss-dragging .image-gallery-stage {
+  transition: none;
+}
+
+.image-gallery-overlay.is-dismiss-dragging .image-gallery-header,
+.image-gallery-overlay.is-dismiss-dragging .image-gallery-nav {
+  opacity: 0;
 }
 
 .image-gallery-image {
