@@ -305,12 +305,12 @@ function isGalleryZoomed(galleryView) {
 
 function setGalleryDismissOffset(galleryView, offset) {
   const { overlay, stageElement } = galleryView;
-  const dimProgress = Math.min(offset / (overlay.clientHeight / 2), 1);
+  const dimProgress = Math.min(Math.abs(offset) / (overlay.clientHeight / 2), 1);
 
   galleryView.dismissOffset = offset;
-  overlay.classList.toggle('is-dismiss-dragging', offset > 0);
+  overlay.classList.toggle('is-dismiss-dragging', offset !== 0);
   overlay.style.setProperty('--gallery-dim', 1 - dimProgress);
-  stageElement.style.transform = offset > 0 ? `translateY(${offset}px)` : '';
+  stageElement.style.transform = offset !== 0 ? `translateY(${offset}px)` : '';
 }
 
 function dragGalleryToDismiss(event, galleryView) {
@@ -322,7 +322,7 @@ function dragGalleryToDismiss(event, galleryView) {
     galleryView.gestureAxis = Math.abs(deltaY) > Math.abs(deltaX) ? 'y' : 'x';
   }
   if (galleryView.gestureAxis === 'y') {
-    setGalleryDismissOffset(galleryView, Math.max(0, deltaY));
+    setGalleryDismissOffset(galleryView, deltaY);
   }
 }
 
@@ -330,7 +330,7 @@ function finishGalleryDismissDrag(event, galleryView) {
   if (galleryView.gestureAxis !== 'y') return;
 
   const shouldClose = event.type === 'pointerup'
-    && galleryView.dismissOffset > IMAGES_DISMISS_DISTANCE_PX;
+    && Math.abs(galleryView.dismissOffset) > IMAGES_DISMISS_DISTANCE_PX;
   if (shouldClose) {
     galleryView.onClose();
     return;

@@ -72,6 +72,18 @@ window.addEventListener('pageshow', (event) => {
   if (event.persisted) resetPlayerSwipe();
 });
 
+const PULL_DISMISS_IGNORED_SELECTOR = [
+  'input', 'textarea', 'select',
+  '.side-menu-overlay', '.search-dropdown-panel',
+  '.video-player-header', '.video-player-swipe-zone'
+].join(', ');
+
+bindPullDownToDismiss({
+  dragElement: playerPage,
+  onDismiss: handleCloseClick,
+  ignoreSelector: PULL_DISMISS_IGNORED_SELECTOR
+});
+
 // ── Player ───────────────────────────────────────────────────
 
 function playVideo(videoKey) {
@@ -276,10 +288,12 @@ function buildVideoDetails(videoName, overviewText) {
     detailsSection.appendChild(createTextElement('h1', 'video-player-video-title', videoName));
   }
   if (overviewText) {
-    detailsSection.append(
-      createTextElement('p', 'video-player-overview', overviewText),
-      buildOverviewToggle(detailsSection)
-    );
+    const overviewElement = createTextElement('p', 'video-player-overview', overviewText);
+    const toggleBtn = buildOverviewToggle(detailsSection);
+    overviewElement.addEventListener('click', () => {
+      if (!toggleBtn.hidden) toggleBtn.click();
+    });
+    detailsSection.append(overviewElement, toggleBtn);
   }
   return detailsSection;
 }

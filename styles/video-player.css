@@ -221,8 +221,8 @@
 
 .video-player-overview-toggle {
   display: block;
-  margin: 6px auto 0 auto;
-  padding: 4px 12px;
+  margin: 0 auto -18px auto;
+  padding: 0;
   background: none;
   border: none;
   color: #CBD5E0;

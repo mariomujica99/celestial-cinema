@@ -2,7 +2,7 @@
 .home-rails {
   --rail-card-width: 160px;
   --rail-backdrop-width: 240px;
-  --rail-tile-width: 180px;
+  --rail-tile-width: calc((100vw - 48px) / 2.2);
   --rail-header-height: 28px;
   --rail-chevron-size: 7px;
 }
@@ -412,7 +412,7 @@
 .interest-tile-label {
   margin: 0;
   padding: 8px 10px 8px 10px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: white;
   text-transform: none;
 }

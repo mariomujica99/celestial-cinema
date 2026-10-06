@@ -35,6 +35,12 @@ function resetSwipeDrag(dragElement) {
   dragElement.style.opacity = '';
 }
 
+function applySwipeOffset(dragElement, offset) {
+  dragElement.classList.add('is-swipe-dragging');
+  dragElement.style.transform = `translateY(${offset}px)`;
+  dragElement.style.opacity = 1 - Math.min(offset / SWIPE_DISMISS_FADE_PX, 1) / 2;
+}
+
 function moveSwipeDown(event, swipe, dragElement) {
   if (event.pointerId !== swipe.pointerId) return;
 
@@ -47,8 +53,8 @@ function moveSwipeDown(event, swipe, dragElement) {
 
   swipe.offset = Math.max(0, deltaY);
   dragElement.classList.add('is-swipe-dragging');
-  dragElement.style.transform = `translateY(${swipe.offset}px)`;
-  dragElement.style.opacity = 1 - Math.min(swipe.offset / SWIPE_DISMISS_FADE_PX, 1) / 2;
+  swipe.offset = Math.max(0, deltaY);
+  applySwipeOffset(dragElement, swipe.offset);
 }
 
 function endSwipeDown(event, swipe, { dragElement, onDismiss }) {
@@ -89,6 +95,68 @@ function bindSwipeDownToDismiss(zoneElement, { dragElement, onDismiss }) {
   zoneElement.addEventListener('pointercancel', (event) => endSwipeDown(event, swipe, endOptions));
 
   return () => resetSwipeDrag(dragElement);
+}
+
+/**
+ * Touch-only "pull down anywhere to close". Works at the top of the page only, so normal
+ * scrolling is untouched. Touches starting inside `ignoreSelector` are skipped.
+ * Uses touch events (not pointer events) so the browser's own scroll can be cancelled.
+ */
+function bindPullDownToDismiss({ dragElement, onDismiss, ignoreSelector = '' }) {
+  const pull = { isTracking: false, isVertical: false, startX: 0, startY: 0, offset: 0 };
+
+  const endPull = (event) => {
+    if (!pull.isTracking) return;
+    pull.isTracking = false;
+
+    if (event.type === 'touchend' && pull.offset > SWIPE_DISMISS_DISTANCE_PX) {
+      onDismiss();
+      return;
+    }
+    resetSwipeDrag(dragElement);
+  };
+
+  document.addEventListener('touchstart', (event) => {
+    const isIgnored = Boolean(ignoreSelector) && Boolean(event.target.closest(ignoreSelector));
+    const canStart = event.touches.length === 1 && window.scrollY <= 0 && !isIgnored;
+    if (!canStart) {
+      pull.isTracking = false;
+      return;
+    }
+    const [touch] = event.touches;
+    Object.assign(pull, {
+      isTracking: true,
+      isVertical: false,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      offset: 0
+    });
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (event) => {
+    if (!pull.isTracking) return;
+    if (window.scrollY > 0) {
+      pull.isTracking = false;
+      resetSwipeDrag(dragElement);
+      return;
+    }
+
+    const [touch] = event.touches;
+    const deltaX = touch.clientX - pull.startX;
+    const deltaY = touch.clientY - pull.startY;
+    const isPullingDown = deltaY > 0 && deltaY > Math.abs(deltaX);
+    if (!pull.isVertical && !isPullingDown) return;
+
+    pull.isVertical = pull.isVertical || deltaY > SWIPE_DISMISS_LOCK_PX;
+    if (event.cancelable) event.preventDefault();
+    if (!pull.isVertical) return;
+
+    pull.offset = Math.max(0, deltaY);
+    applySwipeOffset(dragElement, pull.offset);
+  }, { passive: false });
+
+  document.addEventListener('touchend', endPull);
+  document.addEventListener('touchcancel', endPull);
 }
 
 function escapeHtml(text) {
