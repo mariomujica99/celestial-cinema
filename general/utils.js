@@ -74,6 +74,7 @@ function bindSwipeDownToDismiss(zoneElement, { dragElement, onDismiss }) {
 
   zoneElement.addEventListener('pointerdown', (event) => {
     if (event.pointerType !== 'touch' || swipe.pointerId !== null) return;
+    if (event.target.closest('button')) return;
     zoneElement.setPointerCapture(event.pointerId);
     Object.assign(swipe, {
       pointerId: event.pointerId,

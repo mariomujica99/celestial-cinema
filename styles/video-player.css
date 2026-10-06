@@ -52,6 +52,10 @@
   .video-player-swipe-zone {
     display: block;
   }
+
+  .video-player-header {
+    touch-action: none;
+  }
 }
 
 .video-player-page {

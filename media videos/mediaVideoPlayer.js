@@ -22,6 +22,7 @@ const searchInput = document.getElementById('search-query');
 const closeBtn = document.getElementById('video-player-close');
 const playerIframe = document.getElementById('video-player-iframe');
 const swipeZone = document.getElementById('video-player-swipe-zone');
+const playerHeader = document.querySelector('.video-player-header');
 const playerPage = document.querySelector('.video-player-page');
 const playerEmptyState = document.getElementById('video-player-empty');
 const playerEmptyText = document.getElementById('video-player-empty-text');
@@ -62,10 +63,10 @@ function handleUpNextClick(event) {
 closeBtn.addEventListener('click', handleCloseClick);
 playerEmptyBtn.addEventListener('click', handleCloseClick);
 
-const resetPlayerSwipe = bindSwipeDownToDismiss(swipeZone, {
-  dragElement: playerPage,
-  onDismiss: handleCloseClick
-});
+const playerSwipeOptions = { dragElement: playerPage, onDismiss: handleCloseClick };
+
+bindSwipeDownToDismiss(playerHeader, playerSwipeOptions);
+const resetPlayerSwipe = bindSwipeDownToDismiss(swipeZone, playerSwipeOptions);
 
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) resetPlayerSwipe();

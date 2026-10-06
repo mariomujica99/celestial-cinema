@@ -183,14 +183,14 @@ function bindGalleryControls(overlay, { onPrevious, onNext, onClose }) {
   overlay.querySelector('.image-gallery-close').addEventListener('click', onClose);
 }
 
-function createGalleryView(overlay, { onPrevious, onNext }) {
+function createGalleryView(overlay, { onPrevious, onNext, onClose }) {
   return {
     overlay,
     imageElement: overlay.querySelector('.image-gallery-image'),
     stageElement: overlay.querySelector('.image-gallery-stage'),
-    imageElement: overlay.querySelector('.image-gallery-image'),
     onPrevious,
     onNext,
+    onClose,
     scale: 1,
     x: 0,
     y: 0,
