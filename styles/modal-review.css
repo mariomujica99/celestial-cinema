@@ -137,7 +137,7 @@
 .rm-episode-select:focus {
   outline: none;
   border-color: #6A5ACD;
-  background: rgba(25, 38, 59, 1);
+  background-color: rgba(25, 38, 59, 1);
 }
 
 .rm-season-select:disabled,

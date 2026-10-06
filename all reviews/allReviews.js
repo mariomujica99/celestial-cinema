@@ -49,6 +49,9 @@ mediaFilterInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") triggerSearch();
 });
 
+initBlurOnEnter(userFilterInput);
+initBlurOnEnter(mediaFilterInput);
+
 searchFiltersBtn.addEventListener("click", triggerSearch);
 
 searchFiltersToggleBtn.addEventListener("click", () => {
