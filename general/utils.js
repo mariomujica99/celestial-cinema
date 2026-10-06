@@ -21,6 +21,10 @@ function formatTimestamp(dateString) {
     return `${month} ${day} ${year}`;
 }
 
+function clampValue(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
