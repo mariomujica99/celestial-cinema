@@ -16,7 +16,8 @@ const API_LINKS = {
   TV_UPCOMING:      'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/upcoming',
   MOVIE_GENRE:      'https://celestial-cinema-backend.onrender.com/api/v1/movies/genre/',
   TV_GENRE:         'https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/genre/',
-  STREAMING:        'https://celestial-cinema-backend.onrender.com/api/v1/movies/streaming/'
+  STREAMING:        'https://celestial-cinema-backend.onrender.com/api/v1/movies/streaming/',
+  SEASONAL:         'https://celestial-cinema-backend.onrender.com/api/v1/seasonal/'
 };
 
 const DEFAULT_LIST_KEY = 'trending';
@@ -52,6 +53,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const searchParam = urlParams.get('search');
 const genreParam = urlParams.get('genre');
 const providerParam = urlParams.get('provider');
+const seasonalParam = urlParams.get('seasonal');
+const railParam = urlParams.get('rail');
 const listParam = urlParams.get('list') || DEFAULT_LIST_KEY;
 const nameParam = urlParams.get('name') || '';
 const mediaType = urlParams.get('type') === 'tv' ? 'tv' : 'movie';
@@ -87,7 +90,28 @@ function buildProviderSource() {
   };
 }
 
+function buildSeasonalSource() {
+  if (!/^[a-z-]+$/.test(seasonalParam)) return null;
+  const seasonalUrl = `${API_LINKS.SEASONAL}${seasonalParam}`;
+  const mediaLabel = MEDIA_TYPE_LABELS[mediaType];
+
+  if (providerParam) {
+    if (!/^\d+$/.test(providerParam)) return null;
+    return {
+      url: `${seasonalUrl}/streaming/${providerParam}?type=${mediaType}`,
+      title: `${nameParam || 'Streaming'} ${mediaLabel}`
+    };
+  }
+
+  if (!/^[a-z0-9-]+$/.test(railParam || '')) return null;
+  return {
+    url: `${seasonalUrl}/rail/${railParam}?type=${mediaType}`,
+    title: `${nameParam} ${mediaLabel}`.trim()
+  };
+}
+
 function resolveBrowseSource() {
+  if (seasonalParam) return buildSeasonalSource();
   if (genreParam) return buildGenreSource();
   if (providerParam) return buildProviderSource();
   return buildListSource();

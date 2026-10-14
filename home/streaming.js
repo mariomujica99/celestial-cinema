@@ -18,11 +18,12 @@ const STREAMING_PROVIDERS = [
   { name: 'Paramount+',  providerIds: [2303, 2616] }
 ];
 
-function buildBrowseUrl(provider, mediaType) {
+function buildBrowseUrl(provider, mediaType, extraBrowseParams = {}) {
   const browseParams = new URLSearchParams({
     provider: getPrimaryId(provider),
     type: mediaType,
-    name: provider.name
+    name: provider.name,
+    ...extraBrowseParams
   });
   return `browse.html?${browseParams.toString()}`;
 }
@@ -37,10 +38,10 @@ function mergeByPopularity(titles) {
     .sort((firstTitle, secondTitle) => (secondTitle.popularity || 0) - (firstTitle.popularity || 0));
 }
 
-async function fetchProviderResults(provider, mediaType) {
+async function fetchProviderResults(provider, mediaType, streamingUrl) {
   const settledLists = await Promise.allSettled(
     provider.providerIds.map(providerId =>
-      fetchListResults(`${API_LINKS.STREAMING}${providerId}?type=${mediaType}`))
+      fetchListResults(`${streamingUrl}${providerId}?type=${mediaType}`))
   );
   const fulfilledLists = settledLists
     .filter(settledList => settledList.status === 'fulfilled')
@@ -78,24 +79,47 @@ function buildProviderTabs(activeProviderId, onSelect) {
   return tabList;
 }
 
-export function initStreaming(savedMediaIdsPromise) {
+function isValidSelection(selection) {
+  return Boolean(selection)
+    && STREAMING_PROVIDERS.some(provider => getPrimaryId(provider) === selection.providerId)
+    && ['movie', 'tv'].includes(selection.mediaType);
+}
+
+/**
+ * @param {Promise<Set<string>>} savedMediaIdsPromise
+ * @param {object} [streamingOptions]
+ * @param {string} [streamingOptions.streamingUrl] - Endpoint prefix ending in '/'; defaults to the homepage streaming endpoint
+ * @param {(provider: object) => object} [streamingOptions.getBrowseParams] - Extra "view all" URL params for a provider
+ * @param {{providerId: number, mediaType: string}} [streamingOptions.initialSelection] - Restored tab and toggle
+ * @returns {{getSelection: () => {providerId: number, mediaType: string}}|null}
+ */
+export function initStreaming(savedMediaIdsPromise, streamingOptions = {}) {
   const railSection = document.getElementById('rail-streaming');
-  if (!railSection) return;
+  if (!railSection) return null;
+
+  const {
+    streamingUrl = API_LINKS.STREAMING,
+    getBrowseParams = () => ({}),
+    initialSelection = null
+  } = streamingOptions;
 
   const titleLink = railSection.querySelector('.home-rail-title-link');
   const railHeader = railSection.querySelector('.home-rail-header');
   const railTrack = railSection.querySelector('.home-rail-track');
   const posterLoader = createPosterLoader(railSection, savedMediaIdsPromise);
 
-  let activeProviderId = getPrimaryId(STREAMING_PROVIDERS[0]);
-  let activeMediaType = 'movie';
+  const startSelection = isValidSelection(initialSelection)
+    ? initialSelection
+    : { providerId: getPrimaryId(STREAMING_PROVIDERS[0]), mediaType: 'movie' };
+  let activeProviderId = startSelection.providerId;
+  let activeMediaType = startSelection.mediaType;
 
   function showActiveSelection() {
     const activeProvider = STREAMING_PROVIDERS.find(provider => getPrimaryId(provider) === activeProviderId);
-    titleLink.href = buildBrowseUrl(activeProvider, activeMediaType);
+    titleLink.href = buildBrowseUrl(activeProvider, activeMediaType, getBrowseParams(activeProvider));
     posterLoader.load({
       cacheKey: `${activeProviderId}_${activeMediaType}`,
-      fetchResults: () => fetchProviderResults(activeProvider, activeMediaType),
+      fetchResults: () => fetchProviderResults(activeProvider, activeMediaType, streamingUrl),
       mediaType: activeMediaType
     });
   }
@@ -118,4 +142,6 @@ export function initStreaming(savedMediaIdsPromise) {
   railTrack.before(providerTabs);
   posterLoader.showPlaceholders();
   observeOnce(railSection, showActiveSelection);
+
+  return { getSelection: () => ({ providerId: activeProviderId, mediaType: activeMediaType }) };
 }

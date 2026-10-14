@@ -26,6 +26,7 @@ const heroUpNextList = document.getElementById('hero-up-next-list');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let heroSlides = [];
+let heroConfig = { heroUrl: API_LINKS.HERO, seasonalKey: null };
 let activeSlideIndex = 0;
 let autoplayTimeoutId = null;
 let isAutoplayPaused = false;
@@ -48,7 +49,8 @@ function buildSlidePlayerUrl(slide) {
     mediaId: slide.id,
     mediaType: slide.mediaType,
     videoKey: getSlideVideoKey(slide),
-    source: 'hero'
+    source: heroConfig.seasonalKey ? 'seasonal' : 'hero',
+    seasonalKey: heroConfig.seasonalKey
   });
 }
 
@@ -331,10 +333,18 @@ function showSlides(savedMediaIds) {
   initAutoplay();
 }
 
-export async function initHero(savedMediaIdsPromise) {
+/**
+ * @param {Promise<Set<string>>} savedMediaIdsPromise
+ * @param {object} [heroOptions]
+ * @param {string} [heroOptions.heroUrl] - Hero endpoint; defaults to the homepage hero
+ * @param {string} [heroOptions.seasonalKey] - Season key when the hero belongs to a seasonal hub
+ */
+export async function initHero(savedMediaIdsPromise, heroOptions = {}) {
+  heroConfig = { heroUrl: API_LINKS.HERO, seasonalKey: null, ...heroOptions };
+
   try {
     const [heroData, savedMediaIds] = await Promise.all([
-      fetchJsonOrThrow(API_LINKS.HERO),
+      fetchJsonOrThrow(heroConfig.heroUrl),
       savedMediaIdsPromise
     ]);
     heroSlides = (heroData.results || []).filter(slide => getSlideVideoKey(slide));

@@ -2,6 +2,7 @@ const url = new URL(location.href);
 const tvId = url.searchParams.get("id");
 const seasonNumber = url.searchParams.get("season");
 const tvTitle = url.searchParams.get("title");
+const targetEpisodeNumber = url.searchParams.get("episode");
 
 const API_LINKS = {
   TV_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${tvId}`,
@@ -69,6 +70,7 @@ async function initEpisodesPage() {
     return;
   }
   displayEpisodes(episodesResult.value);
+  scrollToTargetEpisode();
 }
 
 async function loadSeasonReviews() {
@@ -193,6 +195,17 @@ function displayEpisodes(episodes) {
 
     episodesContainer.appendChild(episodeCard);
   });
+}
+
+function scrollToTargetEpisode() {
+  if (!targetEpisodeNumber) return;
+
+  const targetCard = episodesContainer.querySelector(
+    `.episode-card[data-episode="${CSS.escape(targetEpisodeNumber)}"]`
+  );
+  if (!targetCard) return;
+
+  targetCard.scrollIntoView({ block: 'start' });
 }
 
 function buildRatingLineHTML(reviews) {

@@ -1,0 +1,142 @@
+/* Season palettes. Applied via the data-season attribute (homepage strip and seasonal hub).
+   Variables per season: accent start/end, surface tint, accent text, and a full gradient.
+   These hex values are a deliberate exception to the no-new-hex rule. */
+
+[data-season] {
+  --season-gradient: linear-gradient(135deg, var(--season-accent-start), var(--season-accent-end));
+}
+
+[data-season="new-years"] {
+  --season-accent-start: #0b1736;
+  --season-accent-end: #8a6508;
+  --season-surface-tint: rgba(11, 23, 54, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="valentines"] {
+  --season-accent-start: #be123c;
+  --season-accent-end: #a21caf;
+  --season-surface-tint: rgba(190, 18, 60, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="st-patricks"] {
+  --season-accent-start: #15803d;
+  --season-accent-end: #8a6a06;
+  --season-surface-tint: rgba(21, 128, 61, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="easter"] {
+  --season-accent-start: #c4b5fd;
+  --season-accent-end: #fde68a;
+  --season-surface-tint: rgba(196, 181, 253, 0.14);
+  --season-accent-text: #2e1f5c;
+}
+
+[data-season="earth-day"] {
+  --season-accent-start: #0f766e;
+  --season-accent-end: #2f7d32;
+  --season-surface-tint: rgba(15, 118, 110, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="mothers-day"] {
+  --season-accent-start: #fbcfe8;
+  --season-accent-end: #fda4af;
+  --season-surface-tint: rgba(251, 207, 232, 0.14);
+  --season-accent-text: #4a1d2e;
+}
+
+[data-season="memorial-day"] {
+  --season-accent-start: #1e3a5f;
+  --season-accent-end: #9b1c1c;
+  --season-surface-tint: rgba(30, 58, 95, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="fathers-day"] {
+  --season-accent-start: #334e75;
+  --season-accent-end: #4b6584;
+  --season-surface-tint: rgba(51, 78, 117, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="fourth-of-july"] {
+  --season-accent-start: #1d3a8a;
+  --season-accent-end: #b91c1c;
+  --season-surface-tint: rgba(29, 58, 138, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="halloween"] {
+  --season-accent-start: #c2410c;
+  --season-accent-end: #5b21b6;
+  --season-surface-tint: rgba(194, 65, 12, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="veterans-day"] {
+  --season-accent-start: #1e3a5f;
+  --season-accent-end: #556b2f;
+  --season-surface-tint: rgba(30, 58, 95, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="thanksgiving"] {
+  --season-accent-start: #b45309;
+  --season-accent-end: #6b3f1d;
+  --season-surface-tint: rgba(180, 83, 9, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="christmas"] {
+  --season-accent-start: #991b1b;
+  --season-accent-end: #166534;
+  --season-surface-tint: rgba(153, 27, 27, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="black-history"] {
+  --season-accent-start: #991b1b;
+  --season-accent-end: #166534;
+  --season-surface-tint: rgba(153, 27, 27, 0.14);
+  --season-accent-text: #ffffff;
+  --season-gradient: linear-gradient(135deg, #991b1b, #8a6508, #166534);
+}
+
+[data-season="womens-history"] {
+  --season-accent-start: #6d28d9;
+  --season-accent-end: #8a6508;
+  --season-surface-tint: rgba(109, 40, 217, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="aapi-heritage"] {
+  --season-accent-start: #c2410c;
+  --season-accent-end: #0f766e;
+  --season-surface-tint: rgba(194, 65, 12, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="pride"] {
+  --season-accent-start: #b91c1c;
+  --season-accent-end: #6d28d9;
+  --season-surface-tint: rgba(185, 28, 28, 0.14);
+  --season-accent-text: #ffffff;
+  --season-gradient: linear-gradient(135deg, #b91c1c, #b45309, #8a6a06, #15803d, #1d4ed8, #6d28d9);
+}
+
+[data-season="hispanic-heritage"] {
+  --season-accent-start: #b45309;
+  --season-accent-end: #0f766e;
+  --season-surface-tint: rgba(180, 83, 9, 0.14);
+  --season-accent-text: #ffffff;
+}
+
+[data-season="native-american-heritage"] {
+  --season-accent-start: #78350f;
+  --season-accent-end: #0e7490;
+  --season-surface-tint: rgba(120, 53, 15, 0.14);
+  --season-accent-text: #ffffff;
+}

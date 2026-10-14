@@ -116,12 +116,14 @@ function getVideoThumbUrl(videoKey) {
  * @param {string} options.mediaId
  * @param {string} options.mediaType - 'movie' | 'tv'
  * @param {string} [options.videoKey] - YouTube key; the player picks the primary trailer when omitted
- * @param {string} [options.source] - 'media' (up next = this media's videos) | 'hero' (up next = hero trailers)
+ * @param {string} [options.source] - 'media' (up next = this media's videos) | 'hero' (up next = hero trailers) | 'seasonal' (up next = a season's hero trailers)
+ * @param {string} [options.seasonalKey] - Season key; required when source is 'seasonal'
  * @returns {string}
  */
-function buildVideoPlayerUrl({ mediaId, mediaType, videoKey, source = 'media' }) {
+function buildVideoPlayerUrl({ mediaId, mediaType, videoKey, source = 'media', seasonalKey }) {
   const playerParams = new URLSearchParams({ id: mediaId, type: mediaType, from: source });
   if (videoKey) playerParams.set('key', videoKey);
+  if (seasonalKey) playerParams.set('seasonalKey', seasonalKey);
   return `${VIDEO_PLAYER_PAGE}?${playerParams.toString()}`;
 }
 

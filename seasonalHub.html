@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Celestial Cinema</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#7345cc">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="CCMDb" />
+    <link rel="manifest" href="images/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Science+Gothic:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/topnav.css">
+    <link rel="stylesheet" href="styles/media-grid.css">
+    <link rel="stylesheet" href="styles/status-messages.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/side-menu.css">
+    <link rel="stylesheet" href="styles/search-dropdown.css">
+    <link rel="stylesheet" href="styles/skeleton.css">
+    <link rel="stylesheet" href="styles/home-hero.css">
+    <link rel="stylesheet" href="styles/videos.css">
+    <link rel="stylesheet" href="styles/seasonal-themes.css">
+    <link rel="stylesheet" href="styles/home-rails.css">
+    <link rel="stylesheet" href="styles/seasonal-hub.css">
+  </head>
+  <body>
+    <nav class="topnav">
+      <a href="index.html">Celestial Cinema</a>
+
+      <div class="topnav-links">
+        <a class="topnav-link" href="all reviews/allReviews.html">Reviews</a>
+        <a class="topnav-link" href="watchlist/watchlist.html">Watchlist</a>
+      </div>
+
+      <div class="search-container">
+        <form class="search-form" role="search" id="search-form">
+          <input class="search-input" type="search" id="search-query" name="q" placeholder="Search movies | shows | people" autocomplete="off">
+        </form>
+      </div>
+    </nav>
+
+    <main class="seasonal-hub" id="seasonal-hub" hidden>
+      <h1 class="seasonal-hub-title" id="seasonal-hub-title"></h1>
+
+      <section class="home-hero" id="home-hero" aria-label="Featured trailers">
+        <div class="hero-layout">
+          <div class="hero-main">
+            <div class="hero-skeleton" id="hero-skeleton">
+              <div class="skeleton-block hero-skeleton-stage"></div>
+              <div class="hero-slide-info" aria-hidden="true">
+                <div class="hero-poster-wrap">
+                  <div class="skeleton-block hero-skeleton-poster"></div>
+                </div>
+                <div class="hero-slide-text">
+                  <div class="skeleton-block hero-skeleton-title"></div>
+                  <div class="skeleton-block hero-skeleton-subtitle"></div>
+                  <div class="skeleton-block hero-skeleton-meta"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-track" id="hero-track" hidden></div>
+
+            <div class="hero-nav-layer" id="hero-nav-layer" hidden>
+              <button class="hero-nav" id="hero-prev-btn" type="button" aria-label="Previous trailer">‹</button>
+              <button class="hero-nav" id="hero-next-btn" type="button" aria-label="Next trailer">›</button>
+            </div>
+          </div>
+
+          <aside class="hero-up-next" id="hero-up-next" aria-label="Up next" hidden>
+            <p class="hero-up-next-title">Up next</p>
+            <div class="hero-up-next-list" id="hero-up-next-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <div class="home-rails" id="seasonal-rails">
+        <p class="seasonal-pill" id="seasonal-pill"></p>
+
+        <section class="home-rail" id="rail-streaming">
+          <header class="home-rail-header home-rail-header--with-controls">
+            <div class="home-rail-heading">
+              <a class="home-rail-title-link" href="browse.html">
+                <h2 class="home-rail-title">What's streaming</h2>
+                <span class="home-rail-chevron" aria-hidden="true"></span>
+              </a>
+            </div>
+          </header>
+          <div class="home-rail-track"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="general/sideMenu.js"></script>
+    <script src="general/utils.js"></script>
+    <script src="general/search.js"></script>
+    <script src="general/videos.js"></script>
+    <script src="general/watchlistButton.js"></script>
+    <script src="general/skeleton.js"></script>
+    <script type="module" src="seasonal/seasonalHub.js"></script>
+  </body>
+</html>

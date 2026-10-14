@@ -733,6 +733,34 @@ async function loadSavedMediaIds() {
   }
 }
 
+const SCROLL_STATE_KEY_PREFIX = 'ccScrollState:';
+
+function saveScrollState(stateKey, extraState = {}) {
+  try {
+    const scrollState = { ...extraState, scrollY: window.scrollY };
+    sessionStorage.setItem(`${SCROLL_STATE_KEY_PREFIX}${stateKey}`, JSON.stringify(scrollState));
+  } catch (error) {
+    console.error('Failed to save scroll state:', error);
+  }
+}
+
+function readSavedScrollState(stateKey) {
+  const navigationType = performance.getEntriesByType('navigation')[0]?.type;
+  if (navigationType !== 'back_forward') return null;
+
+  try {
+    const savedState = sessionStorage.getItem(`${SCROLL_STATE_KEY_PREFIX}${stateKey}`);
+    return savedState ? JSON.parse(savedState) : null;
+  } catch (error) {
+    console.error('Failed to read scroll state:', error);
+    return null;
+  }
+}
+
+function restoreScrollPosition(scrollY) {
+  window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' });
+}
+
 function initFixedTopnavOffset() {
   const topnav = document.querySelector('.topnav');
   if (!topnav) return;

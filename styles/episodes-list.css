@@ -62,6 +62,7 @@
   border: 1px solid rgba(106, 90, 205, 0.2);
   transition: all 0.3s ease;
   position: relative;
+  scroll-margin-top: calc(var(--topnav-height) + 12px);
 }
 
 .episode-image {

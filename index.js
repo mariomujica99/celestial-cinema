@@ -5,11 +5,13 @@ import { initInterests } from './home/interests.js';
 import { initTopRated } from './home/topRated.js';
 import { initBoxOffice } from './home/boxOffice.js';
 import { initUpcoming } from './home/upcoming.js';
+import { initSeasonalStrip } from './home/seasonalStrip.js';
 
 const searchForm = document.getElementById('search-form');
 const searchInput = document.getElementById('search-query');
 
 initSearchRedirect(searchForm, searchInput, 'browse.html');
+initSeasonalStrip();
 
 const savedMediaIdsPromise = loadSavedMediaIds();
 

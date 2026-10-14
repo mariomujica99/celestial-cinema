@@ -3,6 +3,11 @@ const mediaId = playerParams.get('id');
 const mediaType = playerParams.get('type') === 'tv' ? 'tv' : 'movie';
 const requestedVideoKey = playerParams.get('key');
 const requestedSource = playerParams.get('from');
+const requestedSeasonalKey = playerParams.get('seasonalKey') || '';
+const isSeasonalSource = requestedSource === 'seasonal' && /^[a-z-]+$/.test(requestedSeasonalKey);
+const heroPlayerContext = isSeasonalSource
+  ? { source: 'seasonal', seasonalKey: requestedSeasonalKey }
+  : { source: 'hero' };
 
 const API_LINKS = {
   MOVIE_VIDEOS:  `https://celestial-cinema-backend.onrender.com/api/v1/movies/videos/${mediaId}`,
@@ -10,6 +15,7 @@ const API_LINKS = {
   MOVIE_DETAILS: `https://celestial-cinema-backend.onrender.com/api/v1/movies/details/${mediaId}`,
   TV_DETAILS:    `https://celestial-cinema-backend.onrender.com/api/v1/movies/tv/details/${mediaId}`,
   HOME_HERO:     'https://celestial-cinema-backend.onrender.com/api/v1/movies/home/hero',
+  SEASONAL_HERO: `https://celestial-cinema-backend.onrender.com/api/v1/seasonal/${requestedSeasonalKey}/hero`,  
   POSTER_PATH:   'https://image.tmdb.org/t/p/w342',
   BACKDROP_PATH: 'https://image.tmdb.org/t/p/w780',
   YOUTUBE_EMBED: 'https://www.youtube.com/embed/'
@@ -129,7 +135,7 @@ async function fetchMediaTrailers() {
 }
 
 async function fetchHeroSlides() {
-  const heroData = await fetchJsonOrThrow(API_LINKS.HOME_HERO);
+  const heroData = await fetchJsonOrThrow(isSeasonalSource ? API_LINKS.SEASONAL_HERO : API_LINKS.HOME_HERO);
   return heroData.results || [];
 }
 
@@ -170,7 +176,7 @@ function buildHeroUpNextCards(slides) {
         mediaId: slide.id,
         mediaType: slide.mediaType,
         videoKey: getPrimaryVideo(slide.trailers)?.key,
-        source: 'hero'
+        ...heroPlayerContext
       })
     }));
 }
@@ -184,7 +190,7 @@ async function loadHeroPlaylist() {
 }
 
 function loadPlaylist() {
-  const isHeroSource = requestedSource === 'hero' && Boolean(requestedVideoKey);
+  const isHeroSource = (requestedSource === 'hero' || isSeasonalSource) && Boolean(requestedVideoKey);
   return isHeroSource ? loadHeroPlaylist() : loadMediaPlaylist();
 }
 
