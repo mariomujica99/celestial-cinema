@@ -10,6 +10,11 @@ const SUNDAY = 0;
 const MONDAY = 1;
 const THURSDAY = 4;
 
+// Seasons allowed to show on the normal (non-override) path. A season is added here only
+// after its backend config is deployed. Awareness months stay out until Part B launches them.
+// Rollback: remove the key from this set.
+const LAUNCHED_SEASON_KEYS = new Set(['halloween']);
+
 // ── Date helpers (all dates are local midnight) ──────────────
 
 function createDate(year, monthIndex, dayOfMonth) {
@@ -312,7 +317,10 @@ export function getActiveSeason(date = new Date()) {
   const overriddenSeason = readSeasonOverride(today);
   if (overriddenSeason) return overriddenSeason;
 
+  // Collisions are resolved inside getSeasonWindows, so the gate only removes unlaunched
+  // seasons after that and never changes the dates of launched ones.
   const activeWindow = getSeasonWindows(today)
+    .filter(seasonWindow => LAUNCHED_SEASON_KEYS.has(seasonWindow.key))
     .find(seasonWindow => today >= seasonWindow.startDate && today <= seasonWindow.endDate);
   return activeWindow ? buildActiveSeason(activeWindow) : null;
 }
