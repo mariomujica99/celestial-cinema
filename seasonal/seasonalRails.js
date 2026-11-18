@@ -5,7 +5,6 @@ const API_LINKS = {
   SEASONAL: 'https://celestial-cinema-backend.onrender.com/api/v1/seasonal/'
 };
 
-export const MIN_RAIL_ITEMS = 4;
 const MAX_RAIL_PAGES = 3;
 
 // ── URLs ─────────────────────────────────────────────────────
@@ -109,8 +108,8 @@ function createRailItemSource({ seasonKey, railKey, shownTitleKeys }) {
 // ── Rail ─────────────────────────────────────────────────────
 
 /**
- * Builds one lazy-loading seasonal rail. The rail hides itself on error or
- * when too few titles remain after dedupe.
+ * Builds one lazy-loading seasonal rail. The rail hides itself on error, or when
+ * the selected media type has no titles left after dedupe. No other minimum applies.
  *
  * @param {object} options
  * @param {string} options.seasonKey
@@ -142,7 +141,9 @@ export function createSeasonalRail({ seasonKey, railData, savedMediaIdsPromise, 
   async function fetchItemsToShow(mediaType) {
     try {
       const rawItems = await itemSource.getRawItems(mediaType);
-      return itemSource.claimUnseenItems(rawItems, mediaType);
+      const claimedItems = itemSource.claimUnseenItems(rawItems, mediaType);
+      if (claimedItems.length === 0) hideRail();
+      return claimedItems;
     } catch (error) {
       console.error(`Error loading rail ${railData.key}:`, error);
       hideRail();
@@ -163,7 +164,7 @@ export function createSeasonalRail({ seasonKey, railData, savedMediaIdsPromise, 
     const candidateTypes = [activeMediaType, ...railData.types.filter(type => type !== activeMediaType)];
     for (const mediaType of candidateTypes) {
       const unseenCount = await itemSource.countUnseenItems(mediaType);
-      if (unseenCount >= MIN_RAIL_ITEMS) return mediaType;
+      if (unseenCount > 0) return mediaType;
     }
     return null;
   }

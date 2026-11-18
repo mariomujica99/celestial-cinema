@@ -1,5 +1,5 @@
 import { SKELETON_COUNT, observeOnce } from '../home/rails.js';
-import { MIN_RAIL_ITEMS, buildRailSection } from './seasonalRails.js';
+import { buildRailSection } from './seasonalRails.js';
 
 const API_LINKS = {
   SEASONAL: 'https://celestial-cinema-backend.onrender.com/api/v1/seasonal/'
@@ -95,7 +95,7 @@ function pickOnePerShow(episodes) {
 
 /**
  * Episode rail: at most EPISODE_RAIL_LIMIT landscape cards, most popular show first. The header links
- * to the full grid. Lazy-loads like the other rails, hides itself when it has fewer than MIN_RAIL_ITEMS
+ * to the full grid. Lazy-loads like the other rails, hides itself when it has no episodes
  * episodes, and returns the same controller shape the hub expects.
  */
 export function createSeasonalEpisodeRail({ seasonKey, railData }) {
@@ -118,7 +118,7 @@ export function createSeasonalEpisodeRail({ seasonKey, railData }) {
     try {
       const data = await fetchJsonOrThrow(`${API_LINKS.SEASONAL}${seasonKey}/episodes`);
       const episodes = pickOnePerShow(data.results || []);
-      if (episodes.length < MIN_RAIL_ITEMS) {
+      if (episodes.length === 0) {
         hideRail();
         return;
       }

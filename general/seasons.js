@@ -13,7 +13,7 @@ const THURSDAY = 4;
 // Seasons allowed to show on the normal (non-override) path. A season is added here only
 // after its backend config is deployed. Awareness months stay out until Part B launches them.
 // Rollback: remove the key from this set.
-const LAUNCHED_SEASON_KEYS = new Set(['halloween']);
+const LAUNCHED_SEASON_KEYS = new Set([]);
 
 // ── Date helpers (all dates are local midnight) ──────────────
 
